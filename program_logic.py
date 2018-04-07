@@ -1,3 +1,6 @@
+#THIS FILE IS RESPONSIBLE FOR MANAGING BIG PICTURE PROGRAM LOGIC
+#e.g: start menu, starting the proper game
+
 import visual_main
 import game_logic
 key_presses_list = [];  # this is a list of recent non special key inputs
