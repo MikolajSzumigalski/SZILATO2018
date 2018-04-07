@@ -2,8 +2,6 @@
 .idea/workspace.xml
 *.pyc
 .idea/vcs.xml
-*.pyc
 .idea/SZILATO2018.iml
-*.xml
-__pycache__/sprites.cpython-36.pyc
-*.pyc
+__pycache__/
+
