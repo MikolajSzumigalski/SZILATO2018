@@ -6,7 +6,7 @@ from sprites import *
 class Game:
     def __init__(self):
         pg.init()
-        self.screen = pg.display.set_mode((WIDTH, HEIGHT))
+        self.screen = pg.display.set_mode((WIDTH, HEIGHT), pg.RESIZABLE)
         pg.display.set_caption(TITLE)
         self.clock = pg.time.Clock()
         pg.key.set_repeat(500, 100)
@@ -20,6 +20,7 @@ class Game:
         self.all_sprites = pg.sprite.Group()
         self.walls = pg.sprite.Group()
         self.player = Player(self, 10, 10)
+        self.monsters = [Snake(self, 5, 6)];
         for x in range(10, 20):
             Wall(self, x, 5)
 
@@ -68,6 +69,17 @@ class Game:
                     self.player.move(dy=-1)
                 if event.key == pg.K_DOWN:
                     self.player.move(dy=1)
+            if event.type == pg.VIDEORESIZE:
+                self.__resize_window__(event)
+
+
+    def __resize_window__(self, event):
+        """
+        this handles resizing of a window, is called by events loop
+        :param event, handled VIDEORESIZE pygame event"""
+        WIDTH = event.w
+        HEIGHT = event.h
+        self.screen = pg.display.set_mode((WIDTH, HEIGHT), pg.RESIZABLE);
 
     def show_start_screen(self):
         pass

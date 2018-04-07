@@ -1,1 +1,7 @@
+.idea/markdown-navigator/profiles_settings.xml
+.idea/workspace.xml
+*.pyc
+.idea/vcs.xml
+.idea/SZILATO2018.iml
 __pycache__/
+
