@@ -1,5 +1,7 @@
 import pygame as pg
+import sys
 from sprites import *
+from map import *
 
 class Game:
     def __init__(self, screen):
@@ -11,6 +13,7 @@ class Game:
         self.all_sprites = pg.sprite.Group()
         self.player = Player(self, 10, 10)
         self.monsters = [Snake(self, 5, 6)];
+        self.map = Map(self)
 
     def run(self):
         # game loop - set self.playing = False to end the game
@@ -31,6 +34,8 @@ class Game:
 
     def draw(self):
         self.screen.fill(BGCOLOR)
+        self.map.draw_grid(self.screen)
+        self.map.draw_map(self.screen)
         self.all_sprites.draw(self.screen)
         pg.display.flip()
 
