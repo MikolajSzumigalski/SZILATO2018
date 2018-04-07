@@ -2,34 +2,33 @@ import pygame as pg
 import sys
 from settings import *
 from sprites import *
+import program_logic;
 
-class Game:
+#THIS FILE HANDLES PYGAME REPRESENTATION OF PROGRAM AND IN-GAME LOGIC
+class Window:
     def __init__(self):
         pg.init()
         self.screen = pg.display.set_mode((WIDTH, HEIGHT), pg.RESIZABLE)
         pg.display.set_caption(TITLE)
         self.clock = pg.time.Clock()
         pg.key.set_repeat(500, 100)
-        self.load_data()
 
-    def load_data(self):
-        pass
 
-    def new(self):
+    def new(self, monster_list, player_location_x=10, player_location_y=10):
         # initialize all variables and do all the setup for a new game
         self.all_sprites = pg.sprite.Group()
         self.walls = pg.sprite.Group()
-        self.player = Player(self, 10, 10)
+        self.player = Player(self, player_location_x, player_location_y)
         self.monsters = [Snake(self, 5, 6)];
         for x in range(10, 20):
             Wall(self, x, 5)
 
     def run(self):
-        # game loop - set self.playing = False to end the game
-        self.playing = True
-        while self.playing:
+        # game loop
+        waskeypressed = False;
+        while not waskeypressed:
             self.dt = self.clock.tick(FPS) / 1000
-            self.events()
+            waskeypressed = self.events();
             self.update()
             self.draw()
 
@@ -53,30 +52,32 @@ class Game:
         self.all_sprites.draw(self.screen)
         pg.display.flip()
 
+
+
     def events(self):
-        # catch all events here
+        """
+        handles big scope window input (resizing). Takes in  all button presses events
+        and returns the type of button pressed in pygame representation
+        appends the keydown to a list of key_presses_list from program_logic
+        :return Returns True if a nonspecial key was pressed
+        """
         for event in pg.event.get():
             if event.type == pg.QUIT:
                 self.quit()
             if event.type == pg.KEYDOWN:
-                if event.key == pg.K_ESCAPE:
-                    self.quit()
-                if event.key == pg.K_LEFT:
-                    self.player.move(dx=-1)
-                if event.key == pg.K_RIGHT:
-                    self.player.move(dx=1)
-                if event.key == pg.K_UP:
-                    self.player.move(dy=-1)
-                if event.key == pg.K_DOWN:
-                    self.player.move(dy=1)
+                program_logic.key_presses_list.append(event.key);
+                return True
             if event.type == pg.VIDEORESIZE:
-                self.__resize_window__(event)
+                self.__resize_window__(event);
+
+            return False
 
 
     def __resize_window__(self, event):
         """
         this handles resizing of a window, is called by events loop
         :param event, handled VIDEORESIZE pygame event"""
+        #TODO ładne odświeżanie ekranu po rozszerzeniu powiększeniu
         WIDTH = event.w
         HEIGHT = event.h
         self.screen = pg.display.set_mode((WIDTH, HEIGHT), pg.RESIZABLE);
@@ -87,10 +88,12 @@ class Game:
     def show_go_screen(self):
         pass
 
-# create the game object
-g = Game()
-g.show_start_screen()
-while True:
-    g.new()
-    g.run()
-g.show_go_screen()
+
+if __name__ == "__main__":
+    # create the game window
+    g = Window()
+    g.show_start_screen()
+    while True:
+        g.new()
+        g.run()
+    g.show_go_screen()
