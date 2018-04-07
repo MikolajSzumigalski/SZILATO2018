@@ -1,4 +1,4 @@
-#this file runs the in-game logic
+#THIS FILE IS RESPONSIBLE FOR PROPER IN GAME LOGIC
 import visual_main
 import pygame as pg
 import program_logic
@@ -21,7 +21,7 @@ def walking(window):
     """
     this function is responsible for in game logic walking and calls to visual_main
     """
-    while True: #nie kolizja albo coś, czary mary game logika #TODO
+    while True: #nie kolizja albo coś, czary mary game logika #TODO LOGIKA CHODZENIA
         key = input_loop(window);
         if key == pg.K_LEFT:
             window.player.move(dx=-1)

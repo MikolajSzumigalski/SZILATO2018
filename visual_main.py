@@ -16,6 +16,7 @@ class Window:
 
     def new(self, monster_list, player_location_x=10, player_location_y=10):
         # initialize all variables and do all the setup for a new game
+        #TODO WSZYSTKO TUTAJ, ŁADOWANIE Z MAPY, CZYTANIE OBIEKTÓW Z LISTY
         self.all_sprites = pg.sprite.Group()
         self.walls = pg.sprite.Group()
         self.player = Player(self, player_location_x, player_location_y)
@@ -24,6 +25,9 @@ class Window:
             Wall(self, x, 5)
 
     def run(self):
+        ''' Game loop.
+        Ticks the clock, listens for input and updates the screen
+        Runs ONLY until a first key is pressed!! Appends the key to global program_logic.key_...'''
         # game loop
         waskeypressed = False;
         while not waskeypressed:
@@ -57,8 +61,7 @@ class Window:
     def events(self):
         """
         handles big scope window input (resizing). Takes in  all button presses events
-        and returns the type of button pressed in pygame representation
-        appends the keydown to a list of key_presses_list from program_logic
+        appends the pg.event.key to a list of key_presses_list from program_logic
         :return Returns True if a nonspecial key was pressed
         """
         for event in pg.event.get():
@@ -87,13 +90,3 @@ class Window:
 
     def show_go_screen(self):
         pass
-
-
-if __name__ == "__main__":
-    # create the game window
-    g = Window()
-    g.show_start_screen()
-    while True:
-        g.new()
-        g.run()
-    g.show_go_screen()
