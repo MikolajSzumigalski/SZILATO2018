@@ -1,15 +1,17 @@
 #THIS FILE IS RESPONSIBLE FOR MANAGING BIG PICTURE PROGRAM LOGIC
 #e.g: start menu, starting the proper game
 
-import visual_main
-import game_logic
-key_presses_list = [];  # this is a list of recent non special key inputs
+import pygame as pg
+from settings import *
+from game import *
+
+#tworzymy okno
+#wyświetlamy menu
+#startujemy grę
 
 def startup():
     """ this starts the entire program"""
-    window = visual_main.Window(); #create the window to display the content in
-
-
-    #tworzymy okno
-    #wyświetlamy menu
-    #startujemy grę
+    screen = pg.display.set_mode((WIDTH, HEIGHT), pg.RESIZABLE)
+    #TO DO: przejście do menu, można np. dodać metodę z osobną pętlą.
+    game = Game(screen)
+    game.run()
