@@ -13,7 +13,8 @@ class Game:
         #init sprites and map
         self.all_sprites = pg.sprite.Group()
         self.player = Player(self, 10, 10)
-        self.monsters = [Snake(self, 5, 6)];
+        self.monsters = [Leszy(self, 5, 6), Leszy(self, 6, 12), Mglak(self, 27, 2), Mglak(self, 20, 18), Spider(self, 10, 15),
+                         Spider(self, 2, 2), Spider(self, 8, 4), Mglak(self, 16, 7)];
         self.map = Map(self)
         self.map.load_from_file("test.map")
         self.logic_engine = LogicEngine(self)

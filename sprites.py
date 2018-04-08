@@ -8,13 +8,18 @@ img_folder = os.path.join(game_folder, "img")
 
 class Character(pg.sprite.Sprite, metaclass=ABCMeta):
     """ this is a general character abstract class that provides basis of drawing any character on screen"""
-    def __init__(self, game, x, y):
+    def __init__(self, game, x, y, hp, at, deff, lev):
         self.groups = game.all_sprites
         pg.sprite.Sprite.__init__(self, self.groups)
         self.game = game
         self.rect = self.image.get_rect()
         self.x = x
         self.y = y
+        #Atrybuty postaci
+        self.hp = hp # punkty zdrowia
+        self.at = at #atak
+        self.deff = deff # obrona
+        self.lev = lev # poziom
 
     def move(self, dx=0, dy=0):
         self.x += dx
@@ -36,19 +41,61 @@ class Character(pg.sprite.Sprite, metaclass=ABCMeta):
 class Player(Character):
     """Player's implementation of Character class, that handles displaying Player's character on screen"""
     def __init__(self, game, x, y):
+        #POZIOM 1
+        hp = 70
+        at = 70
+        deff = 20
+        lev = 1
+        exp = 0 #punkty doświadczenia
         self.image = pg.image.load(os.path.join(img_folder, "geralt.png")).convert()
         self.image = pg.transform.scale(self.image, (32, 32))
         self.image.set_colorkey(BLACK)
-        super(Player, self).__init__(game, x, y);
+        super(Player, self).__init__(game, x, y, hp, at, deff, lev);
+
+    # def fight(self): będzie potrzebna klasa do walki
+
 
 class Monster(Character, metaclass=ABCMeta):
     """Abstract class that provides implementation of Character class, that handles displaying a Monster on screen"""
+    def __init__(self, game, x, y, hp, at, deff, lev):
+        self.hp = hp # punkty zdrowia
+        self.at = at #atak
+        self.deff = deff # obrona
+        self.lev = lev # poziom
+        super(Monster, self).__init__(game, x, y, hp, at, deff, lev);
+
+class Mglak(Monster):
     def __init__(self, game, x, y):
-        self.image = pg.image.load(os.path.join(img_folder, "gaunter.png")).convert()
+        #POZIOM 1
+        hp = 50
+        at = 60
+        deff = 20
+        lev = 1
+        self.image = pg.image.load(os.path.join(img_folder, "mglak.png")).convert()
         self.image = pg.transform.scale(self.image, (32, 32))
         self.image.set_colorkey(BLACK)
-        super(Monster, self).__init__(game, x, y);
+        super(Mglak, self).__init__(game, x, y, hp, at, deff, lev);
 
-class Snake(Monster):
-    """Example implementation of Abstract class, that handles displaying a Snake character on screen"""
-    pass;
+class Spider(Monster):
+    def __init__(self, game, x, y):
+        #POZIOM 2
+        hp = 100
+        at = 80
+        deff = 30
+        lev = 2
+        self.image = pg.image.load(os.path.join(img_folder, "pajonk.png")).convert()
+        self.image = pg.transform.scale(self.image, (32, 32))
+        self.image.set_colorkey(BLACK)
+        super(Spider, self).__init__(game, x, y, hp, at, deff, lev);
+
+class Leszy(Monster):
+    def __init__(self, game, x, y):
+        #POZIOM 3
+        hp = 175
+        at = 110
+        deff = 40
+        lev = 3
+        self.image = pg.image.load(os.path.join(img_folder, "leszy.png")).convert()
+        self.image = pg.transform.scale(self.image, (32, 32))
+        self.image.set_colorkey(BLACK)
+        super(Leszy, self).__init__(game, x, y, hp, at, deff, lev);
