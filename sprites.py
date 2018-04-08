@@ -3,6 +3,8 @@ from settings import *
 from abc import ABCMeta, abstractmethod
 import os
 
+import program_logic
+
 game_folder = os.path.dirname(__file__)
 img_folder = os.path.join(game_folder, "img")
 
@@ -39,8 +41,9 @@ class Character(pg.sprite.Sprite, metaclass=ABCMeta):
         self.rect.x = self.x * TILESIZE
         self.rect.y = self.y * TILESIZE
 
+    @abstractmethod
     def die(self):
-        pass;
+        pass
 
 class Player(Character):
     """Player's implementation of Character class, that handles displaying Player's character on screen"""
@@ -56,6 +59,11 @@ class Player(Character):
         self.image.set_colorkey(BLACK)
         super(Player, self).__init__(game, x, y, hp, at, deff, lev, exp);
 
+    def die(self):
+        #TODO PROPER GAME ENDING
+        print("GAMEOVER")
+        program_logic.gameover()
+
 
 class Monster(Character, metaclass=ABCMeta):
     """Abstract class that provides implementation of Character class, that handles displaying a Monster on screen"""
@@ -68,8 +76,9 @@ class Monster(Character, metaclass=ABCMeta):
         super(Monster, self).__init__(game, x, y, hp, at, deff, lev, exp);
 
     def die(self):
-        self.hp = 0;
-        del self;
+        self.hp = 0
+        pg.sprite.Sprite.remove(self, self.groups)
+        del self
 
 class Mglak(Monster):
     def __init__(self, game, x, y):
