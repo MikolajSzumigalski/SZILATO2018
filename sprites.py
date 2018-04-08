@@ -8,7 +8,7 @@ img_folder = os.path.join(game_folder, "img")
 
 class Character(pg.sprite.Sprite, metaclass=ABCMeta):
     """ this is a general character abstract class that provides basis of drawing any character on screen"""
-    def __init__(self, game, x, y, hp, at, deff, lev):
+    def __init__(self, game, x, y, hp, at, deff, lev, exp):
         self.groups = game.all_sprites
         pg.sprite.Sprite.__init__(self, self.groups)
         self.game = game
@@ -20,6 +20,7 @@ class Character(pg.sprite.Sprite, metaclass=ABCMeta):
         self.at = at #atak
         self.deff = deff # obrona
         self.lev = lev # poziom
+        self.exp = exp;
 
     def move(self, dx=0, dy=0):
         self.x += dx
@@ -38,6 +39,9 @@ class Character(pg.sprite.Sprite, metaclass=ABCMeta):
         self.rect.x = self.x * TILESIZE
         self.rect.y = self.y * TILESIZE
 
+    def die(self):
+        pass;
+
 class Player(Character):
     """Player's implementation of Character class, that handles displaying Player's character on screen"""
     def __init__(self, game, x, y):
@@ -50,9 +54,7 @@ class Player(Character):
         self.image = pg.image.load(os.path.join(img_folder, "geralt.png")).convert()
         self.image = pg.transform.scale(self.image, (32, 32))
         self.image.set_colorkey(BLACK)
-        super(Player, self).__init__(game, x, y, hp, at, deff, lev);
-
-    # def fight(self): będzie potrzebna klasa do walki
+        super(Player, self).__init__(game, x, y, hp, at, deff, lev, exp);
 
 
 class Monster(Character, metaclass=ABCMeta):
@@ -62,7 +64,12 @@ class Monster(Character, metaclass=ABCMeta):
         self.at = at #atak
         self.deff = deff # obrona
         self.lev = lev # poziom
-        super(Monster, self).__init__(game, x, y, hp, at, deff, lev);
+        exp = 0
+        super(Monster, self).__init__(game, x, y, hp, at, deff, lev, exp);
+
+    def die(self):
+        self.hp = 0;
+        del self;
 
 class Mglak(Monster):
     def __init__(self, game, x, y):
