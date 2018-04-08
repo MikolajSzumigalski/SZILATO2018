@@ -9,4 +9,9 @@ class LogicEngine:
         self.player = player
         self.monsters = monsters
 
-    
+    def run(self):
+
+    def check_player_collisions(self):
+        for m in self.monsters:
+            if self.player.x == m.x and self.player.y == m.y
+                print("colision with monster!")

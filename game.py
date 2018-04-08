@@ -58,3 +58,5 @@ class Game:
                     self.player.move(dy=1)
             if event.type == pg.VIDEORESIZE:
                 self.__resize_window__(event)
+    def __resize_window__(self, event):
+        pass
