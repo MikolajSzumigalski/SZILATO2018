@@ -24,4 +24,4 @@ GRIDHEIGHT = HEIGHT // TILESIZE
 
 GAME_FOLDER = os.path.dirname(__file__)
 IMAGE_FOLDER = os.path.join(GAME_FOLDER, "img")
-MAP_FOLDER = os.path.join(GAME_FOLDER, "map")
+MAP_FOLDER = os.path.join(GAME_FOLDER, "maps")

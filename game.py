@@ -14,6 +14,7 @@ class Game:
         self.player = Player(self, 10, 10)
         self.monsters = [Snake(self, 5, 6)];
         self.map = Map(self)
+        self.map.load_from_file("test.map")
 
     def run(self):
         # game loop - set self.playing = False to end the game
