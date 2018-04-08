@@ -15,3 +15,7 @@ def startup():
     #TO DO: przejście do menu, można np. dodać metodę z osobną pętlą.
     game = Game(screen)
     game.run()
+
+def gameover():
+    """ this handles gameover """
+    startup()
