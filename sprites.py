@@ -36,7 +36,7 @@ class Character(pg.sprite.Sprite, metaclass=ABCMeta):
 class Player(Character):
     """Player's implementation of Character class, that handles displaying Player's character on screen"""
     def __init__(self, game, x, y):
-        self.image = pg.image.load(os.path.join(img_folder, "Geralt.png")).convert()
+        self.image = pg.image.load(os.path.join(img_folder, "geralt.png")).convert()
         self.image = pg.transform.scale(self.image, (32, 32))
         self.image.set_colorkey(BLACK)
         super(Player, self).__init__(game, x, y);
@@ -44,10 +44,10 @@ class Player(Character):
 class Monster(Character, metaclass=ABCMeta):
     """Abstract class that provides implementation of Character class, that handles displaying a Monster on screen"""
     def __init__(self, game, x, y):
-        self.image = pg.image.load(os.path.join(img_folder, "Gaunter.png")).convert()
+        self.image = pg.image.load(os.path.join(img_folder, "gaunter.png")).convert()
         self.image = pg.transform.scale(self.image, (32, 32))
         self.image.set_colorkey(BLACK)
-        super(MonsterEazy, self).__init__(game, x, y);
+        super(Monster, self).__init__(game, x, y);
 
 class Snake(Monster):
     """Example implementation of Abstract class, that handles displaying a Snake character on screen"""
