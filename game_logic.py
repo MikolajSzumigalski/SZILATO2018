@@ -23,12 +23,37 @@ class LogicEngine:
             if new_x  == m.x and new_y == m.y:
                 print("colision with monster!")
                 monster_collision = True
-                #self.player.fight(m) - walkę można też realizować tutaj (np. w osobnej metodzie), a nie w playerze
+                self.fight(self.player, m)
         #kolizje ze ścianami
         if not monster_collision:
             collidables = [ROCK_1, ROCK_2, ROCK_3, WATER]
             if self.map.map_data[new_y][new_x] in collidables:
-                print("colliosn with rock or water!")
+                print("collison with rock or water!")
             else:
                 print("move")
                 self.player.move(dx, dy)
+
+    def fight(self, attacker, defender):
+        '''
+        this handles one turn of fighting in between characters
+        :param charA: character enganging the fight
+        :param charB: defender character
+        :return:
+        '''
+
+        for current_attacker, current_defender in zip([attacker, defender], [defender, attacker]):
+            if(current_attacker.at > current_defender.deff):
+                print(current_defender.hp)
+                current_defender.take_damage(current_attacker.at - current_defender.deff)
+                print(current_defender.hp)
+            if(current_defender.hp <= 0):
+                current_defender.die()
+                #TODO DODAWANIE EXP
+                # attacker.add_exp(0)
+                break
+
+
+
+
+
+
