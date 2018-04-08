@@ -1,15 +1,17 @@
 import pygame as pg
 from settings import *
 from abc import ABCMeta, abstractmethod
+import os
+
+game_folder = os.path.dirname(__file__)
+img_folder = os.path.join(game_folder, "img")
 
 class Character(pg.sprite.Sprite, metaclass=ABCMeta):
     """ this is a general character abstract class that provides basis of drawing any character on screen"""
-    def __init__(self, game, x, y, color):
+    def __init__(self, game, x, y):
         self.groups = game.all_sprites
         pg.sprite.Sprite.__init__(self, self.groups)
         self.game = game
-        self.image = pg.Surface((TILESIZE, TILESIZE))
-        self.image.fill(color)
         self.rect = self.image.get_rect()
         self.x = x
         self.y = y
@@ -34,14 +36,18 @@ class Character(pg.sprite.Sprite, metaclass=ABCMeta):
 class Player(Character):
     """Player's implementation of Character class, that handles displaying Player's character on screen"""
     def __init__(self, game, x, y):
-        color = YELLOW;
-        super(Player, self).__init__(game, x, y, color);
+        self.image = pg.image.load(os.path.join(img_folder, "Geralt.png")).convert()
+        self.image = pg.transform.scale(self.image, (32, 32))
+        self.image.set_colorkey(BLACK)
+        super(Player, self).__init__(game, x, y);
 
 class Monster(Character, metaclass=ABCMeta):
     """Abstract class that provides implementation of Character class, that handles displaying a Monster on screen"""
     def __init__(self, game, x, y):
-        color = RED;
-        super(Monster, self).__init__(game, x, y, color);
+        self.image = pg.image.load(os.path.join(img_folder, "Gaunter.png")).convert()
+        self.image = pg.transform.scale(self.image, (32, 32))
+        self.image.set_colorkey(BLACK)
+        super(MonsterEazy, self).__init__(game, x, y);
 
 class Snake(Monster):
     """Example implementation of Abstract class, that handles displaying a Snake character on screen"""
