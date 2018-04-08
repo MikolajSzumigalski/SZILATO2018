@@ -2,6 +2,7 @@ import pygame as pg
 import sys
 from sprites import *
 from map import *
+from game_logic import *
 
 class Game:
     def __init__(self, screen):
@@ -15,6 +16,7 @@ class Game:
         self.monsters = [Snake(self, 5, 6)];
         self.map = Map(self)
         self.map.load_from_file("test.map")
+        self.logic_engine = LogicEngine(self)
 
     def run(self):
         # game loop - set self.playing = False to end the game
@@ -49,16 +51,21 @@ class Game:
                 if event.key == pg.K_ESCAPE:
                     self.quit()
                 if event.key == pg.K_LEFT:
-                    self.player.move(dx=-1)
+                    #sprawdź co się stanie jeśli player się przesunie
+                    self.logic_engine.check_player_collisions(dx=-1)
+                    # self.player.move(dx=-1)
                 if event.key == pg.K_RIGHT:
-                    self.player.move(dx=1)
+                    self.logic_engine.check_player_collisions(dx=1)
+                    # self.player.move(dx=1)
                 if event.key == pg.K_UP:
-                    self.player.move(dy=-1)
+                    self.logic_engine.check_player_collisions(dy=-1)
+                    # self.player.move(dy=-1)
                 if event.key == pg.K_DOWN:
-                    self.player.move(dy=1)
+                    self.logic_engine.check_player_collisions(dy=1)
+                    # self.player.move(dy=1)
             if event.type == pg.VIDEORESIZE:
                 self.__resize_window__(event)
-                
+
     def __resize_window__(self, event):
         """
         this handles resizing of a window, is called by events loop

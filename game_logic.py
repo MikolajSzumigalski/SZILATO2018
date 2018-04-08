@@ -1,17 +1,34 @@
 #THIS FILE IS RESPONSIBLE FOR PROPER IN GAME LOGIC
 import pygame as pg
+from map import *
+
 
 #metody dla całej logiki gry (kolizje, eventy w grze itp.)
 
 class LogicEngine:
-    def __init__(self, map, player, monsters):
-        self.map = map
-        self.player = player
-        self.monsters = monsters
+    def __init__(self, game):
+        self.game = game
+        self.player = game.player
+        self.monsters = game.monsters
+        self.map = game.map
 
-    def run(self):
-
-    def check_player_collisions(self):
+    #sprawdź czy na nowym polu (new_x, new_y) wystąpi jakaś kolizja
+    def check_player_collisions(self, dx=0, dy=0):
+        new_x = self.player.x + dx
+        new_y = self.player.y + dy
+        print("player pos: ",new_x, new_y, " next_tile: ", self.map.map_data[new_y][new_x])
+        #kolizje z potworami
+        monster_collision = False
         for m in self.monsters:
-            if self.player.x == m.x and self.player.y == m.y
+            if new_x  == m.x and new_y == m.y:
                 print("colision with monster!")
+                monster_collision = True
+                #self.player.fight(m) - walkę można też realizować tutaj (np. w osobnej metodzie), a nie w playerze
+        #kolizje ze ścianami
+        if not monster_collision:
+            collidables = [ROCK_1, ROCK_2, ROCK_3, WATER]
+            if self.map.map_data[new_y][new_x] in collidables:
+                print("colliosn with rock or water!")
+            else:
+                print("move")
+                self.player.move(dx, dy)

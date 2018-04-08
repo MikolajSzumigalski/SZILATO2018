@@ -2,12 +2,12 @@ import pygame as pg
 from settings import *
 
 #stałe przypisane do zasobów
-BUSH_1 = 0
-BUSH_2 = 1
-ROCK_1 = 2
-ROCK_2 = 3
-ROCK_3 = 4
-WATER = 5
+BUSH_1 = '0'
+BUSH_2 = '1'
+ROCK_1 = '2'
+ROCK_2 = '3'
+ROCK_3 = '4'
+WATER = '5'
 
 #textury zasobów
 textures = {
