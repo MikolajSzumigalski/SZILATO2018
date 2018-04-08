@@ -106,6 +106,7 @@ class Monster(Character, metaclass=ABCMeta):
     def die(self):
         self.hp = 0
         pg.sprite.Sprite.remove(self, self.groups)
+        self.game.monsters.remove(self)
         del self
 
     def level_up(self):
