@@ -7,6 +7,7 @@ import program_logic
 
 game_folder = os.path.dirname(__file__)
 img_folder = os.path.join(game_folder, "img")
+music_folder = os.path.join(game_folder, "music")
 
 class Character(pg.sprite.Sprite, metaclass=ABCMeta):
     """ this is a general character abstract class that provides basis of drawing any character on screen"""

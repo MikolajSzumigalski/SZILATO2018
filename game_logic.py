@@ -1,7 +1,9 @@
 #THIS FILE IS RESPONSIBLE FOR PROPER IN GAME LOGIC
 import pygame as pg
 from map import *
-
+from game import *
+import random
+from os import path
 
 #metody dla całej logiki gry (kolizje, eventy w grze itp.)
 
@@ -23,6 +25,11 @@ class LogicEngine:
             if new_x  == m.x and new_y == m.y:
                 print("colision with monster!")
                 monster_collision = True
+                geralt_sounds = []
+                for snd in ['geralt1.wav', 'geralt2.wav']:
+                    geralt_sounds.append(pg.mixer.Sound(path.join(music_folder, snd)))
+                random.choice(geralt_sounds).play()
+                #self.player.fight(m) - walkę można też realizować tutaj (np. w osobnej metodzie), a nie w playerze
                 self.fight(self.player, m)
         #kolizje ze ścianami
         if not monster_collision:
@@ -51,9 +58,3 @@ class LogicEngine:
                 #TODO DODAWANIE EXP
                 # attacker.add_exp(0)
                 break
-
-
-
-
-
-

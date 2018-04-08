@@ -3,6 +3,7 @@ import sys
 from sprites import *
 from map import *
 from game_logic import *
+from os import path
 
 class Game:
     def __init__(self, screen):
@@ -17,11 +18,15 @@ class Game:
                          Spider(self, 2, 2), Spider(self, 8, 4), Mglak(self, 16, 7)];
         self.map = Map(self)
         self.map.load_from_file("test.map")
+        #init music
+        pg.mixer.init()
+        bg_music = pg.mixer.music.load(path.join(music_folder, 'gamebackground.mp3'))
         self.logic_engine = LogicEngine(self)
 
     def run(self):
         # game loop - set self.playing = False to end the game
         self.playing = True
+        pg.mixer.music.play()
         while self.playing:
             self.dt = self.clock.tick(FPS) / 1000
             self.events()
