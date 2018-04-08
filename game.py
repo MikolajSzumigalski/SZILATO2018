@@ -58,5 +58,12 @@ class Game:
                     self.player.move(dy=1)
             if event.type == pg.VIDEORESIZE:
                 self.__resize_window__(event)
+                
     def __resize_window__(self, event):
-        pass
+        """
+        this handles resizing of a window, is called by events loop
+        :param event, handled VIDEORESIZE pygame event"""
+        #TODO ładne odświeżanie ekranu po rozszerzeniu powiększeniu
+        WIDTH = event.w
+        HEIGHT = event.h
+        self.screen = pg.display.set_mode((WIDTH, HEIGHT), pg.RESIZABLE);
