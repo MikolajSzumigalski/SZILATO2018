@@ -54,7 +54,8 @@ class LogicEngine:
                 current_defender.take_damage(current_attacker.at - current_defender.deff)
                 print(current_defender.hp)
             if(current_defender.hp <= 0):
-                current_defender.die()
-                #TODO DODAWANIE EXP
-                # attacker.add_exp(0)
+                current_defender.die();
+                exp_to_be_given = sum([50 * level for level in range(1, defender.lev+1)])
+                print("EXP TO BE GIVEN", exp_to_be_given)
+                attacker.add_exp(exp_to_be_given)
                 break
