@@ -23,7 +23,7 @@ class Character(pg.sprite.Sprite, metaclass=ABCMeta):
         self.at = at #atak
         self.deff = deff # obrona
         self.lev = lev # poziom
-        self.exp = exp;
+        self.total_exp = exp;
         self.max_hp = max_hp;
         if (self.max_hp == 0):
             self.max_hp = self.hp
@@ -48,6 +48,10 @@ class Character(pg.sprite.Sprite, metaclass=ABCMeta):
         :return:
         '''
         self.hp -= damage
+        self.visual_health_update()
+
+    def visual_health_update(self):
+        #TODO TAKE DAMAGE GUYS
         current_health_percentage = self.hp / self.max_hp
         if(current_health_percentage > 0):
             new_size = int(32 * current_health_percentage)
@@ -58,8 +62,15 @@ class Character(pg.sprite.Sprite, metaclass=ABCMeta):
         self.rect.x = self.x * TILESIZE
         self.rect.y = self.y * TILESIZE
 
+
+    @abstractmethod
+    def level_up(self):
+        pass;
+
     def add_exp(self, exp):
-        self.exp += exp;
+        self.total_exp += exp;
+        while self.total_exp >= sum([100 * level for level in range(1, self.lev+1)]):
+             self.level_up();
         #TODO
 
     @abstractmethod
@@ -90,7 +101,13 @@ class Player(Character):
         program_logic.gameover()
 
     def level_up(self):
-        #TODO LEVEL UP
+        self.max_hp +=20
+        self.at += 10
+        self.deff += 10
+        self.hp = self.max_hp
+        self.lev += 1
+        print("level up, hp: {} totalexp: {} level{}".format(self.hp, self.total_exp, self.lev))
+        self.visual_health_update()
         pass
 
 
