@@ -1,47 +1,61 @@
 #THIS FILE IS RESPONSIBLE FOR PROPER IN GAME LOGIC
-import visual_main
 import pygame as pg
-import program_logic
-def new_game(window):
-    """
-    prepares the starting in-game logic
-    :param window: Window object from visual_main, main visual window to display on
-    :return:
-    """
-    #TODO WSZYSTKO
-    player_starting_location = (10,10)
-    monsters_list = [];
-    # monsters_list = [{'type': "Snake", 'x':2, 'y':2}];
+from map import *
+from game import *
+import random
+from os import path
 
-    window.new(monsters_list, player_starting_location[0], player_starting_location[1]); #nowy stan początkowy
+#metody dla całej logiki gry (kolizje, eventy w grze itp.)
 
-    walking(window);
+class LogicEngine:
+    def __init__(self, game):
+        self.game = game
+        self.player = game.player
+        self.monsters = game.monsters
+        self.map = game.map
 
-def walking(window):
-    """
-    this function is responsible for in game logic walking and calls to visual_main
-    """
-    while True: #nie kolizja albo coś, czary mary game logika #TODO LOGIKA CHODZENIA
-        key = input_loop(window);
-        if key == pg.K_LEFT:
-            window.player.move(dx=-1)
-        if key == pg.K_RIGHT:
-            window.player.move(dx=1)
-        if key == pg.K_UP:
-            window.player.move(dy=-1)
-        if key == pg.K_DOWN:
-            window.player.move(dy=1)
+    #sprawdź czy na nowym polu (new_x, new_y) wystąpi jakaś kolizja
+    def check_player_collisions(self, dx=0, dy=0):
+        new_x = self.player.x + dx
+        new_y = self.player.y + dy
+        print("player pos: ",new_x, new_y, " next_tile: ", self.map.map_data[new_y][new_x])
+        #kolizje z potworami
+        monster_collision = False
+        for m in self.monsters:
+            if new_x  == m.x and new_y == m.y:
+                print("colision with monster!")
+                monster_collision = True
+                geralt_sounds = []
+                for snd in ['geralt1.wav', 'geralt2.wav']:
+                    geralt_sounds.append(pg.mixer.Sound(path.join(music_folder, snd)))
+                random.choice(geralt_sounds).play()
+                #self.player.fight(m) - walkę można też realizować tutaj (np. w osobnej metodzie), a nie w playerze
+                self.fight(self.player, m)
+        #kolizje ze ścianami
+        if not monster_collision:
+            collidables = [ROCK_1, ROCK_2, ROCK_3, WATER]
+            if self.map.map_data[new_y][new_x] in collidables:
+                print("collison with rock or water!")
+            else:
+                print("move")
+                self.player.move(dx, dy)
 
-def input_loop(window):
-    """
-    this function runs the game until an input is received
-    :param window: Window object from visual_main, that receives input presses
-    :return: key pressed in an int (pygame) representation
-    """
-    program_logic.key_presses_list.clear();
-    window.run();
-    return program_logic.key_presses_list.pop()
+    def fight(self, attacker, defender):
+        '''
+        this handles one turn of fighting in between characters
+        :param charA: character enganging the fight
+        :param charB: defender character
+        :return:
+        '''
 
-
-
-
+        for current_attacker, current_defender in zip([attacker, defender], [defender, attacker]):
+            if(current_attacker.at > current_defender.deff):
+                print(current_defender.hp)
+                current_defender.take_damage(current_attacker.at - current_defender.deff)
+                print(current_defender.hp)
+            if(current_defender.hp <= 0):
+                current_defender.die();
+                exp_to_be_given = sum([50 * level for level in range(1, defender.lev+1)])
+                print("EXP TO BE GIVEN", exp_to_be_given)
+                attacker.add_exp(exp_to_be_given)
+                break
