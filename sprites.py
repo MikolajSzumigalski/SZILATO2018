@@ -27,6 +27,9 @@ class Character(pg.sprite.Sprite, metaclass=ABCMeta):
         self.max_hp = max_hp;
         if (self.max_hp == 0):
             self.max_hp = self.hp
+        self.hbWidth = 32
+        self.hbHeight = 6
+        self.hbBase = pg.Surface((self.hbWidth, self.hbHeight))
 
     def move(self, dx=0, dy=0):
         self.x += dx
@@ -55,10 +58,17 @@ class Character(pg.sprite.Sprite, metaclass=ABCMeta):
         current_health_percentage = self.hp / self.max_hp
         if(current_health_percentage > 0):
             new_size = int(32 * current_health_percentage)
-            self.image = pg.transform.scale(self.image, (new_size, new_size))
+            width = new_size
+            hb = pg.Surface((width, self.hbHeight))
+            hb.fill(GREEN)
 
+            self.hbBase.fill(RED)
+            self.hbBase.blit(hb, (0,0))
+
+            self.image.blit(self.hbBase, (3,29))
 
     def update(self):
+        self.visual_health_update()
         self.rect.x = self.x * TILESIZE
         self.rect.y = self.y * TILESIZE
 
@@ -90,6 +100,7 @@ class Player(Character):
         deff = 20
         lev = 1
         exp = 0 #punkty doświadczenia
+        self.image = pg.Surface((32, 32))
         self.image = pg.image.load(os.path.join(img_folder, "geralt.png")).convert()
         self.image = pg.transform.scale(self.image, (32, 32))
         self.image.set_colorkey(BLACK)
@@ -137,6 +148,7 @@ class Mglak(Monster):
         at = 60
         deff = 20
         lev = 1
+        self.image = pg.Surface((32, 32))
         self.image = pg.image.load(os.path.join(img_folder, "mglak.png")).convert()
         self.image = pg.transform.scale(self.image, (32, 32))
         self.image.set_colorkey(BLACK)
@@ -149,6 +161,7 @@ class Spider(Monster):
         at = 80
         deff = 30
         lev = 2
+        self.image = pg.Surface((32, 32))
         self.image = pg.image.load(os.path.join(img_folder, "pajonk.png")).convert()
         self.image = pg.transform.scale(self.image, (32, 32))
         self.image.set_colorkey(BLACK)
