@@ -18,6 +18,7 @@ class Game:
                          Spider(self, 2, 2), Spider(self, 8, 4), Mglak(self, 16, 7)];
         self.map = Map(self)
         self.map.load_from_file("test.map")
+        self.map.init_tile_objects()
         #init music
         pg.mixer.init()
         bg_music = pg.mixer.music.load(path.join(music_folder, 'gamebackground.mp3'))
