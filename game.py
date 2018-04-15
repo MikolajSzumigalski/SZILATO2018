@@ -4,7 +4,7 @@ from sprites import *
 from map import *
 from game_logic import *
 from os import path
-
+from interface import *
 class Game:
     def __init__(self, screen):
         self.screen = screen
@@ -19,6 +19,7 @@ class Game:
         self.map = Map(self)
         self.map.load_from_file("test.map")
         self.map.init_tile_objects()
+        self.inteface = Interface(self, self.player)
         #init music
         pg.mixer.init()
         bg_music = pg.mixer.music.load(path.join(music_folder, 'gamebackground.mp3'))
@@ -41,12 +42,14 @@ class Game:
     def update(self):
         # update portion of the game loop
         self.all_sprites.update()
+        self.inteface.update(self.player)
 
     def draw(self):
         self.screen.fill(BGCOLOR)
         self.map.draw_grid(self.screen)
         self.map.draw_map(self.screen)
         self.all_sprites.draw(self.screen)
+        self.inteface.draw_interface(self.screen)
         pg.display.flip()
 
     def events(self):
@@ -80,4 +83,4 @@ class Game:
         #TODO ładne odświeżanie ekranu po rozszerzeniu powiększeniu
         WIDTH = event.w
         HEIGHT = event.h
-        self.screen = pg.display.set_mode((WIDTH, HEIGHT), pg.RESIZABLE);
+        self.screen = pg.display.set_mode((1224, HEIGHT), pg.RESIZABLE);
