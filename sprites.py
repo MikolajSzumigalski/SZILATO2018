@@ -29,7 +29,13 @@ class Character(pg.sprite.Sprite, metaclass=ABCMeta):
             self.max_hp = self.hp
         self.hbWidth = 32
         self.hbHeight = 6
+        self.alpha = 255
         self.hbBase = pg.Surface((self.hbWidth, self.hbHeight))
+        # 255 to max widoczność obrazka, 0 to pełne zaniknięcie
+        #prędkość zanikania
+        self.fade_speed = 16
+        self.fadepom = 0
+        self.trans_value = 255
 
     def move(self, dx=0, dy=0):
         self.x += dx
@@ -52,6 +58,10 @@ class Character(pg.sprite.Sprite, metaclass=ABCMeta):
         '''
         self.hp -= damage
         self.visual_health_update()
+    def fade(self):
+        self.fadepom = 1
+        self.fade_direction = 1
+
 
     def visual_health_update(self):
         #TODO TAKE DAMAGE GUYS
@@ -71,7 +81,24 @@ class Character(pg.sprite.Sprite, metaclass=ABCMeta):
         self.visual_health_update()
         self.rect.x = self.x * TILESIZE
         self.rect.y = self.y * TILESIZE
-
+        if(self.fadepom):
+            if self.trans_value > 0 and self.fade_direction:
+                if self.trans_value - self.fade_speed <= 0:
+                    self.trans_value = 0
+                    self.fade_direction = 0
+                    print(self.image.get_alpha())
+                else:
+                    self.trans_value = self.trans_value - self.fade_speed
+                    print(self.image.get_alpha())
+            elif self.trans_value < 255:
+                if self.trans_value + self.fade_speed >= 255:
+                    self.trans_value = 255
+                    print(self.image.get_alpha())
+                    self.fadepom = 0
+                else:
+                    self.trans_value = self.trans_value + self.fade_speed
+                    print(self.image.get_alpha())
+        self.image.set_alpha(self.trans_value)
 
     @abstractmethod
     def level_up(self):
@@ -120,7 +147,6 @@ class Player(Character):
         print("level up, hp: {} totalexp: {} level{}".format(self.hp, self.total_exp, self.lev))
         self.visual_health_update()
         pass
-
 
 class Monster(Character, metaclass=ABCMeta):
     """Abstract class that provides implementation of Character class, that handles displaying a Monster on screen"""
