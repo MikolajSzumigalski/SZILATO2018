@@ -16,7 +16,7 @@ class Interface:
     def __init__(self, game, player):
         self.width = 300
         self.height = 500
-        self.surface = pg.Surface((200, 600))
+        self.surface = pg.Surface((200, 500))
         self.surface.fill(BLACK)
         self.image = pg.Surface((80, 64))
         self.image = pg.image.load(os.path.join(img_folder, "wolf.png")).convert()
@@ -38,7 +38,7 @@ class Interface:
         draw_text(self.surface,  str(player.total_exp), 20, 72, 130)
 
     def draw_interface(self, screen):
-        screen.blit(self.surface, (1024, 0))
+        screen.blit(self.surface, (600, 0))
 
     def update(self, player):
         draw_text(self.surface, str(player.hp), 20, 55, 65)

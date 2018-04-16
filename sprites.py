@@ -27,7 +27,7 @@ class Character(pg.sprite.Sprite, metaclass=ABCMeta):
         self.max_hp = max_hp;
         if (self.max_hp == 0):
             self.max_hp = self.hp
-        self.hbWidth = 32
+        self.hbWidth = TILESIZE
         self.hbHeight = 6
         self.alpha = 255
         self.hbBase = pg.Surface((self.hbWidth, self.hbHeight))
@@ -67,7 +67,7 @@ class Character(pg.sprite.Sprite, metaclass=ABCMeta):
         #TODO TAKE DAMAGE GUYS
         current_health_percentage = self.hp / self.max_hp
         if(current_health_percentage > 0):
-            new_size = int(32 * current_health_percentage)
+            new_size = int(TILESIZE * current_health_percentage)
             width = new_size
             hb = pg.Surface((width, self.hbHeight))
             hb.fill(GREEN)
@@ -75,7 +75,7 @@ class Character(pg.sprite.Sprite, metaclass=ABCMeta):
             self.hbBase.fill(RED)
             self.hbBase.blit(hb, (0,0))
 
-            self.image.blit(self.hbBase, (3,29))
+            self.image.blit(self.hbBase, (5,45))
 
     def update(self):
         self.visual_health_update()
@@ -127,9 +127,9 @@ class Player(Character):
         deff = 20
         lev = 1
         exp = 0 #punkty doświadczenia
-        self.image = pg.Surface((32, 32))
+        self.image = pg.Surface((TILESIZE, TILESIZE))
         self.image = pg.image.load(os.path.join(img_folder, "geralt.png")).convert()
-        self.image = pg.transform.scale(self.image, (32, 32))
+        self.image = pg.transform.scale(self.image, (TILESIZE, TILESIZE))
         self.image.set_colorkey(BLACK)
         super(Player, self).__init__(game, x, y, hp, at, deff, lev, exp);
 
@@ -174,9 +174,9 @@ class Mglak(Monster):
         at = 60
         deff = 20
         lev = 1
-        self.image = pg.Surface((32, 32))
+        self.image = pg.Surface((TILESIZE, TILESIZE))
         self.image = pg.image.load(os.path.join(img_folder, "mglak.png")).convert()
-        self.image = pg.transform.scale(self.image, (32, 32))
+        self.image = pg.transform.scale(self.image, (TILESIZE, TILESIZE))
         self.image.set_colorkey(BLACK)
         super(Mglak, self).__init__(game, x, y, hp, at, deff, lev);
 
@@ -187,9 +187,9 @@ class Spider(Monster):
         at = 80
         deff = 30
         lev = 2
-        self.image = pg.Surface((32, 32))
+        self.image = pg.Surface((TILESIZE, TILESIZE))
         self.image = pg.image.load(os.path.join(img_folder, "pajonk.png")).convert()
-        self.image = pg.transform.scale(self.image, (32, 32))
+        self.image = pg.transform.scale(self.image, (TILESIZE, TILESIZE))
         self.image.set_colorkey(BLACK)
         super(Spider, self).__init__(game, x, y, hp, at, deff, lev);
 
@@ -201,6 +201,6 @@ class Leszy(Monster):
         deff = 40
         lev = 3
         self.image = pg.image.load(os.path.join(img_folder, "leszy.png")).convert()
-        self.image = pg.transform.scale(self.image, (32, 32))
+        self.image = pg.transform.scale(self.image, (TILESIZE, TILESIZE))
         self.image.set_colorkey(BLACK)
         super(Leszy, self).__init__(game, x, y, hp, at, deff, lev);

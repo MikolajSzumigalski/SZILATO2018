@@ -13,9 +13,9 @@ class Game:
         pg.key.set_repeat(500, 100)
         #init sprites and map
         self.all_sprites = pg.sprite.Group()
-        self.player = Player(self, 10, 10)
-        self.monsters = [Leszy(self, 5, 6), Leszy(self, 6, 12), Mglak(self, 27, 2), Mglak(self, 20, 18), Spider(self, 10, 15),
-                         Spider(self, 2, 2), Spider(self, 8, 4), Mglak(self, 16, 7)];
+        self.player = Player(self, 1, 1)
+        self.monsters = [Leszy(self, 5, 6), Leszy(self, 6, 6), Mglak(self, 6, 1), Mglak(self, 1, 5), Spider(self, 2, 3),
+                         Spider(self, 2, 2), Spider(self, 8, 4), Mglak(self, 1, 3)];
         self.map = Map(self)
         self.map.load_from_file("test.map")
         self.map.init_tile_objects()
@@ -83,4 +83,4 @@ class Game:
         #TODO ładne odświeżanie ekranu po rozszerzeniu powiększeniu
         WIDTH = event.w
         HEIGHT = event.h
-        self.screen = pg.display.set_mode((1224, HEIGHT), pg.RESIZABLE);
+        self.screen = pg.display.set_mode((WIDTH, HEIGHT), pg.RESIZABLE);

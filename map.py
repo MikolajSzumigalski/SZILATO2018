@@ -30,11 +30,11 @@ class Map:
         self.width = GRIDWIDTH
         self.height = GRIDHEIGHT
         self.map_data = test_map
-        self.tiles_data = [[0 for j in range(self.width)] for i in range(self.height)] 
+        self.tiles_data = [[0 for j in range(self.width)] for i in range(self.height)]
 
     #rysowanie pomocniczej siatki
     def draw_grid(self, screen):
-        for x in range(0, WIDTH, TILESIZE):
+        for x in range(0, MAP_WIDTH, TILESIZE):
             pg.draw.line(screen, LIGHTGREY, (x, 0), (x, HEIGHT))
         for y in range(0, HEIGHT, TILESIZE):
             pg.draw.line(screen, LIGHTGREY, (0, y), (WIDTH, y))
@@ -64,8 +64,8 @@ class Map:
                     self.tiles_data[column][row] = Rock(column, row, 3)
                 if temp_key == '5':
                     self.tiles_data[column][row] = Water(column, row, 1)
-                    
-                    
+
+
     def apply_fog(self, screen, player):
         pass
 
@@ -76,7 +76,7 @@ class Map:
             for line in file:
                 self.map_data.append(line.replace("\n","").split(" "))
         print(len(self.map_data), len(self.map_data[0]))
-    
+
 
 
     def update(self):
