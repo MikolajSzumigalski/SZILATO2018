@@ -116,6 +116,10 @@ class Character(pg.sprite.Sprite, metaclass=ABCMeta):
     def level_up(self):
         pass
 
+    @abstractmethod
+    def get_worth_exp(self):
+        pass
+
 class Player(Character):
     """Player's implementation of Character class, that handles displaying Player's character on screen"""
     def __init__(self, game, x, y):
@@ -146,6 +150,9 @@ class Player(Character):
         self.visual_health_update()
         pass
 
+    def get_worth_exp(self):
+        return 0
+
 class Monster(Character, metaclass=ABCMeta):
     """Abstract class that provides implementation of Character class, that handles displaying a Monster on screen"""
     def __init__(self, game, x, y, hp, at, deff, lev):
@@ -161,6 +168,10 @@ class Monster(Character, metaclass=ABCMeta):
         pg.sprite.Sprite.remove(self, self.groups)
         self.game.monsters.remove(self)
         del self
+
+
+    def get_worth_exp(self):
+        return sum([50 * level for level in range(1, self.lev + 1)])
 
     def level_up(self):
         pass

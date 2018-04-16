@@ -55,7 +55,7 @@ class LogicEngine:
                 print(current_defender.hp)
             if(current_defender.hp <= 0):
                 current_defender.die();
-                exp_to_be_given = sum([50 * level for level in range(1, defender.lev+1)])
+                exp_to_be_given = defender.get_worth_exp()
                 print("EXP TO BE GIVEN", exp_to_be_given)
                 attacker.add_exp(exp_to_be_given)
                 break
