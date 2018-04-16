@@ -93,11 +93,9 @@ class Character(pg.sprite.Sprite, metaclass=ABCMeta):
             elif self.trans_value < 255:
                 if self.trans_value + self.fade_speed >= 255:
                     self.trans_value = 255
-                    print(self.image.get_alpha())
                     self.fadepom = 0
                 else:
                     self.trans_value = self.trans_value + self.fade_speed
-                    print(self.image.get_alpha())
         self.image.set_alpha(self.trans_value)
 
     @abstractmethod
