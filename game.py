@@ -4,7 +4,7 @@ from sprites import *
 from map import *
 from game_logic import *
 from os import path
-
+from interface import *
 class Game:
     def __init__(self, screen):
         self.screen = screen
@@ -13,11 +13,13 @@ class Game:
         pg.key.set_repeat(500, 100)
         #init sprites and map
         self.all_sprites = pg.sprite.Group()
-        self.player = Player(self, 10, 10)
-        self.monsters = [Leszy(self, 5, 6), Leszy(self, 6, 12), Mglak(self, 27, 2), Mglak(self, 20, 18), Spider(self, 10, 15),
-                         Spider(self, 2, 2), Spider(self, 8, 4), Mglak(self, 16, 7)];
+        self.player = Player(self, 1, 1)
+        self.monsters = [Leszy(self, 5, 6), Leszy(self, 6, 6), Mglak(self, 6, 1), Mglak(self, 1, 5), Spider(self, 2, 3),
+                         Spider(self, 2, 2), Spider(self, 8, 4), Mglak(self, 1, 3)];
         self.map = Map(self)
         self.map.load_from_file("test.map")
+        self.map.init_tile_objects()
+        self.inteface = Interface(self, self.player)
         #init music
         pg.mixer.init()
         bg_music = pg.mixer.music.load(path.join(music_folder, 'gamebackground.mp3'))
@@ -40,12 +42,14 @@ class Game:
     def update(self):
         # update portion of the game loop
         self.all_sprites.update()
+        self.inteface.update(self.player)
 
     def draw(self):
         self.screen.fill(BGCOLOR)
         self.map.draw_grid(self.screen)
         self.map.draw_map(self.screen)
         self.all_sprites.draw(self.screen)
+        self.inteface.draw_interface(self.screen)
         pg.display.flip()
 
     def events(self):

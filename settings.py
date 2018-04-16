@@ -9,17 +9,19 @@ GREEN = (0, 255, 0)
 DARKGREEN = (19, 126, 0)
 RED = (255, 0, 0)
 YELLOW = (255, 255, 0)
+BLUE = (0,0,255)
 
 # game settings
-WIDTH = 1024   # 16 * 64 or 32 * 32 or 64 * 16
-HEIGHT = 768  # 16 * 48 or 32 * 24 or 64 * 12
+WIDTH = 800   # 16 * 64 or 32 * 32 or 64 * 16
+HEIGHT = 500  # 16 * 48 or 32 * 24 or 64 * 12
+MAP_WIDTH = 600
 FPS = 60
 TITLE = "Sztuczny Wiedźmin i przyjaciele"
 BGCOLOR = DARKGREEN
 
 # default settings
-TILESIZE = 32
-GRIDWIDTH = WIDTH // TILESIZE
+TILESIZE = 50
+GRIDWIDTH = MAP_WIDTH // TILESIZE
 GRIDHEIGHT = HEIGHT // TILESIZE
 
 GAME_FOLDER = os.path.dirname(__file__)

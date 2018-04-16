@@ -4,7 +4,6 @@
 import pygame as pg
 from settings import *
 from game import *
-
 #tworzymy okno
 #wyświetlamy menu
 #startujemy grę

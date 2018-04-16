@@ -59,3 +59,5 @@ class LogicEngine:
                 print("EXP TO BE GIVEN", exp_to_be_given)
                 attacker.add_exp(exp_to_be_given)
                 break
+            else:
+                current_defender.fade()    
