@@ -150,6 +150,9 @@ class Player(Character):
         self.visual_health_update()
         pass
 
+    def get_worth_exp(self):
+        return 0
+
 class Monster(Character, metaclass=ABCMeta):
     """Abstract class that provides implementation of Character class, that handles displaying a Monster on screen"""
     def __init__(self, game, x, y, hp, at, deff, lev):
