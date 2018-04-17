@@ -4,6 +4,7 @@
 import pygame as pg
 from settings import *
 from game import *
+from intro import *
 #tworzymy okno
 #wyświetlamy menu
 #startujemy grę
@@ -12,6 +13,8 @@ def startup():
     """ this starts the entire program"""
     screen = pg.display.set_mode((WIDTH, HEIGHT), pg.RESIZABLE)
     #TO DO: przejście do menu, można np. dodać metodę z osobną pętlą.
+    intro = Intro(screen)
+    intro.run()
     game = Game(screen)
     game.run()
 
