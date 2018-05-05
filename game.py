@@ -14,12 +14,13 @@ class Game:
         #init sprites and map
         self.all_sprites = pg.sprite.Group()
         self.player = Player(self, 1, 1)
-        self.monsters = [Leszy(self, 5, 6), Leszy(self, 6, 6), Mglak(self, 6, 1), Mglak(self, 1, 5), Spider(self, 2, 3),
+        self.monsters = [Leszy(self, 5, 6), Leszy(self, 6, 6), Mglak(self, 12, 1), Mglak(self, 1, 5), Spider(self, 2, 3),
                          Spider(self, 2, 2), Spider(self, 8, 4), Mglak(self, 1, 3)];
         self.map = Map(self)
         self.map.load_from_file("test.map")
         self.map.init_tile_objects()
         self.inteface = Interface(self, self.player)
+        self.camera = Camera(self.map.camerawidth, self.map.cameraheight)
         #init music
         pg.mixer.init()
         bg_music = pg.mixer.music.load(path.join(music_folder, 'gamebackground.mp3'))
@@ -43,12 +44,14 @@ class Game:
         # update portion of the game loop
         self.all_sprites.update()
         self.inteface.update(self.player)
+        self.camera.update(self.player)
 
     def draw(self):
         self.screen.fill(BGCOLOR)
         self.map.draw_grid(self.screen)
-        self.map.draw_map(self.screen)
-        self.all_sprites.draw(self.screen)
+        #self.map.draw_map(self.screen)
+        for sprite in self.all_sprites:
+            self.screen.blit(sprite.image, self.camera.apply(sprite))
         self.inteface.draw_interface(self.screen)
         pg.display.flip()
 
