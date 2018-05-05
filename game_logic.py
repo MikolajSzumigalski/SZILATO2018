@@ -12,6 +12,7 @@ class LogicEngine:
         self.game = game
         self.player = game.player
         self.monsters = game.monsters
+        self.mixtures = game.mixtures
         self.map = game.map
 
     #sprawdź czy na nowym polu (new_x, new_y) wystąpi jakaś kolizja
@@ -21,6 +22,7 @@ class LogicEngine:
         print("player pos: ",new_x, new_y, " next_tile: ", self.map.map_data[new_y][new_x])
         #kolizje z potworami
         monster_collision = False
+        mixture_collision = False
         for m in self.monsters:
             if new_x  == m.x and new_y == m.y:
                 print("colision with monster!")
@@ -32,7 +34,12 @@ class LogicEngine:
                 #self.player.fight(m) - walkę można też realizować tutaj (np. w osobnej metodzie), a nie w playerze
                 self.fight(self.player, m)
         #kolizje ze ścianami
-        if not monster_collision:
+        for m in self.mixtures:
+            if new_x  == m.x and new_y == m.y:
+                print("Let's drink!")
+                self.player.hp = self.player.max_hp
+                m.die()
+        if not monster_collision and not mixture_collision:
             collidables = [ROCK_1, ROCK_2, ROCK_3, WATER]
             if self.map.map_data[new_y][new_x] in collidables:
                 print("collison with rock or water!")
@@ -60,4 +67,4 @@ class LogicEngine:
                 attacker.add_exp(exp_to_be_given)
                 break
             else:
-                current_defender.fade()    
+                current_defender.fade()

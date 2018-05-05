@@ -15,7 +15,8 @@ class Game:
         self.all_sprites = pg.sprite.Group()
         self.player = Player(self, 1, 1)
         self.monsters = [Leszy(self, 5, 6), Leszy(self, 6, 6), Mglak(self, 12, 1), Mglak(self, 1, 5), Spider(self, 2, 3),
-                         Spider(self, 2, 2), Spider(self, 8, 4), Mglak(self, 1, 3)];
+                         Spider(self, 2, 2), Spider(self, 8, 4), Mglak(self, 1, 3)]
+        self.mixtures = [HP_Mixture(self, 5,5)]
         self.map = Map(self)
         self.map.load_from_file("test.map")
         self.map.init_tile_objects()

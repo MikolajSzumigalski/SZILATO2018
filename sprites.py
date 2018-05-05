@@ -213,3 +213,24 @@ class Leszy(Monster):
         self.image = pg.transform.scale(self.image, (TILESIZE, TILESIZE))
         self.image.set_colorkey(BLACK)
         super(Leszy, self).__init__(game, x, y, hp, at, deff, lev);
+
+class HP_Mixture(pg.sprite.Sprite):
+    def __init__(self, game, x, y):
+        self.image = pg.Surface((TILESIZE, TILESIZE))
+        self.image = pg.image.load(os.path.join(img_folder, "red_elix.png")).convert()
+        self.image = pg.transform.scale(self.image, (TILESIZE, TILESIZE))
+        self.image.set_colorkey(BLACK)
+        self.groups = game.all_sprites
+        pg.sprite.Sprite.__init__(self, self.groups)
+        self.game = game
+        self.rect = self.image.get_rect()
+        self.x = x
+        self.y = y
+        self.rect.x = self.x * TILESIZE
+        self.rect.y = self.y * TILESIZE
+
+    def die(self):
+        self.hp = 0
+        pg.sprite.Sprite.remove(self, self.groups)
+        self.game.mixtures.remove(self)
+        del self
