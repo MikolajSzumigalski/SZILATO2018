@@ -1,5 +1,6 @@
 import pygame as pg
 from settings import *
+import copy
 pg.font.init()
 game_folder = os.path.dirname(__file__)
 img_folder = os.path.join(game_folder, "img")
@@ -25,6 +26,7 @@ class Interface:
     def __init__(self, game, player):
         self.width = 300
         self.height = 500
+        self.game = game
         self.surface = pg.Surface((200, 500))
         self.surface.fill(BLACK)
         self.image = pg.Surface((80, 64))
@@ -53,10 +55,34 @@ class Interface:
         draw_text(self.surface,  str(player.deff), 20, 120, 170)
         #WYSWIETLANIE LEGENDY POTWORÓW
         self.image = pg.Surface((32, 32))
-        self.image = pg.image.load(os.path.join(img_folder, "monsters.png")).convert()
-        self.image = pg.transform.scale(self.image, (201, 239))
-        self.image.set_colorkey(BLACK)
+        #self.image = pg.image.load(os.path.join(img_folder, "monsters.png")).convert()
+        #self.image = pg.transform.scale(self.image, (201, 239))
+        #self.image.set_colorkey(BLACK)
+        #self.surface.blit(self.image, (0,260))
+        #LEGENDA MAPY
+        self.legend_size_x = 201 // 15
+        self.legend_size_y = 239 // 12
+        self.legend_size = min(self.legend_size_x, self.legend_size_y)
+        self.image = pg.Surface((201, 239))
+        self.image.fill((200,200,200))
+
+    def draw_legend(self, map):
+        for i in range (0, len(map)):
+            for j in range(0, len(map[i])):
+                if map[i][j] == 0:
+                    color = (0, 255, 0)
+                elif map[i][j] == 1:
+                    color = (0, 0, 0)
+                elif map[i][j] == 2:
+                     color = (255, 0, 0)
+                elif map[i][j] == 3:
+                     color = (0, 0, 255)
+                else:
+                    color = (255, 0, 255)
+                pg.draw.rect(self.image, color, ( j*self.legend_size+2,i*self.legend_size+2, self.legend_size-1, self.legend_size-1))
         self.surface.blit(self.image, (0,260))
+
+
     def draw_interface(self, screen):
         screen.blit(self.surface, (600, 0))
 

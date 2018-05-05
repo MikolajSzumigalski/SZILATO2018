@@ -1,5 +1,6 @@
 import pygame as pg
 from settings import *
+import copy
 
 #stałe przypisane do zasobów
 BUSH_1 = '0'
@@ -84,6 +85,18 @@ class Map:
 
     def update(self):
         pass
+
+    def legendReturn(self):
+        self.legend = copy.deepcopy(self.map_data)
+        print(self.map_data)
+        for i in range (0, len(self.legend)):
+            for j in range (0, len(self.legend[i])):
+                if self.legend[i][j] == '2' or self.legend[i][j] == '3' or self.legend[i][j] == '4' or self.legend[i][j] == '5':
+                    self.legend[i][j] = 1
+                else:
+                    self.legend[i][j] = 0
+        print(self.map_data)
+        return self.legend
 
 class Tile(pg.sprite.Sprite):
     def __init__(self, game, tileX, tileY, texture):

@@ -37,15 +37,17 @@ class LogicEngine:
         for m in self.mixtures:
             if new_x  == m.x and new_y == m.y:
                 print("Let's drink!")
+                mixture_collision = True
                 self.player.hp = self.player.max_hp
                 m.die()
         if not monster_collision and not mixture_collision:
-            collidables = [ROCK_1, ROCK_2, ROCK_3, WATER]
+            collidables = [ROCK_1,ROCK_2,ROCK_3,WATER]
             if self.map.map_data[new_y][new_x] in collidables:
                 print("collison with rock or water!")
             else:
                 print("move")
                 self.player.move(dx, dy)
+                print(self.map.map_data[new_y][new_x])
 
     def fight(self, attacker, defender):
         '''

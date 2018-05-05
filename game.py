@@ -5,6 +5,7 @@ from map import *
 from game_logic import *
 from os import path
 from interface import *
+import copy
 class Game:
     def __init__(self, screen):
         self.screen = screen
@@ -20,7 +21,11 @@ class Game:
         self.map = Map(self)
         self.map.load_from_file("test.map")
         self.map.init_tile_objects()
+        self.map_of_all = copy.deepcopy(self.map.legendReturn())
+        self.dynamic_map = copy.deepcopy(self.map_of_all[:])
+        self.dynamic_map = self.dynamic_map_update()
         self.inteface = Interface(self, self.player)
+        self.inteface.draw_legend(self.dynamic_map)
         self.camera = Camera(self.map.camerawidth, self.map.cameraheight)
         #init music
         pg.mixer.init()
@@ -46,6 +51,16 @@ class Game:
         self.all_sprites.update()
         self.inteface.update(self.player)
         self.camera.update(self.player)
+
+
+    def dynamic_map_update(self):
+        dynamic_map = copy.deepcopy(self.map_of_all)
+        for m in self.monsters:
+            dynamic_map[m.y][m.x] = 2
+        for m in self.mixtures:
+            dynamic_map[m.y][m.x] = 3
+        dynamic_map[self.player.y][self.player.x] = 4
+        return dynamic_map
 
     def draw(self):
         self.screen.fill(BGCOLOR)
@@ -77,6 +92,8 @@ class Game:
                 if event.key == pg.K_DOWN:
                     self.logic_engine.check_player_collisions(dy=1)
                     # self.player.move(dy=1)
+                self.dynamic_map = self.dynamic_map_update()
+                self.inteface.draw_legend(self.dynamic_map)    
             if event.type == pg.VIDEORESIZE:
                 self.__resize_window__(event)
 
