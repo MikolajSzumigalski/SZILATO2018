@@ -70,3 +70,31 @@ class LogicEngine:
                 break
             else:
                 current_defender.fade()
+
+    def player_auto_move(self):
+        #obsługa auto-ruchu bohatera, zaplanowana droga znajduje się w player.next_steps
+        if self.player.in_move:
+            print(self.player.next_steps)
+
+            if not self.player.next_steps:
+                self.player.in_move = False
+
+            else:
+                next_tile = self.player.next_steps.pop(0)
+                dx = next_tile[0] - self.player.x
+                dy = next_tile[1] - self.player.y
+
+                if not dx in [-1, 0, 1] or not dy in [-1, 0, 1]:
+                    print("[Player auto move] tile ", next_tile, " too far from ", self.player.x, self.player.y)
+                    self.player.next_steps = []
+                else:
+                    self.check_player_collisions(dx, dy)
+
+    def player_start_auto_move(self):
+        #do debugowania
+        path = []
+        path.append([self.player.x + 1, self.player.y])
+        path.append([self.player.x + 2, self.player.y])
+        path.append([self.player.x + 3, self.player.y])
+        self.player.in_move = True
+        self.player.next_steps = path

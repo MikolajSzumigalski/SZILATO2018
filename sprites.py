@@ -77,10 +77,7 @@ class Character(pg.sprite.Sprite, metaclass=ABCMeta):
 
             self.image.blit(self.hbBase, (5,45))
 
-    def update(self):
-        self.visual_health_update()
-        self.rect.x = self.x * TILESIZE
-        self.rect.y = self.y * TILESIZE
+    def hit_animation(self):
         if(self.fadepom):
             if self.trans_value > 0 and self.fade_direction:
                 if self.trans_value - self.fade_speed <= 0:
@@ -97,6 +94,14 @@ class Character(pg.sprite.Sprite, metaclass=ABCMeta):
                 else:
                     self.trans_value = self.trans_value + self.fade_speed
         self.image.set_alpha(self.trans_value)
+
+    def update(self):
+        self.visual_health_update()
+        self.hit_animation()
+
+        self.rect.x = self.x * TILESIZE
+        self.rect.y = self.y * TILESIZE
+
 
     @abstractmethod
     def level_up(self):
@@ -134,11 +139,22 @@ class Player(Character):
         self.image = pg.transform.scale(self.image, (TILESIZE, TILESIZE))
         self.image.set_colorkey(BLACK)
         super(Player, self).__init__(game, x, y, hp, at, deff, lev, exp);
+        self.in_move = False #czy gracz znajduje się w ruchu?
+        self.next_steps = [] #zaplanowana droga, gdy coś tu jest in_move zmieni się na True
 
     def die(self):
         #TODO PROPER GAME ENDING
         print("GAMEOVER")
         program_logic.gameover()
+
+
+    def update(self):
+        self.visual_health_update()
+        self.hit_animation()
+
+        self.rect.x = self.x * TILESIZE
+        self.rect.y = self.y * TILESIZE
+
 
     def level_up(self):
         self.max_hp +=20
