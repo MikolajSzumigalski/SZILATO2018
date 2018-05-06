@@ -70,6 +70,8 @@ class Game:
         pg.mixer.init()
         bg_music = pg.mixer.music.load(path.join(music_folder, 'gamebackground.mp3'))
         self.logic_engine = LogicEngine(self)
+        self.MOVEEVENT = pg.USEREVENT+1
+        pg.time.set_timer(self.MOVEEVENT, PLAYER_MOVE_FREQUENCY)
 
     def run(self):
         # game loop - set self.playing = False to end the game
@@ -108,6 +110,7 @@ class Game:
         for sprite in self.all_sprites:
             self.screen.blit(sprite.image, self.camera.apply(sprite))
         self.inteface.draw_interface(self.screen)
+        self.inteface.draw_legend(self.dynamic_map)
         pg.display.flip()
 
     def events(self):
@@ -118,23 +121,31 @@ class Game:
             if event.type == pg.KEYDOWN:
                 if event.key == pg.K_ESCAPE:
                     self.quit()
-                if event.key == pg.K_LEFT:
+
+                if not self.player.in_move:
+                    if event.key == pg.K_LEFT:
                     #sprawdź co się stanie jeśli player się przesunie
-                    self.logic_engine.check_player_collisions(dx=-1)
+                        self.logic_engine.check_player_collisions(dx=-1)
                     # self.player.move(dx=-1)
-                if event.key == pg.K_RIGHT:
-                    self.logic_engine.check_player_collisions(dx=1)
+                    if event.key == pg.K_RIGHT:
+                        self.logic_engine.check_player_collisions(dx=1)
                     # self.player.move(dx=1)
-                if event.key == pg.K_UP:
-                    self.logic_engine.check_player_collisions(dy=-1)
+                    if event.key == pg.K_UP:
+                        self.logic_engine.check_player_collisions(dy=-1)
                     # self.player.move(dy=-1)
-                if event.key == pg.K_DOWN:
-                    self.logic_engine.check_player_collisions(dy=1)
+                    if event.key == pg.K_DOWN:
+                        self.logic_engine.check_player_collisions(dy=1)
+                    # self.player.move(dy=1)
+                    if event.key == pg.K_w:
+                        self.logic_engine.player_start_auto_move()
                     # self.player.move(dy=1)
                 self.dynamic_map = self.dynamic_map_update()
-                self.inteface.draw_legend(self.dynamic_map)
+
             if event.type == pg.VIDEORESIZE:
                 self.__resize_window__(event)
+            if event.type == self.MOVEEVENT:
+                self.logic_engine.player_auto_move()
+
 
     def __resize_window__(self, event):
         """
