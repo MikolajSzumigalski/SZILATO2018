@@ -60,8 +60,8 @@ class Interface:
         #self.image.set_colorkey(BLACK)
         #self.surface.blit(self.image, (0,260))
         #LEGENDA MAPY
-        self.legend_size_x = 201 // 15
-        self.legend_size_y = 239 // 12
+        self.legend_size_x = 201 // GRIDWIDTH
+        self.legend_size_y = 239 // GRIDHEIGHT
         self.legend_size = min(self.legend_size_x, self.legend_size_y)
         self.image = pg.Surface((201, 239))
         self.image.fill((200,200,200))
@@ -79,7 +79,7 @@ class Interface:
                      color = (0, 0, 255)
                 else:
                     color = (255, 0, 255)
-                pg.draw.rect(self.image, color, ( j*self.legend_size+2,i*self.legend_size+2, self.legend_size-1, self.legend_size-1))
+                pg.draw.rect(self.image, color, ( j*self.legend_size+1,i*self.legend_size+1, self.legend_size-1, self.legend_size-1))
         self.surface.blit(self.image, (0,260))
 
 

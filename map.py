@@ -29,10 +29,10 @@ for x in range(GRIDWIDTH):
 class Map:
     def __init__(self, game):
         self.game = game
-        self.width = GRIDWIDTH +3
-        self.height = GRIDHEIGHT +2
-        self.camerawidth = 19 * TILESIZE
-        self.cameraheight = 12 * TILESIZE
+        self.width = GRIDWIDTH
+        self.height = GRIDHEIGHT
+        self.camerawidth =  0
+        self.cameraheight = 0
         self.map_data = test_map
         self.tiles_data = [[0 for j in range(self.width)] for i in range(self.height)]
 
@@ -57,9 +57,9 @@ class Map:
             for column in range(self.height):
                 temp_key = self.map_data[column][row]#Te ify, żeby kompilowało się :D W razie czego znajdzie się coś lepszego
                 if temp_key == '0':
-                    self.tiles_data[column][row] = Bush(self.game, column, row, 0)
-                if temp_key == '1':
                     self.tiles_data[column][row] = Bush(self.game, column, row, 1)
+                if temp_key == '1':
+                    self.tiles_data[column][row] = Bush(self.game, column, row, 2)
                 if temp_key == '2':
                     self.tiles_data[column][row] = Rock(self.game, column, row, 1)
                 if temp_key == '3':
@@ -79,6 +79,8 @@ class Map:
         with open(MAP_FOLDER + "/" + file_name, "rt") as file:
             for line in file:
                 self.map_data.append(line.replace("\n","").split(" "))
+        self.camerawidth =  (GRIDWIDTH+4) * TILESIZE
+        self.cameraheight =  (GRIDHEIGHT * TILESIZE)
         print(len(self.map_data), len(self.map_data[0]))
 
 
@@ -95,7 +97,6 @@ class Map:
                     self.legend[i][j] = 1
                 else:
                     self.legend[i][j] = 0
-        print(self.map_data)
         return self.legend
 
 class Tile(pg.sprite.Sprite):

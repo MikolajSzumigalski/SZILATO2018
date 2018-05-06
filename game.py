@@ -5,6 +5,7 @@ from map import *
 from game_logic import *
 from os import path
 from interface import *
+import random
 import copy
 class Game:
     def __init__(self, screen):
@@ -15,11 +16,33 @@ class Game:
         #init sprites and map
         self.all_sprites = pg.sprite.Group()
         self.player = Player(self, 1, 1)
-        self.monsters = [Leszy(self, 5, 6), Leszy(self, 6, 6), Mglak(self, 12, 1), Mglak(self, 1, 5), Spider(self, 2, 3),
-                         Spider(self, 2, 2), Spider(self, 8, 4), Mglak(self, 1, 3)]
-        self.mixtures = [HP_Mixture(self, 5,5)]
+        self.monsters = []
+        self.mixtures = []
+        for i in range (0, 10):
+            rand = random.randint(0, len(MAP_PLACES))
+            self.monsters.append(Mglak(self, MAP_PLACES[rand][0], MAP_PLACES[rand][1]))
+            MAP_PLACES.remove(MAP_PLACES[rand])
+
+        for i in range (0, 7):
+            rand = random.randint(0, len(MAP_PLACES))
+            self.monsters.append(Spider(self, MAP_PLACES[rand][0], MAP_PLACES[rand][1]))
+            MAP_PLACES.remove(MAP_PLACES[rand])
+
+        for i in range (0, 5):
+            rand = random.randint(0, len(MAP_PLACES))
+            self.monsters.append(Leszy(self, MAP_PLACES[rand][0], MAP_PLACES[rand][1]))
+            MAP_PLACES.remove(MAP_PLACES[rand])
+
+        for i in range (0, 6):
+            rand = random.randint(0, len(MAP_PLACES))
+            self.mixtures.append(HP_Mixture(self, MAP_PLACES[rand][0], MAP_PLACES[rand][1]))
+            MAP_PLACES.remove(MAP_PLACES[rand])
+
+        #self.monsters = [Leszy(self, 5, 6), Leszy(self, 6, 6), Mglak(self, 12, 1), Mglak(self, 1, 5), Spider(self, 2, 3),
+        #                 Spider(self, 2, 2), Spider(self, 8, 4), Mglak(self, 1, 3)]
+        #self.mixtures = [HP_Mixture(self, 5,5)]
         self.map = Map(self)
-        self.map.load_from_file("test.map")
+        self.map.load_from_file(MAP)
         self.map.init_tile_objects()
         self.map_of_all = copy.deepcopy(self.map.legendReturn())
         self.dynamic_map = copy.deepcopy(self.map_of_all[:])
@@ -93,7 +116,7 @@ class Game:
                     self.logic_engine.check_player_collisions(dy=1)
                     # self.player.move(dy=1)
                 self.dynamic_map = self.dynamic_map_update()
-                self.inteface.draw_legend(self.dynamic_map)    
+                self.inteface.draw_legend(self.dynamic_map)
             if event.type == pg.VIDEORESIZE:
                 self.__resize_window__(event)
 
