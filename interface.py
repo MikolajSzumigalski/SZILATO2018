@@ -63,14 +63,16 @@ class Interface:
         self.legend_size_x = 201 // GRIDWIDTH
         self.legend_size_y = 239 // GRIDHEIGHT
         self.legend_size = min(self.legend_size_x, self.legend_size_y)
-        self.image = pg.Surface((201, 239))
-        self.image.fill((200,200,200))
+        self.border = pg.Surface((201,239))
+        self.border.fill((30,30,30))
+        self.image = pg.Surface((199, 237))
+        self.image.fill((0,0,0))
 
     def draw_legend(self, map):
         for i in range (0, len(map)):
             for j in range(0, len(map[i])):
                 if map[i][j] == 0:
-                    color = (0, 255, 0)
+                    color = (255, 255, 255)
                 elif map[i][j] == 1:
                     color = (0, 0, 0)
                 elif map[i][j] == 2:

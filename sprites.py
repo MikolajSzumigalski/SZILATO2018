@@ -202,17 +202,65 @@ class Spider(Monster):
         self.image.set_colorkey(BLACK)
         super(Spider, self).__init__(game, x, y, hp, at, deff, lev);
 
-class Leszy(Monster):
+class Ghoul(Monster):
     def __init__(self, game, x, y):
         #POZIOM 3
         hp = 175
         at = 110
         deff = 40
         lev = 3
+        self.image = pg.image.load(os.path.join(img_folder, "ghoul.png")).convert()
+        self.image = pg.transform.scale(self.image, (TILESIZE, TILESIZE))
+        self.image.set_colorkey(BLACK)
+        super(Ghoul, self).__init__(game, x, y, hp, at, deff, lev);
+
+class Leszy(Monster):
+    def __init__(self, game, x, y):
+        #POZIOM 4
+        hp = 275
+        at = 150
+        deff = 50
+        lev = 4
         self.image = pg.image.load(os.path.join(img_folder, "leszy.png")).convert()
         self.image = pg.transform.scale(self.image, (TILESIZE, TILESIZE))
         self.image.set_colorkey(BLACK)
         super(Leszy, self).__init__(game, x, y, hp, at, deff, lev);
+
+class Olgierd(Monster):
+    def __init__(self, game, x, y):
+        #POZIOM 5
+        hp = 400
+        at = 200
+        deff = 60
+        lev = 5
+        self.image = pg.image.load(os.path.join(img_folder, "olgierd.png")).convert()
+        self.image = pg.transform.scale(self.image, (TILESIZE, TILESIZE))
+        self.image.set_colorkey(BLACK)
+        super(Olgierd, self).__init__(game, x, y, hp, at, deff, lev);
+
+class Dragon(Monster):
+    def __init__(self, game, x, y):
+        #POZIOM 6
+        hp = 650
+        at = 260
+        deff = 70
+        lev = 6
+        self.image = pg.image.load(os.path.join(img_folder, "smok.png")).convert()
+        self.image = pg.transform.scale(self.image, (TILESIZE, TILESIZE))
+        self.image.set_colorkey(BLACK)
+        super(Dragon, self).__init__(game, x, y, hp, at, deff, lev);
+
+class Gaunter(Monster):
+    def __init__(self, game, x, y):
+        #POZIOM 7
+        hp = 800
+        at = 350
+        deff = 100
+        lev = 7
+        self.image = pg.image.load(os.path.join(img_folder, "gaunter.png")).convert()
+        self.image = pg.transform.scale(self.image, (TILESIZE, TILESIZE))
+        self.image.set_colorkey(BLACK)
+        super(Gaunter, self).__init__(game, x, y, hp, at, deff, lev);
 
 class HP_Mixture(pg.sprite.Sprite):
     def __init__(self, game, x, y):
@@ -234,3 +282,18 @@ class HP_Mixture(pg.sprite.Sprite):
         pg.sprite.Sprite.remove(self, self.groups)
         self.game.mixtures.remove(self)
         del self
+
+class Ciri(pg.sprite.Sprite):
+    def __init__(self, game, x, y):
+        self.image = pg.Surface((TILESIZE, TILESIZE))
+        self.image = pg.image.load(os.path.join(img_folder, "ciri.png")).convert()
+        self.image = pg.transform.scale(self.image, (TILESIZE, TILESIZE))
+        self.image.set_colorkey(WHITE)
+        self.groups = game.all_sprites
+        pg.sprite.Sprite.__init__(self, self.groups)
+        self.game = game
+        self.rect = self.image.get_rect()
+        self.x = x
+        self.y = y
+        self.rect.x = self.x * TILESIZE
+        self.rect.y = self.y * TILESIZE

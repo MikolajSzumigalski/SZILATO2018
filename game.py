@@ -16,21 +16,37 @@ class Game:
         #init sprites and map
         self.all_sprites = pg.sprite.Group()
         self.player = Player(self, 1, 1)
+        self.ciri = Ciri(self, 1, 2)
         self.monsters = []
         self.mixtures = []
         for i in range (0, 10):
-            rand = random.randint(0, len(MAP_PLACES))
+            rand = random.randint(0, len(MAP_PLACES)-1)
             self.monsters.append(Mglak(self, MAP_PLACES[rand][0], MAP_PLACES[rand][1]))
             MAP_PLACES.remove(MAP_PLACES[rand])
 
-        for i in range (0, 7):
-            rand = random.randint(0, len(MAP_PLACES))
+        for i in range (0, 8):
+            rand = random.randint(0, len(MAP_PLACES)-1)
             self.monsters.append(Spider(self, MAP_PLACES[rand][0], MAP_PLACES[rand][1]))
             MAP_PLACES.remove(MAP_PLACES[rand])
 
+        for i in range (0, 6):
+            rand = random.randint(0, len(MAP_PLACES)-1)
+            self.monsters.append(Ghoul(self, MAP_PLACES[rand][0], MAP_PLACES[rand][1]))
+            MAP_PLACES.remove(MAP_PLACES[rand])
+
         for i in range (0, 5):
-            rand = random.randint(0, len(MAP_PLACES))
+            rand = random.randint(0, len(MAP_PLACES)-1)
             self.monsters.append(Leszy(self, MAP_PLACES[rand][0], MAP_PLACES[rand][1]))
+            MAP_PLACES.remove(MAP_PLACES[rand])
+
+        for i in range (0, 4):
+            rand = random.randint(0, len(MAP_PLACES)-1)
+            self.monsters.append(Olgierd(self, MAP_PLACES[rand][0], MAP_PLACES[rand][1]))
+            MAP_PLACES.remove(MAP_PLACES[rand])
+
+        for i in range (0, 3):
+            rand = random.randint(0, len(MAP_PLACES)-1)
+            self.monsters.append(Dragon(self, MAP_PLACES[rand][0], MAP_PLACES[rand][1]))
             MAP_PLACES.remove(MAP_PLACES[rand])
 
         for i in range (0, 6):

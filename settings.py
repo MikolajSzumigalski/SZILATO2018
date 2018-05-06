@@ -3,10 +3,10 @@ import os
 # define some colors (R, G, B)
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
-DARKGREY = (40, 40, 40)
+DARKGREY = (60, 60, 60)
 LIGHTGREY = (100, 100, 100)
 GREEN = (0, 255, 0)
-DARKGREEN = (19, 126, 0)
+DARKGREEN = (0, 55, 0)
 RED = (255, 0, 0)
 YELLOW = (255, 255, 0)
 BLUE = (0,0,255)
@@ -17,7 +17,7 @@ HEIGHT = 500  # 16 * 48 or 32 * 24 or 64 * 12
 MAP_WIDTH = 600
 FPS = 60
 TITLE = "Sztuczny Wiedźmin i przyjaciele"
-BGCOLOR = DARKGREEN
+BGCOLOR = DARKGREY
 
 # default settings
 TILESIZE = 50
