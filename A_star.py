@@ -81,9 +81,6 @@ class A_star:
                 out.append(self.get_spot([x+1, y]))
         return out
 
-
-
-
     def get_path_to(self, dest):
         start_spot = self.get_spot(self.start)
         openSet = [start_spot]
@@ -95,7 +92,7 @@ class A_star:
 
         while openSet:
             current = self.lowest_f_cost_spot(openSet)
-            print([current.x, current.y])
+            # print([current.x, current.y])
             if [current.x, current.y] == dest:
                 print ("Path exists!")
                 return self.reconstruct_path(cameFrom, current)
@@ -107,15 +104,11 @@ class A_star:
 
                 if n in closedSet:
                     continue
-
                 if not n in openSet:
                     openSet.append(n)
-
                 temp_g_score = current.g + n.cost
-
                 if temp_g_score >= n.g:
                     continue
-
                 cameFrom[n] = current
                 n.g = temp_g_score
                 n.f = n.g + self.manhattan_dist([n.x, n.y], dest)

@@ -93,8 +93,10 @@ class LogicEngine:
                     self.check_player_collisions(dx, dy)
 
     def player_start_auto_move(self):
-        #do debugowania
+        # funkcja głównie do debugowania
+        dest = list(map(int, input("move to: ").split()))
         A = A_star(self.game)
-        path = A.get_path_to([9,9])
+        path = A.get_path_to(dest)
         self.player.in_move = True
         self.player.next_steps = path
+        pg.time.set_timer(self.game.MOVEEVENT, PLAYER_MOVE_FREQUENCY)
