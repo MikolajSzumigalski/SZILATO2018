@@ -16,8 +16,6 @@ class Game:
         pg.key.set_repeat(500, 100)
         #init sprites and map
         self.all_sprites = pg.sprite.Group()
-        self.player = Player(self, 1, 1)
-        self.ciri = Ciri(self, 1, 2)
         self.map = Map(self)
         self.map.load_from_file(MAP)
         self.map.init_tile_objects()
@@ -139,7 +137,6 @@ class Game:
                     if event.key == pg.K_p:
                     # prints to file current map status in JSON form
                         knowledge_frames.save_data(self.logic_engine)
-
                 self.dynamic_map = self.dynamic_map_update()
 
             if event.type == pg.VIDEORESIZE:
