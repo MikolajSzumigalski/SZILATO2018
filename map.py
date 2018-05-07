@@ -111,8 +111,13 @@ class Tile(pg.sprite.Sprite):
         self.image = pg.Surface((TILESIZE, TILESIZE))
         self.image = texture
         self.rect = self.image.get_rect()
+        #ATRYBUTY LOGICZNE
         self.x = tileX
         self.y = tileY
+        self.name = self.__class__.__name__
+        self.id = id(self)
+        self.logic_attribute_name_list = ['x', 'y', 'name', 'id']
+
         self.rect.x = self.y * TILESIZE
         self.rect.y = self.x * TILESIZE
         self.characterOccupyingTile = None
@@ -121,6 +126,16 @@ class Tile(pg.sprite.Sprite):
         # self.h = 0
         # self.g = 0
         # self.f = 0
+
+    # Te rzeczy są po to, by branie klasy i próbowanie jej wyprintowania etc. dawało tylko i wyłącznie
+    # rzeczy logicznie, x, y, nazwa
+    def __getstate__(self):
+        state = self.__dict__.copy()
+        newstate = {k: state[k] for k in self.logic_attribute_name_list}
+        return newstate
+
+    def __setstate__(self, state):
+        self.__dict__.update(state)
 
     def setOccupiedBy(character):
         self.characterOccupyingTile = character
