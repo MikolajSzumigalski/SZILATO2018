@@ -15,8 +15,14 @@ class Game:
         pg.key.set_repeat(500, 100)
         #init sprites and map
         self.all_sprites = pg.sprite.Group()
+<<<<<<< HEAD
         self.player = Player(self, 1, 1)
         self.ciri = Ciri(self, 1, 2)
+=======
+        self.map = Map(self)
+        self.map.load_from_file(MAP)
+        self.map.init_tile_objects()
+>>>>>>> A_star
         self.monsters = []
         self.mixtures = []
         for i in range (0, 10):
@@ -57,9 +63,7 @@ class Game:
         #self.monsters = [Leszy(self, 5, 6), Leszy(self, 6, 6), Mglak(self, 12, 1), Mglak(self, 1, 5), Spider(self, 2, 3),
         #                 Spider(self, 2, 2), Spider(self, 8, 4), Mglak(self, 1, 3)]
         #self.mixtures = [HP_Mixture(self, 5,5)]
-        self.map = Map(self)
-        self.map.load_from_file(MAP)
-        self.map.init_tile_objects()
+        self.player = Player(self, 1, 1)
         self.map_of_all = copy.deepcopy(self.map.legendReturn())
         self.dynamic_map = copy.deepcopy(self.map_of_all[:])
         self.dynamic_map = self.dynamic_map_update()
@@ -71,7 +75,7 @@ class Game:
         bg_music = pg.mixer.music.load(path.join(music_folder, 'gamebackground.mp3'))
         self.logic_engine = LogicEngine(self)
         self.MOVEEVENT = pg.USEREVENT+1
-        pg.time.set_timer(self.MOVEEVENT, PLAYER_MOVE_FREQUENCY)
+        # pg.time.set_timer(self.MOVEEVENT, PLAYER_MOVE_FREQUENCY)
 
     def run(self):
         # game loop - set self.playing = False to end the game
@@ -122,23 +126,19 @@ class Game:
                 if event.key == pg.K_ESCAPE:
                     self.quit()
 
+                # nie przyjmujemy nowych inputów podczas ruchu Geralta
                 if not self.player.in_move:
                     if event.key == pg.K_LEFT:
                     #sprawdź co się stanie jeśli player się przesunie
                         self.logic_engine.check_player_collisions(dx=-1)
-                    # self.player.move(dx=-1)
                     if event.key == pg.K_RIGHT:
                         self.logic_engine.check_player_collisions(dx=1)
-                    # self.player.move(dx=1)
                     if event.key == pg.K_UP:
                         self.logic_engine.check_player_collisions(dy=-1)
-                    # self.player.move(dy=-1)
                     if event.key == pg.K_DOWN:
                         self.logic_engine.check_player_collisions(dy=1)
-                    # self.player.move(dy=1)
                     if event.key == pg.K_w:
                         self.logic_engine.player_start_auto_move()
-                    # self.player.move(dy=1)
                 self.dynamic_map = self.dynamic_map_update()
 
             if event.type == pg.VIDEORESIZE:
@@ -146,6 +146,17 @@ class Game:
             if event.type == self.MOVEEVENT:
                 self.logic_engine.player_auto_move()
 
+    def get_monsters_positions(self):
+        out = []
+        for m in self.monsters:
+            out.append([m.x, m.y])
+        return out
+
+    def get_mixtures_positions(self):
+        out = []
+        for m in self.mixtures:
+            out.append([m.x, m.y])
+        return out
 
     def __resize_window__(self, event):
         """

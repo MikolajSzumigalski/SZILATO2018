@@ -69,6 +69,10 @@ class Map:
                 if temp_key == '5':
                     self.tiles_data[column][row] = Water(self.game, column, row, 1)
 
+                #TO DO: naprawić kolejność rysowania by bohater nie był zasłaniany przez trawe
+                if temp_key == '.':
+                    self.tiles_data[column][row] = Grass(self.game, column, row, 1)
+
 
     def apply_fog(self, screen, player):
         pass
@@ -90,7 +94,7 @@ class Map:
 
     def legendReturn(self):
         self.legend = copy.deepcopy(self.map_data)
-        print(self.map_data)
+        # print(self.map_data)
         for i in range (0, len(self.legend)):
             for j in range (0, len(self.legend[i])):
                 if self.legend[i][j] == '2' or self.legend[i][j] == '3' or self.legend[i][j] == '4' or self.legend[i][j] == '5':
@@ -113,11 +117,28 @@ class Tile(pg.sprite.Sprite):
         self.rect.y = self.x * TILESIZE
         self.characterOccupyingTile = None
 
+        # # zmienne potrzebne do A*
+        # self.h = 0
+        # self.g = 0
+        # self.f = 0
+
     def setOccupiedBy(character):
         self.characterOccupyingTile = character
 
     def isOccupied():
         return self.characterOccupyingTile is not None
+
+#gdy dodejemy nowy typ pola trzeba pamiętać by dodać pole isCollidable (True | False),
+#oraz moveCost gdy isCollidable jest False
+
+class Grass(Tile):
+    def __init__(self, game, tileX, tileY, type):
+        self.textures = {
+            1 : pg.transform.scale(pg.image.load(IMAGE_FOLDER + "/grass.png"), (TILESIZE, TILESIZE)),
+        }
+        super(Grass, self).__init__(game, tileX, tileY, self.textures[type])
+        self.isCollidable = False
+        self.moveCost = 1
 
 class Bush(Tile):
     def __init__(self, game, tileX, tileY, type):
@@ -126,6 +147,8 @@ class Bush(Tile):
             2 : pg.transform.scale(pg.image.load(IMAGE_FOLDER + "/bush2.png"), (TILESIZE, TILESIZE)),
         }
         super(Bush, self).__init__(game, tileX, tileY, self.textures[type])
+        self.isCollidable = False
+        self.moveCost = 5
 
 class Water(Tile):
     def __init__(self, game, tileX, tileY, type):
@@ -133,6 +156,7 @@ class Water(Tile):
             1  : pg.transform.scale(pg.image.load(IMAGE_FOLDER + "/water.png"), (TILESIZE, TILESIZE)),
         }
         super(Water, self).__init__(game, tileX, tileY, self.textures[type])
+        self.isCollidable = True
 
 class Rock(Tile):
     def __init__(self, game, tileX, tileY, type):
@@ -142,6 +166,7 @@ class Rock(Tile):
             3 : pg.transform.scale(pg.image.load(IMAGE_FOLDER + "/rock3.png"), (TILESIZE, TILESIZE)),
         }
         super(Rock, self).__init__(game, tileX, tileY, self.textures[type])
+        self.isCollidable = True
 
 class Camera:
     def __init__(self, width, height):
