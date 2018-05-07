@@ -2,11 +2,13 @@
 import pygame as pg
 from map import *
 from game import *
+from A_star import *
 import random
 from os import path
 
-#metody dla całej logiki gry (kolizje, eventy w grze itp.)
 
+
+#metody dla całej logiki gry (kolizje, eventy w grze itp.)
 class LogicEngine:
     def __init__(self, game):
         self.game = game
@@ -92,9 +94,7 @@ class LogicEngine:
 
     def player_start_auto_move(self):
         #do debugowania
-        path = []
-        path.append([self.player.x + 1, self.player.y])
-        path.append([self.player.x + 2, self.player.y])
-        path.append([self.player.x + 3, self.player.y])
+        A = A_star(self.game)
+        path = A.get_path_to([9,9])
         self.player.in_move = True
         self.player.next_steps = path

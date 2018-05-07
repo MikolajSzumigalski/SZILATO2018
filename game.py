@@ -15,7 +15,9 @@ class Game:
         pg.key.set_repeat(500, 100)
         #init sprites and map
         self.all_sprites = pg.sprite.Group()
-        self.player = Player(self, 1, 1)
+        self.map = Map(self)
+        self.map.load_from_file(MAP)
+        self.map.init_tile_objects()
         self.monsters = []
         self.mixtures = []
         for i in range (0, 10):
@@ -41,9 +43,7 @@ class Game:
         #self.monsters = [Leszy(self, 5, 6), Leszy(self, 6, 6), Mglak(self, 12, 1), Mglak(self, 1, 5), Spider(self, 2, 3),
         #                 Spider(self, 2, 2), Spider(self, 8, 4), Mglak(self, 1, 3)]
         #self.mixtures = [HP_Mixture(self, 5,5)]
-        self.map = Map(self)
-        self.map.load_from_file(MAP)
-        self.map.init_tile_objects()
+        self.player = Player(self, 1, 1)
         self.map_of_all = copy.deepcopy(self.map.legendReturn())
         self.dynamic_map = copy.deepcopy(self.map_of_all[:])
         self.dynamic_map = self.dynamic_map_update()
@@ -130,6 +130,17 @@ class Game:
             if event.type == self.MOVEEVENT:
                 self.logic_engine.player_auto_move()
 
+    def get_monsters_positions(self):
+        out = []
+        for m in self.monsters:
+            out.append([m.x, m.y])
+        return out
+
+    def get_mixtures_positions(self):
+        out = []
+        for m in self.mixtures:
+            out.append([m.x, m.y])
+        return out
 
     def __resize_window__(self, event):
         """
