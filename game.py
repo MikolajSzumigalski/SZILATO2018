@@ -15,14 +15,9 @@ class Game:
         pg.key.set_repeat(500, 100)
         #init sprites and map
         self.all_sprites = pg.sprite.Group()
-<<<<<<< HEAD
-        self.player = Player(self, 1, 1)
-        self.ciri = Ciri(self, 1, 2)
-=======
         self.map = Map(self)
         self.map.load_from_file(MAP)
         self.map.init_tile_objects()
->>>>>>> A_star
         self.monsters = []
         self.mixtures = []
         for i in range (0, 10):
