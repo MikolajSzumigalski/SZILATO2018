@@ -134,9 +134,11 @@ class Game:
                         self.logic_engine.check_player_collisions(dy=1)
                     if event.key == pg.K_w:
                         self.logic_engine.player_start_auto_move()
+
                     if event.key == pg.K_p:
                     # prints to file current map status in JSON form
                         knowledge_frames.save_data(self.logic_engine)
+
                 self.dynamic_map = self.dynamic_map_update()
 
             if event.type == pg.VIDEORESIZE:
