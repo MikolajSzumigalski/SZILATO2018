@@ -4,7 +4,9 @@ from sprites import *
 from map import *
 from game_logic import *
 from os import path
-
+from interface import *
+import random
+import copy
 class Game:
     def __init__(self, screen):
         self.screen = screen
@@ -13,16 +15,63 @@ class Game:
         pg.key.set_repeat(500, 100)
         #init sprites and map
         self.all_sprites = pg.sprite.Group()
-        self.player = Player(self, 10, 10)
-        self.monsters = [Leszy(self, 5, 6), Leszy(self, 6, 12), Mglak(self, 27, 2), Mglak(self, 20, 18), Spider(self, 10, 15),
-                         Spider(self, 2, 2), Spider(self, 8, 4), Mglak(self, 16, 7)];
+        self.player = Player(self, 1, 1)
+        self.ciri = Ciri(self, 1, 2)
+        self.monsters = []
+        self.mixtures = []
+        for i in range (0, 10):
+            rand = random.randint(0, len(MAP_PLACES)-1)
+            self.monsters.append(Mglak(self, MAP_PLACES[rand][0], MAP_PLACES[rand][1]))
+            MAP_PLACES.remove(MAP_PLACES[rand])
+
+        for i in range (0, 8):
+            rand = random.randint(0, len(MAP_PLACES)-1)
+            self.monsters.append(Spider(self, MAP_PLACES[rand][0], MAP_PLACES[rand][1]))
+            MAP_PLACES.remove(MAP_PLACES[rand])
+
+        for i in range (0, 6):
+            rand = random.randint(0, len(MAP_PLACES)-1)
+            self.monsters.append(Ghoul(self, MAP_PLACES[rand][0], MAP_PLACES[rand][1]))
+            MAP_PLACES.remove(MAP_PLACES[rand])
+
+        for i in range (0, 5):
+            rand = random.randint(0, len(MAP_PLACES)-1)
+            self.monsters.append(Leszy(self, MAP_PLACES[rand][0], MAP_PLACES[rand][1]))
+            MAP_PLACES.remove(MAP_PLACES[rand])
+
+        for i in range (0, 4):
+            rand = random.randint(0, len(MAP_PLACES)-1)
+            self.monsters.append(Olgierd(self, MAP_PLACES[rand][0], MAP_PLACES[rand][1]))
+            MAP_PLACES.remove(MAP_PLACES[rand])
+
+        for i in range (0, 3):
+            rand = random.randint(0, len(MAP_PLACES)-1)
+            self.monsters.append(Dragon(self, MAP_PLACES[rand][0], MAP_PLACES[rand][1]))
+            MAP_PLACES.remove(MAP_PLACES[rand])
+
+        for i in range (0, 6):
+            rand = random.randint(0, len(MAP_PLACES))
+            self.mixtures.append(HP_Mixture(self, MAP_PLACES[rand][0], MAP_PLACES[rand][1]))
+            MAP_PLACES.remove(MAP_PLACES[rand])
+
+        #self.monsters = [Leszy(self, 5, 6), Leszy(self, 6, 6), Mglak(self, 12, 1), Mglak(self, 1, 5), Spider(self, 2, 3),
+        #                 Spider(self, 2, 2), Spider(self, 8, 4), Mglak(self, 1, 3)]
+        #self.mixtures = [HP_Mixture(self, 5,5)]
         self.map = Map(self)
-        self.map.load_from_file("test.map")
+        self.map.load_from_file(MAP)
         self.map.init_tile_objects()
+        self.map_of_all = copy.deepcopy(self.map.legendReturn())
+        self.dynamic_map = copy.deepcopy(self.map_of_all[:])
+        self.dynamic_map = self.dynamic_map_update()
+        self.inteface = Interface(self, self.player)
+        self.inteface.draw_legend(self.dynamic_map)
+        self.camera = Camera(self.map.camerawidth, self.map.cameraheight)
         #init music
         pg.mixer.init()
         bg_music = pg.mixer.music.load(path.join(music_folder, 'gamebackground.mp3'))
         self.logic_engine = LogicEngine(self)
+        self.MOVEEVENT = pg.USEREVENT+1
+        pg.time.set_timer(self.MOVEEVENT, PLAYER_MOVE_FREQUENCY)
 
     def run(self):
         # game loop - set self.playing = False to end the game
@@ -41,12 +90,27 @@ class Game:
     def update(self):
         # update portion of the game loop
         self.all_sprites.update()
+        self.inteface.update(self.player)
+        self.camera.update(self.player)
+
+
+    def dynamic_map_update(self):
+        dynamic_map = copy.deepcopy(self.map_of_all)
+        for m in self.monsters:
+            dynamic_map[m.y][m.x] = 2
+        for m in self.mixtures:
+            dynamic_map[m.y][m.x] = 3
+        dynamic_map[self.player.y][self.player.x] = 4
+        return dynamic_map
 
     def draw(self):
         self.screen.fill(BGCOLOR)
         self.map.draw_grid(self.screen)
-        self.map.draw_map(self.screen)
-        self.all_sprites.draw(self.screen)
+        #self.map.draw_map(self.screen)
+        for sprite in self.all_sprites:
+            self.screen.blit(sprite.image, self.camera.apply(sprite))
+        self.inteface.draw_interface(self.screen)
+        self.inteface.draw_legend(self.dynamic_map)
         pg.display.flip()
 
     def events(self):
@@ -57,21 +121,31 @@ class Game:
             if event.type == pg.KEYDOWN:
                 if event.key == pg.K_ESCAPE:
                     self.quit()
-                if event.key == pg.K_LEFT:
+
+                if not self.player.in_move:
+                    if event.key == pg.K_LEFT:
                     #sprawdź co się stanie jeśli player się przesunie
-                    self.logic_engine.check_player_collisions(dx=-1)
+                        self.logic_engine.check_player_collisions(dx=-1)
                     # self.player.move(dx=-1)
-                if event.key == pg.K_RIGHT:
-                    self.logic_engine.check_player_collisions(dx=1)
+                    if event.key == pg.K_RIGHT:
+                        self.logic_engine.check_player_collisions(dx=1)
                     # self.player.move(dx=1)
-                if event.key == pg.K_UP:
-                    self.logic_engine.check_player_collisions(dy=-1)
+                    if event.key == pg.K_UP:
+                        self.logic_engine.check_player_collisions(dy=-1)
                     # self.player.move(dy=-1)
-                if event.key == pg.K_DOWN:
-                    self.logic_engine.check_player_collisions(dy=1)
+                    if event.key == pg.K_DOWN:
+                        self.logic_engine.check_player_collisions(dy=1)
                     # self.player.move(dy=1)
+                    if event.key == pg.K_w:
+                        self.logic_engine.player_start_auto_move()
+                    # self.player.move(dy=1)
+                self.dynamic_map = self.dynamic_map_update()
+
             if event.type == pg.VIDEORESIZE:
                 self.__resize_window__(event)
+            if event.type == self.MOVEEVENT:
+                self.logic_engine.player_auto_move()
+
 
     def __resize_window__(self, event):
         """
