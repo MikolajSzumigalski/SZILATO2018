@@ -2,8 +2,10 @@ import pygame as pg
 from settings import *
 from abc import ABCMeta, abstractmethod
 import os
+import simplejson
 
 import program_logic
+import jsonpickle
 
 game_folder = os.path.dirname(__file__)
 img_folder = os.path.join(game_folder, "img")
@@ -12,13 +14,18 @@ music_folder = os.path.join(game_folder, "music")
 class Character(pg.sprite.Sprite, metaclass=ABCMeta):
     """ this is a general character abstract class that provides basis of drawing any character on screen"""
     def __init__(self, game, x, y, hp, at, deff, lev, exp, max_hp=0):
+
         self.groups = game.all_sprites
         pg.sprite.Sprite.__init__(self, self.groups)
         self.game = game
         self.rect = self.image.get_rect()
+
+
+        # Atrybuty postaci LOGICZNE
+        self.name = self.__class__.__name__
+        self.id = id(self)
         self.x = x
         self.y = y
-        #Atrybuty postaci
         self.hp = hp # punkty zdrowia
         self.at = at #atak
         self.deff = deff # obrona
@@ -27,6 +34,11 @@ class Character(pg.sprite.Sprite, metaclass=ABCMeta):
         self.max_hp = max_hp;
         if (self.max_hp == 0):
             self.max_hp = self.hp
+        self.logic_attribute_name_list = ['name', 'id','hp', 'x', 'y', 'at', 'deff', 'lev', 'total_exp', 'max_hp']
+
+
+
+
         self.hbWidth = TILESIZE
         self.hbHeight = 6
         self.alpha = 255
@@ -36,6 +48,16 @@ class Character(pg.sprite.Sprite, metaclass=ABCMeta):
         self.fade_speed = 16
         self.fadepom = 0
         self.trans_value = 255
+
+    #Te rzeczy są po to, by branie klasy i próbowanie jej wyprintowania etc. dawało tylko i wyłącznie
+    #rzeczy logicznie (hp, exp etc), a nie grafiki i ten spam graficzny
+    def __getstate__(self):
+        state = self.__dict__.copy()
+        newstate = {k: state[k] for k in self.logic_attribute_name_list}
+        return newstate
+
+    def __setstate__(self, state):
+        self.__dict__.update(state)
 
     def move(self, dx=0, dy=0):
         self.x += dx
@@ -64,7 +86,6 @@ class Character(pg.sprite.Sprite, metaclass=ABCMeta):
 
 
     def visual_health_update(self):
-        #TODO TAKE DAMAGE GUYS
         current_health_percentage = self.hp / self.max_hp
         if(current_health_percentage > 0):
             new_size = int(TILESIZE * current_health_percentage)
@@ -101,7 +122,6 @@ class Character(pg.sprite.Sprite, metaclass=ABCMeta):
 
         self.rect.x = self.x * TILESIZE
         self.rect.y = self.y * TILESIZE
-
 
     @abstractmethod
     def level_up(self):

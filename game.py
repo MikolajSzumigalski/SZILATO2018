@@ -7,6 +7,7 @@ from os import path
 from interface import *
 import random
 import copy
+import knowledge_frames
 class Game:
     def __init__(self, screen):
         self.screen = screen
@@ -23,7 +24,6 @@ class Game:
             rand = random.randint(0, len(MAP_PLACES)-1)
             self.monsters.append(Mglak(self, MAP_PLACES[rand][0], MAP_PLACES[rand][1]))
             MAP_PLACES.remove(MAP_PLACES[rand])
-
         for i in range (0, 8):
             rand = random.randint(0, len(MAP_PLACES)-1)
             self.monsters.append(Spider(self, MAP_PLACES[rand][0], MAP_PLACES[rand][1]))
@@ -138,6 +138,9 @@ class Game:
                     # self.player.move(dy=1)
                     if event.key == pg.K_w:
                         self.logic_engine.player_start_auto_move()
+                    if event.key == pg.K_p:
+                    # prints to file current map status in JSON form
+                        knowledge_frames.save_data(self.logic_engine)
                     # self.player.move(dy=1)
                 self.dynamic_map = self.dynamic_map_update()
 
