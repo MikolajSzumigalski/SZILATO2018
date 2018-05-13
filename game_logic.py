@@ -78,8 +78,8 @@ class LogicEngine:
                 current_attacker.add_exp(exp_to_be_given)
                 current_defender.die();
                 break
-            else:
-                current_defender.fade()
+            # else:
+                # current_defender.fade()
 
     def player_auto_move(self):
         #obsługa auto-ruchu bohatera, zaplanowana droga znajduje się w player.next_steps
