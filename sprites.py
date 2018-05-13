@@ -271,14 +271,14 @@ class Spider(Monster):
         lev = 2
         super(Spider, self).__init__(game, x, y, hp, at, deff, lev);
         SpiderSprite(self, game)
-        
+
 class SpiderSprite(MonsterSprite):
     def __init__(self, character, game):
         self.image = pg.Surface((TILESIZE, TILESIZE))
         self.image = pg.image.load(os.path.join(img_folder, "pajonk.png")).convert()
         self.image = pg.transform.scale(self.image, (TILESIZE, TILESIZE))
         self.image.set_colorkey(BLACK)
-        super(SpiderSprite, self).__init__(charakter, game);
+        super(SpiderSprite, self).__init__(character, game);
 
 class Ghoul(Monster):
     def __init__(self, game, x, y):
@@ -289,13 +289,13 @@ class Ghoul(Monster):
         lev = 3
         super(Ghoul, self).__init__(game, x, y, hp, at, deff, lev);
         GhoulSprite(self, game)
- 
+
 class GhoulSprite(MonsterSprite):
     def __init__(self, character, game):
         self.image = pg.image.load(os.path.join(img_folder, "ghoul.png")).convert()
         self.image = pg.transform.scale(self.image, (TILESIZE, TILESIZE))
         self.image.set_colorkey(BLACK)
-        super(GhoulSprite, self).__init__(charakter, game);
+        super(GhoulSprite, self).__init__(character, game);
 
 class Leszy(Monster):
     def __init__(self, game, x, y):
@@ -306,13 +306,13 @@ class Leszy(Monster):
         lev = 4
         super(Leszy, self).__init__(game, x, y, hp, at, deff, lev);
         LeszySprite(self, game)
-        
+
 class LeszySprite(MonsterSprite):
     def __init__(self, character, game):
         self.image = pg.image.load(os.path.join(img_folder, "leszy.png")).convert()
         self.image = pg.transform.scale(self.image, (TILESIZE, TILESIZE))
         self.image.set_colorkey(BLACK)
-        super(LeszySprite, self).__init__(charakter, game);
+        super(LeszySprite, self).__init__(character, game);
 
 class Olgierd(Monster):
     def __init__(self, game, x, y):
@@ -323,13 +323,13 @@ class Olgierd(Monster):
         lev = 5
         super(Olgierd, self).__init__(game, x, y, hp, at, deff, lev);
         OlgierdSprite(self, game)
- 
+
 class OlgierdSprite(MonsterSprite):
     def __init__(self, character, game):
         self.image = pg.image.load(os.path.join(img_folder, "olgierd.png")).convert()
         self.image = pg.transform.scale(self.image, (TILESIZE, TILESIZE))
         self.image.set_colorkey(BLACK)
-        super(Olgierd, self).__init__(charakter, game);
+        super(OlgierdSprite, self).__init__(character, game);
 
 class Dragon(Monster):
     def __init__(self, game, x, y):
@@ -340,13 +340,13 @@ class Dragon(Monster):
         lev = 6
         super(Dragon, self).__init__(game, x, y, hp, at, deff, lev);
         DragonSprite(self, game)
-        
+
 class DragonSprite(MonsterSprite):
     def __init__(self, character, game):
         self.image = pg.image.load(os.path.join(img_folder, "smok.png")).convert()
         self.image = pg.transform.scale(self.image, (TILESIZE, TILESIZE))
         self.image.set_colorkey(BLACK)
-        super(Dragon, self).__init__(charakter, game);
+        super(DragonSprite, self).__init__(character, game);
 
 class Gaunter(Monster):
     def __init__(self, game, x, y):
@@ -357,41 +357,48 @@ class Gaunter(Monster):
         lev = 7
         super(Gaunter, self).__init__(game, x, y, hp, at, deff, lev);
         GaunterSprite(self, game)
-        
+
 class GaunterSprite(MonsterSprite):
     def __init__(self, character, game):
         self.image = pg.image.load(os.path.join(img_folder, "gaunter.png")).convert()
         self.image = pg.transform.scale(self.image, (TILESIZE, TILESIZE))
         self.image.set_colorkey(BLACK)
-        super(Gaunter, self).__init__(charakter, game);
+        super(Gaunter, self).__init__(character, game);
 
-class HP_Mixture(pg.sprite.Sprite):
+class HP_Mixture():
     def __init__(self, game, x, y):
-        self.groups = game.all_sprites
-        pg.sprite.Sprite.__init__(self, self.groups)
-        self.game = game
-        self.rect = self.image.get_rect()
         self.x = x
         self.y = y
-        self.rect.x = self.x * TILESIZE
-        self.rect.y = self.y * TILESIZE
-        MixtureSprite(self, game)
+        self.alive = True
+        HP_MixtureSprite(self, game, self.x,self.y )
 
     def die(self):
-        self.hp = 0
-        pg.sprite.Sprite.remove(self, self.groups)
-        self.game.mixtures.remove(self)
-        del self
-        
+        self.alive = False
+
 class HP_MixtureSprite(pg.sprite.Sprite):
-    def __init__(self, game, x, y):
+    def __init__(self, character,  game, x, y):
+        self.game = game
+        self.character = character
+        self.groups = game.all_sprites
+        pg.sprite.Sprite.__init__(self, self.groups)
         self.image = pg.Surface((TILESIZE, TILESIZE))
         self.image = pg.image.load(os.path.join(img_folder, "red_elix.png")).convert()
         self.image = pg.transform.scale(self.image, (TILESIZE, TILESIZE))
         self.image.set_colorkey(BLACK)
-    
-    
-    
+        self.rect = self.image.get_rect()
+        self.rect.x = x * TILESIZE
+        self.rect.y = y * TILESIZE
+
+    def update(self):
+        if not self.character.alive:
+            pg.sprite.Sprite.remove(self, self.groups)
+            self.game.mixtures.remove(self.character)
+            del self
+
+
+
+
+
 #class Ciri(pg.sprite.Sprite):
 #    def __init__(self, game, x, y):
 #        self.groups = game.all_sprites
@@ -402,11 +409,11 @@ class HP_MixtureSprite(pg.sprite.Sprite):
 #        self.y = y
 #        self.rect.x = self.x * TILESIZE
 #        self.rect.y = self.y * TILESIZE
-        
+
 #class CiriSprite(CharacterSprite):
 #    def __init__(self, character, game):
 #        self.image = pg.Surface((TILESIZE, TILESIZE))
 #        self.image = pg.image.load(os.path.join(img_folder, "ciri.png")).convert()
 #        self.image = pg.transform.scale(self.image, (TILESIZE, TILESIZE))
 #        self.image.set_colorkey(WHITE)
-#        super(PlayerSprite, self).__init__(character, game)        
+#        super(PlayerSprite, self).__init__(character, game)
