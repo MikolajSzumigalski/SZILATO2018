@@ -111,24 +111,25 @@ class LogicEngine:
         :param function_name: 
         :param args: 
         :param kwargs: 
-        :return: 
+        :return: simulated game state
         """
-        simulated_game_engine = copy.deepcopy(self)
-        method_to_call = getattr(simulated_game_engine, function_name)
+        simulated_logic_engine = copy.deepcopy(self)
+        method_to_call = getattr(simulated_logic_engine, function_name)
         method_to_call(*args, **kwargs)
         if(save_simulated_state_JSON):
-            return simulated_game_engine
+            knowledge_frames.save_data(simulated_logic_engine, "simulated_frames.json")
+        return simulated_logic_engine
 
     def simulate_move(self,  save_simulated_state_JSON = False, dx=0, dy=0):
         """ simulates player's move onto dx, dy coordinates """
         return self.simulate_action('check_player_collisions', save_simulated_state_JSON, dx, dy)
 
-    # Te rzeczy są po to, by branie klasy i próbowanie jej kopiowania dało tylko
-    # rzeczy logicznie (hp, exp etc), a nie grafiki i ten spam graficzny
-    def __getstate__(self):
-        state = self.__dict__.copy()
-        newstate = {k: state[k] for k in self.logic_attribute_name_list}
-        return newstate
-
-    def __setstate__(self, state):
-        self.__dict__.update(state)
+    # # Te rzeczy są po to, by branie klasy i próbowanie jej kopiowania dało tylko
+    # # rzeczy logicznie (hp, exp etc), a nie grafiki i ten spam graficzny
+    # def __getstate__(self):
+    #     state = self.__dict__.copy()
+    #     newstate = {k: state[k] for k in self.logic_attribute_name_list}
+    #     return newstate
+    #
+    # def __setstate__(self, state):
+    #     self.__dict__.update(state)
