@@ -21,7 +21,9 @@ class LogicEngine:
         self.logic_attribute_name_list = ['player', 'monsters', 'mixtures', 'map']
 
     #sprawdź czy na nowym polu (new_x, new_y) wystąpi jakaś kolizja
-    def check_player_collisions(self, dx=0, dy=0):
+    def check_player_collisions(self, dx=0, dy=0, simulation = False):
+        if(simulation):
+            print("<SIMULATION: ")
         new_x = self.player.x + dx
         new_y = self.player.y + dy
         print("player pos: ",new_x, new_y, " next_tile: ", self.map.map_data[new_y][new_x])
@@ -30,13 +32,13 @@ class LogicEngine:
         mixture_collision = False
         for m in self.monsters:
             if new_x  == m.x and new_y == m.y and m.alive:
-                print("colision with monster!")
                 monster_collision = True
-                geralt_sounds = []
-                for snd in ['geralt1.wav', 'geralt2.wav']:
-                    geralt_sounds.append(pg.mixer.Sound(path.join(music_folder, snd)))
-                random.choice(geralt_sounds).play()
-                #self.player.fight(m) - walkę można też realizować tutaj (np. w osobnej metodzie), a nie w playerze
+                print("colision with monster!")
+                if not (simulation):
+                    geralt_sounds = []
+                    for snd in ['geralt1.wav', 'geralt2.wav']:
+                        geralt_sounds.append(pg.mixer.Sound(path.join(music_folder, snd)))
+                    random.choice(geralt_sounds).play()
                 self.fight(self.player, m)
         #kolizje ze ścianami
         for m in self.mixtures:
@@ -53,7 +55,10 @@ class LogicEngine:
                 print("move")
                 self.player.move(dx, dy)
                 print(self.map.map_data[new_y][new_x])
+        if (simulation):
+            print("/SIMULATION>")
 
+            
     def fight(self, attacker, defender):
         '''
         this handles one turn of fighting in between characters
@@ -121,8 +126,8 @@ class LogicEngine:
         return simulated_logic_engine
 
     def simulate_move(self,  save_simulated_state_JSON = False, dx=0, dy=0):
-        """ simulates player's move onto dx, dy coordinates """
-        return self.simulate_action('check_player_collisions', save_simulated_state_JSON, dx, dy)
+        """ simulates player's move by +-dx, +-dy coordinates """
+        return self.simulate_action('check_player_collisions', save_simulated_state_JSON, dx, dy, simulation=True)
 
     # # Te rzeczy są po to, by branie klasy i próbowanie jej kopiowania dało tylko
     # # rzeczy logicznie (hp, exp etc), a nie grafiki i ten spam graficzny
