@@ -59,7 +59,8 @@ class Game:
     def dynamic_map_update(self):
         dynamic_map = copy.deepcopy(self.map_of_all)
         for m in self.monsters:
-            dynamic_map[m.y][m.x] = 2
+            if m.alive:
+                dynamic_map[m.y][m.x] = 2
         for m in self.mixtures:
             dynamic_map[m.y][m.x] = 3
         dynamic_map[self.player.y][self.player.x] = 4

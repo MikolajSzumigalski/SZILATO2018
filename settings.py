@@ -45,7 +45,7 @@ with open(MAP_FOLDER + "/" + MAP, "rt") as file:
 GRIDWIDTH = len(MAPLIST[0])
 GRIDHEIGHT = len(MAPLIST)
 print("[debug] ",GRIDWIDTH, GRIDHEIGHT)
-RANDOM_SPAWN = True
+RANDOM_SPAWN = False
 
 for i in range (0, GRIDHEIGHT):
     for j in range (0, GRIDWIDTH):
