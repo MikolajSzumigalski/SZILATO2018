@@ -54,6 +54,7 @@ class Game:
         self.all_sprites.update()
         self.inteface.update(self.player)
         self.camera.update(self.player)
+        self.dynamic_map = self.dynamic_map_update()
 
 
     def dynamic_map_update(self):
@@ -101,8 +102,6 @@ class Game:
                     if event.key == pg.K_p:
                     # prints to file current map status in JSON form
                         knowledge_frames.save_data(self.logic_engine)
-
-                self.dynamic_map = self.dynamic_map_update()
 
             if event.type == pg.VIDEORESIZE:
                 self.__resize_window__(event)
