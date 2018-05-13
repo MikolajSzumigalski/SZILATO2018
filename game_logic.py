@@ -86,13 +86,14 @@ class LogicEngine:
 
     def player_auto_move(self):
         #obsługa auto-ruchu bohatera, zaplanowana droga znajduje się w player.next_steps
-        if not self.player.points_to_visit:
-            A = A_star_target_list(self.game)
-            temp = A.get_new_plan()
-            temp_new_plan = []
-            for obj in temp:
-                temp_new_plan.append([obj.x, obj.y])
-            self.player.points_to_visit = temp_new_plan
+        # if not self.player.points_to_visit:
+        #     self.player.get_new_plan()
+        #     A = A_star_target_list(self.game)
+        #     temp = A.get_new_plan()
+        #     temp_new_plan = []
+        #     for obj in temp:
+        #         temp_new_plan.append([obj.x, obj.y])
+        #     self.player.points_to_visit = temp_new_plan
 
         if self.player.in_move:
 

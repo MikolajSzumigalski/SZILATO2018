@@ -36,8 +36,8 @@ class Game:
         pg.time.set_timer(self.MOVEEVENT, PLAYER_MOVE_FREQUENCY)
         # pg.time.set_timer(self.MOVEEVENT, PLAYER_MOVE_FREQUENCY)
 
-        self.logic_attribute_name_list = ['monsters', 'mixtures', 'map', 'player', 'logic_engine', 'logic_attribute_name_list']
 
+        self.logic_attribute_name_list = ['monsters', 'mixtures', 'map', 'player', 'logic_engine', 'logic_attribute_name_list']
     def run(self):
         # game loop - set self.playing = False to end the game
         self.playing = True
@@ -110,6 +110,9 @@ class Game:
                     if event.key == pg.K_q:
                         #simulate going down 1
                         self.logic_engine.simulate_move(True, 0, 1)
+
+                    if event.key == pg.K_a:
+                         self.player.get_new_plan()
 
             if event.type == pg.VIDEORESIZE:
                 self.__resize_window__(event)

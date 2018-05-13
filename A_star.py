@@ -24,7 +24,7 @@ class A_star_path:
         for x in range(self.map.width):
             for y in range(self.map.height):
                 self.spot_map[y][x] = Spot(x, y, game.map.tiles_data[y][x].isCollidable or [x,y] in self.monsters + self.mixtures, 1)
-        self.log_map()
+        # self.log_map()
 
     def log_map(self):
         #debug
