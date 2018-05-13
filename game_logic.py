@@ -18,6 +18,7 @@ class LogicEngine:
         self.monsters = game.monsters
         self.mixtures = game.mixtures
         self.map = game.map
+        self.logic_attribute_name_list = ['player', 'monsters', 'mixtures', 'map']
 
     #sprawdź czy na nowym polu (new_x, new_y) wystąpi jakaś kolizja
     def check_player_collisions(self, dx=0, dy=0):
@@ -104,7 +105,7 @@ class LogicEngine:
         pg.time.set_timer(self.game.MOVEEVENT, PLAYER_MOVE_FREQUENCY)
 
 
-    def simulate_action(self, function, save_simulated_state_JSON = False, *args, **kwargs):
+    def simulate_action(self, function_name, save_simulated_state_JSON = False, *args, **kwargs):
         """
         this method simulates behaviour of any of the LogicEngine methods without actually executing them in the game
         :param function_name: 
@@ -113,10 +114,21 @@ class LogicEngine:
         :return: 
         """
         simulated_game_engine = copy.deepcopy(self)
-        simulated_game_engine.function_name(*args, **kwargs)
+        method_to_call = getattr(simulated_game_engine, function_name)
+        method_to_call(*args, **kwargs)
         if(save_simulated_state_JSON):
-        return simulated_game_engine
+            return simulated_game_engine
 
-    def simulate_move(self, dx=0, dy=0):
+    def simulate_move(self,  save_simulated_state_JSON = False, dx=0, dy=0):
         """ simulates player's move onto dx, dy coordinates """
-        return self.simulate_action(self.check_player_collisions, (dx, dy))
+        return self.simulate_action('check_player_collisions', save_simulated_state_JSON, dx, dy)
+
+    # Te rzeczy są po to, by branie klasy i próbowanie jej kopiowania dało tylko
+    # rzeczy logicznie (hp, exp etc), a nie grafiki i ten spam graficzny
+    def __getstate__(self):
+        state = self.__dict__.copy()
+        newstate = {k: state[k] for k in self.logic_attribute_name_list}
+        return newstate
+
+    def __setstate__(self, state):
+        self.__dict__.update(state)
