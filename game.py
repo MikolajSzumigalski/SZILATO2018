@@ -37,7 +37,6 @@ class Game:
         # pg.time.set_timer(self.MOVEEVENT, PLAYER_MOVE_FREQUENCY)
 
         self.logic_attribute_name_list = ['monsters', 'mixtures', 'map', 'player', 'logic_engine']
-
     def run(self):
         # game loop - set self.playing = False to end the game
         self.playing = True

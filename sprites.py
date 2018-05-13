@@ -28,19 +28,20 @@ class Character(metaclass=ABCMeta):
         self.lev = lev # poziom
         self.total_exp = exp;
         self.max_hp = max_hp;
+        self.alive = False
         if (self.max_hp == 0):
             self.max_hp = self.hp
-        #self.logic_attribute_name_list = ['name', 'id','hp', 'x', 'y', 'at', 'deff', 'lev', 'total_exp', 'max_hp', 'alive']
+        self.logic_attribute_name_list = ['logic_attribute_name_list' , 'name', 'id','hp', 'x', 'y', 'at', 'deff', 'lev', 'total_exp', 'max_hp', 'alive']
 
-    #Te rzeczy są po to, by branie klasy i próbowanie jej wyprintowania etc. dawało tylko i wyłącznie
-    #rzeczy logicznie (hp, exp etc), a nie grafiki i ten spam graficzny
-    # def __getstate__(self):
-    #     state = self.__dict__.copy()
-    #     newstate = {k: state[k] for k in self.logic_attribute_name_list}
-    #     return newstate
-    #
-    # def __setstate__(self, state):
-    #     self.__dict__.update(state)
+    # Te rzeczy są po to, by branie klasy i próbowanie jej wyprintowania etc. dawało tylko i wyłącznie
+    # rzeczy logicznie (hp, exp etc), a nie grafiki i ten spam graficzny
+    def __getstate__(self):
+        state = self.__dict__.copy()
+        newstate = {k: state[k] for k in self.logic_attribute_name_list}
+        return newstate
+
+    def __setstate__(self, state):
+        self.__dict__.update(state)
 
     def move(self, dx=0, dy=0):
         self.x += dx
