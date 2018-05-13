@@ -172,6 +172,7 @@ class Map:
 
 class Tile(pg.sprite.Sprite):
     def __init__(self, game, tileX, tileY, texture):
+        self.logic_attribute_name_list = ['x', 'y', 'name', 'id', 'isCollidable'];
         self.game = game
         self.groups = self.game.all_sprites
         pg.sprite.Sprite.__init__(self, self.groups)
@@ -183,7 +184,7 @@ class Tile(pg.sprite.Sprite):
         self.y = tileY
         self.name = self.__class__.__name__
         self.id = id(self)
-        self.logic_attribute_name_list = ['x', 'y', 'name', 'id']
+        self.isCollidable = None;
 
         self.rect.x = self.x * TILESIZE
         self.rect.y = self.y * TILESIZE
@@ -198,7 +199,10 @@ class Tile(pg.sprite.Sprite):
     # rzeczy logicznie, x, y, nazwa
     def __getstate__(self):
         state = self.__dict__.copy()
-        newstate = {k: state[k] for k in self.logic_attribute_name_list}
+        try:
+            newstate = {k: state[k] for k in self.logic_attribute_name_list}
+        except AttributeError:
+            newstate = {k: state[k] for k in ['x', 'y', 'name', 'id', 'isCollidable']}
         return newstate
 
     def __setstate__(self, state):
@@ -218,7 +222,7 @@ class Grass(Tile):
         self.textures = {
             1 : pg.transform.scale(pg.image.load(IMAGE_FOLDER + "/grass.png"), (TILESIZE, TILESIZE)),
         }
-        super(Grass, self).__init__(game, tileX, tileY, self.textures[type])
+        super().__init__(game, tileX, tileY, self.textures[type])
         self.isCollidable = False
         self.moveCost = 1
 
@@ -228,7 +232,7 @@ class Bush(Tile):
             1 : pg.transform.scale(pg.image.load(IMAGE_FOLDER + "/bush1.png"), (TILESIZE, TILESIZE)),
             2 : pg.transform.scale(pg.image.load(IMAGE_FOLDER + "/bush2.png"), (TILESIZE, TILESIZE)),
         }
-        super(Bush, self).__init__(game, tileX, tileY, self.textures[type])
+        super().__init__(game, tileX, tileY, self.textures[type])
         self.isCollidable = False
         self.moveCost = 5
 
@@ -237,7 +241,7 @@ class Water(Tile):
         self.textures = {
             1  : pg.transform.scale(pg.image.load(IMAGE_FOLDER + "/water.png"), (TILESIZE, TILESIZE)),
         }
-        super(Water, self).__init__(game, tileX, tileY, self.textures[type])
+        super().__init__(game, tileX, tileY, self.textures[type])
         self.isCollidable = True
 
 class Rock(Tile):
@@ -247,7 +251,7 @@ class Rock(Tile):
             2 : pg.transform.scale(pg.image.load(IMAGE_FOLDER + "/rock2.png"), (TILESIZE, TILESIZE)),
             3 : pg.transform.scale(pg.image.load(IMAGE_FOLDER + "/rock3.png"), (TILESIZE, TILESIZE)),
         }
-        super(Rock, self).__init__(game, tileX, tileY, self.textures[type])
+        super().__init__(game, tileX, tileY, self.textures[type])
         self.isCollidable = True
 
 class Camera:
