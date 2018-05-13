@@ -5,7 +5,7 @@ from map import *
 from game_logic import *
 from os import path
 from interface import *
-# import random
+
 import copy
 import knowledge_frames
 class Game:
@@ -33,6 +33,7 @@ class Game:
         bg_music = pg.mixer.music.load(path.join(music_folder, 'gamebackground.mp3'))
         self.logic_engine = LogicEngine(self)
         self.MOVEEVENT = pg.USEREVENT+1
+        pg.time.set_timer(self.MOVEEVENT, PLAYER_MOVE_FREQUENCY)
         # pg.time.set_timer(self.MOVEEVENT, PLAYER_MOVE_FREQUENCY)
 
         self.logic_attribute_name_list = ['monsters', 'mixtures', 'map', 'player', 'logic_engine']

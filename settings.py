@@ -45,11 +45,11 @@ with open(MAP_FOLDER + "/" + MAP, "rt") as file:
 GRIDWIDTH = len(MAPLIST[0])
 GRIDHEIGHT = len(MAPLIST)
 print("[debug] ",GRIDWIDTH, GRIDHEIGHT)
-RANDOM_SPAWN = False
+RANDOM_SPAWN = True
 
 for i in range (0, GRIDHEIGHT):
     for j in range (0, GRIDWIDTH):
         if MAPLIST[i][j] == ".":
             MAP_PLACES.append([j,i])
 
-PLAYER_MOVE_FREQUENCY = 250 #ms
+PLAYER_MOVE_FREQUENCY = 50 #ms

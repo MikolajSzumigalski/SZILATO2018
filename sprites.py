@@ -3,6 +3,8 @@ from settings import *
 from abc import ABCMeta, abstractmethod
 import os
 import simplejson
+from A_star import *
+# import A_star
 
 import program_logic
 import jsonpickle
@@ -162,14 +164,20 @@ class Player(Character):
         PlayerSprite(self, game)
         self.in_move = False #czy gracz znajduje się w ruchu?
         self.next_steps = [] #zaplanowana droga, gdy coś tu jest in_move zmieni się na True
-        self.window_x = 0
-        self.window_y = 0
+        self.game = game
+        self.points_to_visit = []
+        self.current_target = []
 
     def die(self):
         #TODO PROPER GAME ENDING
         print("GAMEOVER")
         program_logic.gameover()
 
+    def get_new_path(self):
+        A =A_star_path(self.game)
+        self.current_target = self.points_to_visit.pop(0)
+        self.next_steps = A.get_path_to(self.current_target)
+        self.in_move = True
 
     def update(self):
         pass
