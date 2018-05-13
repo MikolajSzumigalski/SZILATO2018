@@ -5,7 +5,7 @@ from map import *
 from game_logic import *
 from os import path
 from interface import *
-import random
+# import random
 import copy
 import knowledge_frames
 class Game:
@@ -16,48 +16,11 @@ class Game:
         pg.key.set_repeat(500, 100)
         #init sprites and map
         self.all_sprites = pg.sprite.Group()
-        self.map = Map(self)
-        self.map.load_from_file(MAP)
-        self.map.init_tile_objects()
         self.monsters = []
         self.mixtures = []
-        for i in range (0, 10):
-            rand = random.randint(0, len(MAP_PLACES)-1)
-            self.monsters.append(Mglak(self, MAP_PLACES[rand][0], MAP_PLACES[rand][1]))
-            MAP_PLACES.remove(MAP_PLACES[rand])
-        for i in range (0, 8):
-            rand = random.randint(0, len(MAP_PLACES)-1)
-            self.monsters.append(Spider(self, MAP_PLACES[rand][0], MAP_PLACES[rand][1]))
-            MAP_PLACES.remove(MAP_PLACES[rand])
+        self.map = Map(self)
+        self.map.load_from_file(MAP, RANDOM_SPAWN)
 
-        for i in range (0, 6):
-            rand = random.randint(0, len(MAP_PLACES)-1)
-            self.monsters.append(Ghoul(self, MAP_PLACES[rand][0], MAP_PLACES[rand][1]))
-            MAP_PLACES.remove(MAP_PLACES[rand])
-
-        for i in range (0, 5):
-            rand = random.randint(0, len(MAP_PLACES)-1)
-            self.monsters.append(Leszy(self, MAP_PLACES[rand][0], MAP_PLACES[rand][1]))
-            MAP_PLACES.remove(MAP_PLACES[rand])
-
-        for i in range (0, 4):
-            rand = random.randint(0, len(MAP_PLACES)-1)
-            self.monsters.append(Olgierd(self, MAP_PLACES[rand][0], MAP_PLACES[rand][1]))
-            MAP_PLACES.remove(MAP_PLACES[rand])
-
-        for i in range (0, 3):
-            rand = random.randint(0, len(MAP_PLACES)-1)
-            self.monsters.append(Dragon(self, MAP_PLACES[rand][0], MAP_PLACES[rand][1]))
-            MAP_PLACES.remove(MAP_PLACES[rand])
-
-        for i in range (0, 6):
-            rand = random.randint(0, len(MAP_PLACES))
-            self.mixtures.append(HP_Mixture(self, MAP_PLACES[rand][0], MAP_PLACES[rand][1]))
-            MAP_PLACES.remove(MAP_PLACES[rand])
-
-        #self.monsters = [Leszy(self, 5, 6), Leszy(self, 6, 6), Mglak(self, 12, 1), Mglak(self, 1, 5), Spider(self, 2, 3),
-        #                 Spider(self, 2, 2), Spider(self, 8, 4), Mglak(self, 1, 3)]
-        #self.mixtures = [HP_Mixture(self, 5,5)]
         self.player = Player(self, 1, 1)
         self.map_of_all = copy.deepcopy(self.map.legendReturn())
         self.dynamic_map = copy.deepcopy(self.map_of_all[:])
@@ -91,12 +54,14 @@ class Game:
         self.all_sprites.update()
         self.inteface.update(self.player)
         self.camera.update(self.player)
+        self.dynamic_map = self.dynamic_map_update()
 
 
     def dynamic_map_update(self):
         dynamic_map = copy.deepcopy(self.map_of_all)
         for m in self.monsters:
-            dynamic_map[m.y][m.x] = 2
+            if m.alive:
+                dynamic_map[m.y][m.x] = 2
         for m in self.mixtures:
             dynamic_map[m.y][m.x] = 3
         dynamic_map[self.player.y][self.player.x] = 4
@@ -138,8 +103,6 @@ class Game:
                     if event.key == pg.K_p:
                     # prints to file current map status in JSON form
                         knowledge_frames.save_data(self.logic_engine)
-
-                self.dynamic_map = self.dynamic_map_update()
 
             if event.type == pg.VIDEORESIZE:
                 self.__resize_window__(event)

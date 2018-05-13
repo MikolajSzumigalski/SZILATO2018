@@ -11,15 +11,9 @@ game_folder = os.path.dirname(__file__)
 img_folder = os.path.join(game_folder, "img")
 music_folder = os.path.join(game_folder, "music")
 
-class Character(pg.sprite.Sprite, metaclass=ABCMeta):
+class Character(metaclass=ABCMeta):
     """ this is a general character abstract class that provides basis of drawing any character on screen"""
     def __init__(self, game, x, y, hp, at, deff, lev, exp, max_hp=0):
-
-        self.groups = game.all_sprites
-        pg.sprite.Sprite.__init__(self, self.groups)
-        self.game = game
-        self.rect = self.image.get_rect()
-
 
         # Atrybuty postaci LOGICZNE
         self.name = self.__class__.__name__
@@ -35,19 +29,6 @@ class Character(pg.sprite.Sprite, metaclass=ABCMeta):
         if (self.max_hp == 0):
             self.max_hp = self.hp
         self.logic_attribute_name_list = ['name', 'id','hp', 'x', 'y', 'at', 'deff', 'lev', 'total_exp', 'max_hp']
-
-
-
-
-        self.hbWidth = TILESIZE
-        self.hbHeight = 6
-        self.alpha = 255
-        self.hbBase = pg.Surface((self.hbWidth, self.hbHeight))
-        # 255 to max widoczność obrazka, 0 to pełne zaniknięcie
-        #prędkość zanikania
-        self.fade_speed = 16
-        self.fadepom = 0
-        self.trans_value = 255
 
     #Te rzeczy są po to, by branie klasy i próbowanie jej wyprintowania etc. dawało tylko i wyłącznie
     #rzeczy logicznie (hp, exp etc), a nie grafiki i ten spam graficzny
@@ -79,49 +60,7 @@ class Character(pg.sprite.Sprite, metaclass=ABCMeta):
         :return:
         '''
         self.hp -= damage
-        self.visual_health_update()
-    def fade(self):
-        self.fadepom = 1
-        self.fade_direction = 1
-
-
-    def visual_health_update(self):
-        current_health_percentage = self.hp / self.max_hp
-        if(current_health_percentage > 0):
-            new_size = int(TILESIZE * current_health_percentage)
-            width = new_size
-            hb = pg.Surface((width, self.hbHeight))
-            hb.fill(GREEN)
-
-            self.hbBase.fill(RED)
-            self.hbBase.blit(hb, (0,0))
-
-            self.image.blit(self.hbBase, (5,45))
-
-    def hit_animation(self):
-        if(self.fadepom):
-            if self.trans_value > 0 and self.fade_direction:
-                if self.trans_value - self.fade_speed <= 0:
-                    self.trans_value = 0
-                    self.fade_direction = 0
-                    print(self.image.get_alpha())
-                else:
-                    self.trans_value = self.trans_value - self.fade_speed
-                    print(self.image.get_alpha())
-            elif self.trans_value < 255:
-                if self.trans_value + self.fade_speed >= 255:
-                    self.trans_value = 255
-                    self.fadepom = 0
-                else:
-                    self.trans_value = self.trans_value + self.fade_speed
-        self.image.set_alpha(self.trans_value)
-
-    def update(self):
-        self.visual_health_update()
-        self.hit_animation()
-
-        self.rect.x = self.x * TILESIZE
-        self.rect.y = self.y * TILESIZE
+        # self.visual_health_update()
 
     @abstractmethod
     def level_up(self):
@@ -145,6 +84,71 @@ class Character(pg.sprite.Sprite, metaclass=ABCMeta):
     def get_worth_exp(self):
         pass
 
+class CharacterSprite(pg.sprite.Sprite):
+    def __init__(self, character ,game):
+        self.character = character
+        self.groups = game.all_sprites
+        pg.sprite.Sprite.__init__(self, self.groups)
+        self.game = game
+        self.rect = self.image.get_rect()
+        self.hbWidth = TILESIZE
+        self.hbHeight = 6
+        self.alpha = 255
+        self.hbBase = pg.Surface((self.hbWidth, self.hbHeight))# 255 to max widoczność obrazka, 0 to pełne zaniknięcie
+        self.fade_speed = 16     #prędkość zanikania
+        self.fadepom = 0
+        self.trans_value = 255
+
+    def update(self):
+        self.visual_health_update()
+        self.hit_animation()
+
+        self.rect.x = self.character.x * TILESIZE
+        self.rect.y = self.character.y * TILESIZE
+
+        self.character.window_x = self.rect.x
+        self.character.window_y = self.rect.y
+
+    def fade(self):
+        self.fadepom = 1
+        self.fade_direction = 1
+
+
+    def visual_health_update(self):
+        current_health_percentage = self.character.hp / self.character.max_hp
+        if(current_health_percentage > 0):
+            new_size = int(TILESIZE * current_health_percentage)
+            width = new_size
+            hb = pg.Surface((width, self.hbHeight))
+            hb.fill(GREEN)
+
+            self.hbBase.fill(RED)
+            self.hbBase.blit(hb, (0,0))
+
+            self.image.blit(self.hbBase, (5,45))
+
+    def hit_animation(self):
+        if(self.fadepom):
+            if self.trans_value > 0 and self.fade_direction:
+                if self.trans_value - self.fade_speed <= 0:
+                    self.trans_value = 0
+                    self.fade_direction = 0
+                    #print(self.image.get_alpha())
+                else:
+                    self.trans_value = self.trans_value - self.fade_speed
+                    #print(self.image.get_alpha())
+            elif self.trans_value < 255:
+                if self.trans_value + self.fade_speed >= 255:
+                    self.trans_value = 255
+                    self.fadepom = 0
+                else:
+                    self.trans_value = self.trans_value + self.fade_speed
+        self.image.set_alpha(self.trans_value)
+
+    def delete(self):
+        pg.sprite.Sprite.remove(self, self.groups)
+        # self.game.monsters.remove(self)
+
 class Player(Character):
     """Player's implementation of Character class, that handles displaying Player's character on screen"""
     def __init__(self, game, x, y):
@@ -154,13 +158,12 @@ class Player(Character):
         deff = 20
         lev = 1
         exp = 0 #punkty doświadczenia
-        self.image = pg.Surface((TILESIZE, TILESIZE))
-        self.image = pg.image.load(os.path.join(img_folder, "geralt.png")).convert()
-        self.image = pg.transform.scale(self.image, (TILESIZE, TILESIZE))
-        self.image.set_colorkey(BLACK)
         super(Player, self).__init__(game, x, y, hp, at, deff, lev, exp);
+        PlayerSprite(self, game)
         self.in_move = False #czy gracz znajduje się w ruchu?
         self.next_steps = [] #zaplanowana droga, gdy coś tu jest in_move zmieni się na True
+        self.window_x = 0
+        self.window_y = 0
 
     def die(self):
         #TODO PROPER GAME ENDING
@@ -169,12 +172,7 @@ class Player(Character):
 
 
     def update(self):
-        self.visual_health_update()
-        self.hit_animation()
-
-        self.rect.x = self.x * TILESIZE
-        self.rect.y = self.y * TILESIZE
-
+        pass
 
     def level_up(self):
         self.max_hp +=20
@@ -183,11 +181,20 @@ class Player(Character):
         self.hp = self.max_hp
         self.lev += 1
         print("level up, hp: {} totalexp: {} level{}".format(self.hp, self.total_exp, self.lev))
-        self.visual_health_update()
+        # self.visual_health_update()
         pass
 
     def get_worth_exp(self):
         return 0
+
+class PlayerSprite(CharacterSprite):
+    def __init__(self, character, game):
+        self.image = pg.Surface((TILESIZE, TILESIZE))
+        self.image = pg.image.load(os.path.join(img_folder, "geralt.png")).convert()
+        self.image = pg.transform.scale(self.image, (TILESIZE, TILESIZE))
+        self.image.set_colorkey(BLACK)
+        super(PlayerSprite, self).__init__(character, game)
+
 
 class Monster(Character, metaclass=ABCMeta):
     """Abstract class that provides implementation of Character class, that handles displaying a Monster on screen"""
@@ -196,14 +203,16 @@ class Monster(Character, metaclass=ABCMeta):
         self.at = at #atak
         self.deff = deff # obrona
         self.lev = lev # poziom
+        self.alive = True
         exp = 0
         super(Monster, self).__init__(game, x, y, hp, at, deff, lev, exp);
 
     def die(self):
         self.hp = 0
-        pg.sprite.Sprite.remove(self, self.groups)
-        self.game.monsters.remove(self)
-        del self
+        self.alive = False
+        # pg.sprite.Sprite.remove(self, self.groups)
+        # self.game.monsters.remove(self)
+        # del self
 
 
     def get_worth_exp(self):
@@ -212,6 +221,28 @@ class Monster(Character, metaclass=ABCMeta):
     def level_up(self):
         pass
 
+class MonsterSprite(CharacterSprite, metaclass=ABCMeta):
+    def __init__(self, character, game):
+        super(MonsterSprite, self).__init__(character, game)
+
+    def update(self):
+        self.visual_health_update()
+        self.hit_animation()
+
+        self.rect.x = self.character.x * TILESIZE
+        self.rect.y = self.character.y * TILESIZE
+
+        self.character.window_x = self.rect.x
+        self.character.window_y = self.rect.y
+
+        if not self.character.alive:
+            self.delete()
+            # pg.sprite.Sprite.remove(self, self.groups)
+            # self.game.monsters.remove(self)
+
+
+
+
 class Mglak(Monster):
     def __init__(self, game, x, y):
         #POZIOM 1
@@ -219,11 +250,17 @@ class Mglak(Monster):
         at = 60
         deff = 20
         lev = 1
+        super(Mglak, self).__init__(game, x, y, hp, at, deff, lev);
+        MglakSprite(self, game)
+
+class MglakSprite(MonsterSprite):
+    def __init__(self, character, game):
         self.image = pg.Surface((TILESIZE, TILESIZE))
         self.image = pg.image.load(os.path.join(img_folder, "mglak.png")).convert()
         self.image = pg.transform.scale(self.image, (TILESIZE, TILESIZE))
         self.image.set_colorkey(BLACK)
-        super(Mglak, self).__init__(game, x, y, hp, at, deff, lev);
+        super(MglakSprite, self).__init__(character, game)
+
 
 class Spider(Monster):
     def __init__(self, game, x, y):
@@ -232,11 +269,16 @@ class Spider(Monster):
         at = 80
         deff = 30
         lev = 2
+        super(Spider, self).__init__(game, x, y, hp, at, deff, lev);
+        SpiderSprite(self, game)
+        
+class SpiderSprite(MonsterSprite):
+    def __init__(self, character, game):
         self.image = pg.Surface((TILESIZE, TILESIZE))
         self.image = pg.image.load(os.path.join(img_folder, "pajonk.png")).convert()
         self.image = pg.transform.scale(self.image, (TILESIZE, TILESIZE))
         self.image.set_colorkey(BLACK)
-        super(Spider, self).__init__(game, x, y, hp, at, deff, lev);
+        super(SpiderSprite, self).__init__(charakter, game);
 
 class Ghoul(Monster):
     def __init__(self, game, x, y):
@@ -245,10 +287,15 @@ class Ghoul(Monster):
         at = 110
         deff = 40
         lev = 3
+        super(Ghoul, self).__init__(game, x, y, hp, at, deff, lev);
+        GhoulSprite(self, game)
+ 
+class GhoulSprite(MonsterSprite):
+    def __init__(self, character, game):
         self.image = pg.image.load(os.path.join(img_folder, "ghoul.png")).convert()
         self.image = pg.transform.scale(self.image, (TILESIZE, TILESIZE))
         self.image.set_colorkey(BLACK)
-        super(Ghoul, self).__init__(game, x, y, hp, at, deff, lev);
+        super(GhoulSprite, self).__init__(charakter, game);
 
 class Leszy(Monster):
     def __init__(self, game, x, y):
@@ -257,10 +304,15 @@ class Leszy(Monster):
         at = 150
         deff = 50
         lev = 4
+        super(Leszy, self).__init__(game, x, y, hp, at, deff, lev);
+        LeszySprite(self, game)
+        
+class LeszySprite(MonsterSprite):
+    def __init__(self, character, game):
         self.image = pg.image.load(os.path.join(img_folder, "leszy.png")).convert()
         self.image = pg.transform.scale(self.image, (TILESIZE, TILESIZE))
         self.image.set_colorkey(BLACK)
-        super(Leszy, self).__init__(game, x, y, hp, at, deff, lev);
+        super(LeszySprite, self).__init__(charakter, game);
 
 class Olgierd(Monster):
     def __init__(self, game, x, y):
@@ -269,10 +321,15 @@ class Olgierd(Monster):
         at = 200
         deff = 60
         lev = 5
+        super(Olgierd, self).__init__(game, x, y, hp, at, deff, lev);
+        OlgierdSprite(self, game)
+ 
+class OlgierdSprite(MonsterSprite):
+    def __init__(self, character, game):
         self.image = pg.image.load(os.path.join(img_folder, "olgierd.png")).convert()
         self.image = pg.transform.scale(self.image, (TILESIZE, TILESIZE))
         self.image.set_colorkey(BLACK)
-        super(Olgierd, self).__init__(game, x, y, hp, at, deff, lev);
+        super(Olgierd, self).__init__(charakter, game);
 
 class Dragon(Monster):
     def __init__(self, game, x, y):
@@ -281,10 +338,15 @@ class Dragon(Monster):
         at = 260
         deff = 70
         lev = 6
+        super(Dragon, self).__init__(game, x, y, hp, at, deff, lev);
+        DragonSprite(self, game)
+        
+class DragonSprite(MonsterSprite):
+    def __init__(self, character, game):
         self.image = pg.image.load(os.path.join(img_folder, "smok.png")).convert()
         self.image = pg.transform.scale(self.image, (TILESIZE, TILESIZE))
         self.image.set_colorkey(BLACK)
-        super(Dragon, self).__init__(game, x, y, hp, at, deff, lev);
+        super(Dragon, self).__init__(charakter, game);
 
 class Gaunter(Monster):
     def __init__(self, game, x, y):
@@ -293,17 +355,18 @@ class Gaunter(Monster):
         at = 350
         deff = 100
         lev = 7
+        super(Gaunter, self).__init__(game, x, y, hp, at, deff, lev);
+        GaunterSprite(self, game)
+        
+class GaunterSprite(MonsterSprite):
+    def __init__(self, character, game):
         self.image = pg.image.load(os.path.join(img_folder, "gaunter.png")).convert()
         self.image = pg.transform.scale(self.image, (TILESIZE, TILESIZE))
         self.image.set_colorkey(BLACK)
-        super(Gaunter, self).__init__(game, x, y, hp, at, deff, lev);
+        super(Gaunter, self).__init__(charakter, game);
 
 class HP_Mixture(pg.sprite.Sprite):
     def __init__(self, game, x, y):
-        self.image = pg.Surface((TILESIZE, TILESIZE))
-        self.image = pg.image.load(os.path.join(img_folder, "red_elix.png")).convert()
-        self.image = pg.transform.scale(self.image, (TILESIZE, TILESIZE))
-        self.image.set_colorkey(BLACK)
         self.groups = game.all_sprites
         pg.sprite.Sprite.__init__(self, self.groups)
         self.game = game
@@ -312,24 +375,38 @@ class HP_Mixture(pg.sprite.Sprite):
         self.y = y
         self.rect.x = self.x * TILESIZE
         self.rect.y = self.y * TILESIZE
+        MixtureSprite(self, game)
 
     def die(self):
         self.hp = 0
         pg.sprite.Sprite.remove(self, self.groups)
         self.game.mixtures.remove(self)
         del self
-
-class Ciri(pg.sprite.Sprite):
+        
+class HP_MixtureSprite(pg.sprite.Sprite):
     def __init__(self, game, x, y):
         self.image = pg.Surface((TILESIZE, TILESIZE))
-        self.image = pg.image.load(os.path.join(img_folder, "ciri.png")).convert()
+        self.image = pg.image.load(os.path.join(img_folder, "red_elix.png")).convert()
         self.image = pg.transform.scale(self.image, (TILESIZE, TILESIZE))
-        self.image.set_colorkey(WHITE)
-        self.groups = game.all_sprites
-        pg.sprite.Sprite.__init__(self, self.groups)
-        self.game = game
-        self.rect = self.image.get_rect()
-        self.x = x
-        self.y = y
-        self.rect.x = self.x * TILESIZE
-        self.rect.y = self.y * TILESIZE
+        self.image.set_colorkey(BLACK)
+    
+    
+    
+#class Ciri(pg.sprite.Sprite):
+#    def __init__(self, game, x, y):
+#        self.groups = game.all_sprites
+#        pg.sprite.Sprite.__init__(self, self.groups)
+#        self.game = game
+#        self.rect = self.image.get_rect()
+#        self.x = x
+#        self.y = y
+#        self.rect.x = self.x * TILESIZE
+#        self.rect.y = self.y * TILESIZE
+        
+#class CiriSprite(CharacterSprite):
+#    def __init__(self, character, game):
+#        self.image = pg.Surface((TILESIZE, TILESIZE))
+#        self.image = pg.image.load(os.path.join(img_folder, "ciri.png")).convert()
+#        self.image = pg.transform.scale(self.image, (TILESIZE, TILESIZE))
+#        self.image.set_colorkey(WHITE)
+#        super(PlayerSprite, self).__init__(character, game)        

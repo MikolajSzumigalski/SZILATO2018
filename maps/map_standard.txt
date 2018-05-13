@@ -1,0 +1,22 @@
+0 - Mglak
+1 - Spider
+2 - Ghoul
+3 - Leszy
+4 - Olgierd
+5 - Dragon
+6 - HP_Mixture
+
+budowa pliku .map:
+
+pierwsza linijka zawiera wielkość mapy postaci
+szerokość;wysokość
+
+dalej mapa właściwa zakończona symbolem '#'
+
+dalej opcjonalnie lokacje i typy potworów według wzoru:
+
+id_postaci;pozycja_x;pozycja_y
+
+zakończone znakiem '#'
+
+przykład w pliku test.map

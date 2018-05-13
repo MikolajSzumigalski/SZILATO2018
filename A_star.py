@@ -22,23 +22,23 @@ class A_star:
         self.spot_map = [[0 for j in range(self.map.width)] for i in range(self.map.height)]
 
         #TO DO: naprawić błąd ze złymi współrzędnymi mapy!!!
-        for i in range(0, self.map.width):
-            for j in range(0, self.map.height):
-                self.spot_map[i][j] = Spot(i, j, game.map.tiles_data[j][i].isCollidable or [i,j] in self.monsters, 1)
+        for x in range(self.map.width):
+            for y in range(self.map.height):
+                self.spot_map[y][x] = Spot(x, y, game.map.tiles_data[y][x].isCollidable or [x,y] in self.monsters, 1)
         self.log_map()
 
     def log_map(self):
         #debug
-            for j in range(0, self.map.height):
-                for i in range(0, self.map.width):
-                    if self.spot_map[i][j].is_wall:
+            for y in range(0, self.map.height):
+                for x in range(0, self.map.width):
+                    if self.spot_map[y][x].is_wall:
                         print ("#", end='')
                     else:
                         print(".", end='')
                 print("")
 
     def get_spot(self, pos):
-        return self.spot_map[pos[0]][pos[1]]
+        return self.spot_map[pos[1]][pos[0]]
 
     def manhattan_dist(self, a, b):
         return abs(a[0] - b[0]) + abs(a[1] - b[1])
