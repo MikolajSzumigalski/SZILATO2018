@@ -65,10 +65,10 @@ class LogicEngine:
                 current_defender.take_damage(current_attacker.at - current_defender.deff)
                 print(current_defender.hp)
             if(current_defender.hp <= 0):
-                current_defender.die();
-                exp_to_be_given = defender.get_worth_exp()
+                exp_to_be_given = current_defender.get_worth_exp()
                 print("EXP TO BE GIVEN", exp_to_be_given)
-                attacker.add_exp(exp_to_be_given)
+                current_attacker.add_exp(exp_to_be_given)
+                current_defender.die();
                 break
             else:
                 current_defender.fade()
