@@ -3,7 +3,9 @@ import pygame as pg
 from map import *
 from game import *
 from A_star import *
+import copy
 import random
+import knowledge_frames
 from os import path
 
 
@@ -100,3 +102,21 @@ class LogicEngine:
         self.player.in_move = True
         self.player.next_steps = path
         pg.time.set_timer(self.game.MOVEEVENT, PLAYER_MOVE_FREQUENCY)
+
+
+    def simulate_action(self, function, save_simulated_state_JSON = False, *args, **kwargs):
+        """
+        this method simulates behaviour of any of the LogicEngine methods without actually executing them in the game
+        :param function_name: 
+        :param args: 
+        :param kwargs: 
+        :return: 
+        """
+        simulated_game_engine = copy.deepcopy(self)
+        simulated_game_engine.function_name(*args, **kwargs)
+        if(save_simulated_state_JSON):
+        return simulated_game_engine
+
+    def simulate_move(self, dx=0, dy=0):
+        """ simulates player's move onto dx, dy coordinates """
+        return self.simulate_action(self.check_player_collisions, (dx, dy))
