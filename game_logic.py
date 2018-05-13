@@ -18,7 +18,7 @@ class LogicEngine:
         self.monsters = game.monsters
         self.mixtures = game.mixtures
         self.map = game.map
-        self.logic_attribute_name_list = ['player', 'monsters', 'mixtures', 'map', 'gameover', 'simulation']
+        self.logic_attribute_name_list = ['player', 'monsters', 'mixtures', 'map', 'gameover', 'simulation', 'logic_attribute_name_list']
         self.gameover = False
         self.simulation = False
 
