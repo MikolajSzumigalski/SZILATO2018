@@ -23,11 +23,15 @@ class LogicEngine:
         self.simulation = False
 
     #sprawdź czy na nowym polu (new_x, new_y) wystąpi jakaś kolizja
-    def check_player_collisions(self, dx=0, dy=0, simulation = False):
+    def check_player_collisions(self, dx=0, dy=0, simulation = False, absolute_coordinates = False):
         if(simulation):
             print("<SIMULATION: ")
-        new_x = self.player.x + dx
-        new_y = self.player.y + dy
+        if(absolute_coordinates):
+            new_x = dx
+            new_y = dy
+        else:
+            new_x = self.player.x + dx
+            new_y = self.player.y + dy
         print("player pos: ",new_x, new_y, " next_tile: ", self.map.map_data[new_y][new_x])
         #kolizje z potworami
         monster_collision = False
@@ -147,6 +151,9 @@ class LogicEngine:
         """ simulates player's move by +-dx, +-dy coordinates """
         return self.simulate_action('check_player_collisions', save_simulated_state_JSON, dx, dy, simulation=True)
 
+    def simulate_move_absolute_coordinate(self,  save_simulated_state_JSON = False, x=0, y=0):
+        """ simulates player's move onto absolute dx, dy coordinates """
+        return self.simulate_action('check_player_collisions', save_simulated_state_JSON, x, y, simulation=True, absolute_coordinates = True)
 
     def check_gameover(self):
         if(self.player.hp <= 0):

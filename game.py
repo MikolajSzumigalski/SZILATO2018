@@ -111,6 +111,10 @@ class Game:
                         #simulate going down 1
                         self.logic_engine.simulate_move(True, 0, 1)
 
+                    if event.key == pg.K_g:
+                        #simulate going down 1
+                        self.logic_engine.simulate_move_absolute_coordinate(False, 1, 2);
+
                     if event.key == pg.K_a:
                          self.player.get_new_plan()
 
