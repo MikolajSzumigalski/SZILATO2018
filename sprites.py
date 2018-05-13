@@ -179,6 +179,12 @@ class Player(Character):
         self.next_steps = A.get_path_to(self.current_target)
         self.in_move = True
 
+    def get_new_plan(self):
+        A = A_star_target_list(self.game)
+        temp = A.get_new_plan()
+        for obj in temp:
+            self.points_to_visit.append([obj.x, obj.y])
+
     def update(self):
         pass
 
