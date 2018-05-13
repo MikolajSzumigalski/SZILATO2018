@@ -86,8 +86,15 @@ class LogicEngine:
 
     def player_auto_move(self):
         #obsługa auto-ruchu bohatera, zaplanowana droga znajduje się w player.next_steps
+        if not self.player.points_to_visit:
+            A = A_star_target_list(self.game)
+            temp = A.get_new_plan()
+            temp_new_plan = []
+            for obj in temp:
+                temp_new_plan.append([obj.x, obj.y])
+            self.player.points_to_visit = temp_new_plan
+
         if self.player.in_move:
-            print(self.player.next_steps)
 
             if not self.player.next_steps:
                 self.player.in_move = False
@@ -102,24 +109,28 @@ class LogicEngine:
                     self.player.next_steps = []
                 else:
                     self.check_player_collisions(dx, dy)
+        else:
+            if self.player.points_to_visit:
+                self.player.get_new_path()
+        # print(self.player.points_to_visit)
 
     def player_start_auto_move(self):
         # funkcja głównie do debugowania
         dest = list(map(int, input("move to: ").split()))
-        A = A_star(self.game)
+        A = A_star_path(self.game)
         path = A.get_path_to(dest)
         self.player.in_move = True
         self.player.next_steps = path
-        pg.time.set_timer(self.game.MOVEEVENT, PLAYER_MOVE_FREQUENCY)
+        # pg.time.set_timer(self.game.MOVEEVENT, PLAYER_MOVE_FREQUENCY)
 
 
 
     def simulate_action(self, function_name, save_simulated_state_JSON = False, *args, **kwargs):
         """
         this method simulates behaviour of any of the LogicEngine methods without actually executing them in the game
-        :param function_name: 
-        :param args: 
-        :param kwargs: 
+        :param function_name:
+        :param args:
+        :param kwargs:
         :return: simulated game state
         """
         simulated_logic_engine = copy.deepcopy(self)

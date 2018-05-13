@@ -1,4 +1,3 @@
-from map import *
 from game import *
 
 class Spot:
@@ -13,7 +12,7 @@ class Spot:
     def get_pos(self):
         return [self.x, self.y]
 
-class A_star:
+class A_star_path:
     def __init__(self, game):
         self.start = [game.player.x, game.player.y]
         self.monsters = game.get_monsters_positions()
@@ -24,7 +23,7 @@ class A_star:
         #TO DO: naprawić błąd ze złymi współrzędnymi mapy!!!
         for x in range(self.map.width):
             for y in range(self.map.height):
-                self.spot_map[y][x] = Spot(x, y, game.map.tiles_data[y][x].isCollidable or [x,y] in self.monsters, 1)
+                self.spot_map[y][x] = Spot(x, y, game.map.tiles_data[y][x].isCollidable or [x,y] in self.monsters + self.mixtures, 1)
         self.log_map()
 
     def log_map(self):
@@ -83,6 +82,8 @@ class A_star:
 
     def get_path_to(self, dest):
         start_spot = self.get_spot(self.start)
+        self.get_spot(dest).is_wall = False
+
         openSet = [start_spot]
         closedSet = []
         cameFrom = {}
@@ -115,3 +116,11 @@ class A_star:
 
         print("There is no path!")
         return []
+
+
+class A_star_target_list:
+    def __init__(self, game):
+        self.game = game
+
+    def get_new_plan(self):
+        return self.game.monsters + self.game.mixtures
