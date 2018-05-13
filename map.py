@@ -172,7 +172,7 @@ class Map:
 
 class Tile(pg.sprite.Sprite):
     def __init__(self, game, tileX, tileY, texture):
-        self.logic_attribute_name_list = ['x', 'y', 'name', 'id', 'isCollidable'];
+        self.logic_attribute_name_list = ['x', 'y', 'name', 'id', 'isCollidable', 'logic_attribute_name_list'];
         self.game = game
         self.groups = self.game.all_sprites
         pg.sprite.Sprite.__init__(self, self.groups)
@@ -202,16 +202,16 @@ class Tile(pg.sprite.Sprite):
         try:
             newstate = {k: state[k] for k in self.logic_attribute_name_list}
         except AttributeError:
-            newstate = {k: state[k] for k in ['x', 'y', 'name', 'id', 'isCollidable']}
+            newstate = {k: state[k] for k in ['x', 'y', 'name', 'id', 'isCollidable', 'logic_attribute_name_list']}
         return newstate
 
     def __setstate__(self, state):
         self.__dict__.update(state)
 
-    def setOccupiedBy(character):
+    def setOccupiedBy(self, character):
         self.characterOccupyingTile = character
 
-    def isOccupied():
+    def isOccupied(self):
         return self.characterOccupyingTile is not None
 
 #gdy dodejemy nowy typ pola trzeba pamiętać by dodać pole isCollidable (True | False),

@@ -28,7 +28,7 @@ class Character(metaclass=ABCMeta):
         self.lev = lev # poziom
         self.total_exp = exp;
         self.max_hp = max_hp;
-        self.alive = False
+        self.alive = True
         if (self.max_hp == 0):
             self.max_hp = self.hp
         self.logic_attribute_name_list = ['logic_attribute_name_list' , 'name', 'id','hp', 'x', 'y', 'at', 'deff', 'lev', 'total_exp', 'max_hp', 'alive']
@@ -169,10 +169,15 @@ class Player(Character):
         self.points_to_visit = []
         self.current_target = []
 
-    def die(self):
+    def die(self, simulated = False):
         #TODO PROPER GAME ENDING
         print("GAMEOVER")
-        program_logic.gameover()
+        self.hp = 0
+        self.at = 0
+        self.max_hp = 0
+        self.lev = 0
+        self.deff = 0
+        self.alive = False
 
     def get_new_path(self):
         A =A_star_path(self.game)

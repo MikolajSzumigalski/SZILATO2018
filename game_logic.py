@@ -18,10 +18,14 @@ class LogicEngine:
         self.monsters = game.monsters
         self.mixtures = game.mixtures
         self.map = game.map
-        self.logic_attribute_name_list = ['player', 'monsters', 'mixtures', 'map']
+        self.logic_attribute_name_list = ['player', 'monsters', 'mixtures', 'map', 'gameover', 'simulation', 'logic_attribute_name_list']
+        self.gameover = False
+        self.simulation = False
 
     #sprawdź czy na nowym polu (new_x, new_y) wystąpi jakaś kolizja
-    def check_player_collisions(self, dx=0, dy=0):
+    def check_player_collisions(self, dx=0, dy=0, simulation = False):
+        if(simulation):
+            print("<SIMULATION: ")
         new_x = self.player.x + dx
         new_y = self.player.y + dy
         print("player pos: ",new_x, new_y, " next_tile: ", self.map.map_data[new_y][new_x])
@@ -30,13 +34,13 @@ class LogicEngine:
         mixture_collision = False
         for m in self.monsters:
             if new_x  == m.x and new_y == m.y and m.alive:
-                print("colision with monster!")
                 monster_collision = True
-                geralt_sounds = []
-                for snd in ['geralt1.wav', 'geralt2.wav']:
-                    geralt_sounds.append(pg.mixer.Sound(path.join(music_folder, snd)))
-                random.choice(geralt_sounds).play()
-                #self.player.fight(m) - walkę można też realizować tutaj (np. w osobnej metodzie), a nie w playerze
+                print("colision with monster!")
+                if not (simulation):
+                    geralt_sounds = []
+                    for snd in ['geralt1.wav', 'geralt2.wav']:
+                        geralt_sounds.append(pg.mixer.Sound(path.join(music_folder, snd)))
+                    random.choice(geralt_sounds).play()
                 self.fight(self.player, m)
         #kolizje ze ścianami
         for m in self.mixtures:
@@ -53,7 +57,10 @@ class LogicEngine:
                 print("move")
                 self.player.move(dx, dy)
                 print(self.map.map_data[new_y][new_x])
-
+        if (simulation):
+            print("/SIMULATION>")
+        self.check_gameover()
+            
     def fight(self, attacker, defender):
         '''
         this handles one turn of fighting in between characters
@@ -72,6 +79,7 @@ class LogicEngine:
                 print("EXP TO BE GIVEN", exp_to_be_given)
                 current_attacker.add_exp(exp_to_be_given)
                 current_defender.die();
+                self.check_gameover()
                 break
             # else:
                 # current_defender.fade()
@@ -117,6 +125,7 @@ class LogicEngine:
         # pg.time.set_timer(self.game.MOVEEVENT, PLAYER_MOVE_FREQUENCY)
 
 
+
     def simulate_action(self, function_name, save_simulated_state_JSON = False, *args, **kwargs):
         """
         this method simulates behaviour of any of the LogicEngine methods without actually executing them in the game
@@ -126,15 +135,26 @@ class LogicEngine:
         :return: simulated game state
         """
         simulated_logic_engine = copy.deepcopy(self)
+        simulated_logic_engine.simulation = True
         method_to_call = getattr(simulated_logic_engine, function_name)
         method_to_call(*args, **kwargs)
+        simulated_logic_engine.check_gameover()
         if(save_simulated_state_JSON):
             knowledge_frames.save_data(simulated_logic_engine, "simulated_frames.json")
         return simulated_logic_engine
 
     def simulate_move(self,  save_simulated_state_JSON = False, dx=0, dy=0):
-        """ simulates player's move onto dx, dy coordinates """
-        return self.simulate_action('check_player_collisions', save_simulated_state_JSON, dx, dy)
+        """ simulates player's move by +-dx, +-dy coordinates """
+        return self.simulate_action('check_player_collisions', save_simulated_state_JSON, dx, dy, simulation=True)
+
+
+    def check_gameover(self):
+        if(self.player.hp <= 0):
+            self.gameover = True;
+            if(self.simulation == True):
+                pass
+            else:
+                program_logic.gameover()
 
     # # Te rzeczy są po to, by branie klasy i próbowanie jej kopiowania dało tylko
     # # rzeczy logicznie (hp, exp etc), a nie grafiki i ten spam graficzny
