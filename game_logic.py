@@ -26,7 +26,7 @@ class LogicEngine:
         monster_collision = False
         mixture_collision = False
         for m in self.monsters:
-            if new_x  == m.x and new_y == m.y:
+            if new_x  == m.x and new_y == m.y and m.alive:
                 print("colision with monster!")
                 monster_collision = True
                 geralt_sounds = []
