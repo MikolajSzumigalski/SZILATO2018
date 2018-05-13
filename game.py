@@ -35,6 +35,8 @@ class Game:
         self.MOVEEVENT = pg.USEREVENT+1
         # pg.time.set_timer(self.MOVEEVENT, PLAYER_MOVE_FREQUENCY)
 
+        self.logic_attribute_name_list = ['monsters', 'mixtures', 'map', 'player', 'logic_engine']
+
     def run(self):
         # game loop - set self.playing = False to end the game
         self.playing = True
@@ -104,6 +106,10 @@ class Game:
                     # prints to file current map status in JSON form
                         knowledge_frames.save_data(self.logic_engine)
 
+                    if event.key == pg.K_q:
+                        #simulate going down 1
+                        self.logic_engine.simulate_move(True, 0, 1)
+
             if event.type == pg.VIDEORESIZE:
                 self.__resize_window__(event)
             if event.type == self.MOVEEVENT:
@@ -129,3 +135,12 @@ class Game:
         WIDTH = event.w
         HEIGHT = event.h
         self.screen = pg.display.set_mode((WIDTH, HEIGHT), pg.RESIZABLE);
+
+
+    def __getstate__(self):
+        state = self.__dict__.copy()
+        newstate = {k: state[k] for k in self.logic_attribute_name_list}
+        return newstate
+
+    def __setstate__(self, state):
+        self.__dict__.update(state)
