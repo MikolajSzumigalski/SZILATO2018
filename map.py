@@ -208,10 +208,10 @@ class Tile(pg.sprite.Sprite):
     def __setstate__(self, state):
         self.__dict__.update(state)
 
-    def setOccupiedBy(character):
+    def setOccupiedBy(self, character):
         self.characterOccupyingTile = character
 
-    def isOccupied():
+    def isOccupied(self):
         return self.characterOccupyingTile is not None
 
 #gdy dodejemy nowy typ pola trzeba pamiętać by dodać pole isCollidable (True | False),
