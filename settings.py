@@ -26,17 +26,29 @@ GAME_FOLDER = os.path.dirname(__file__)
 IMAGE_FOLDER = os.path.join(GAME_FOLDER, "img")
 MAP_FOLDER = os.path.join(GAME_FOLDER, "maps")
 
+# MAP = "labirynt_szumi_deluxe.map"
 MAP = "labirynt_szumi_deluxe.map"
 MAPLIST = []
 MAP_PLACES = []
-with open(MAP_FOLDER + "/" + MAP, "rt") as file:
-    for line in file:
-        MAPLIST.append(line.replace("\n","").split(" "))
-GRIDWIDTH = len(MAPLIST)
-GRIDHEIGHT = len(MAPLIST[0])
 
-for i in range (0, GRIDWIDTH):
-    for j in range (0, GRIDHEIGHT):
+#TO DO: przenieść do mapy!!!
+with open(MAP_FOLDER + "/" + MAP, "rt") as file:
+    state = 0
+    for line in file:
+        if state == 0:
+            state = 1
+            continue
+        if state == 1:
+            if line[0] == "#": break
+            MAPLIST.append(line.replace("\n","").split(" "))
+
+GRIDWIDTH = len(MAPLIST[0])
+GRIDHEIGHT = len(MAPLIST)
+print("[debug] ",GRIDWIDTH, GRIDHEIGHT)
+RANDOM_SPAWN = True
+
+for i in range (0, GRIDHEIGHT):
+    for j in range (0, GRIDWIDTH):
         if MAPLIST[i][j] == ".":
             MAP_PLACES.append([j,i])
 

@@ -1,6 +1,8 @@
 import pygame as pg
 from settings import *
+from sprites import *
 import copy
+import random
 
 #stałe przypisane do zasobów
 BUSH_1 = '0'
@@ -35,6 +37,7 @@ class Map:
         self.cameraheight = 0
         self.map_data = test_map
         self.tiles_data = [[0 for j in range(self.width)] for i in range(self.height)]
+        print("debug", len(self.tiles_data), len(self.tiles_data[0]))
 
     #rysowanie pomocniczej siatki
     def draw_grid(self, screen):
@@ -53,40 +56,68 @@ class Map:
 
 
     def init_tile_objects(self):
-        for row in range(self.width):
-            for column in range(self.height):
-                temp_key = self.map_data[column][row]#Te ify, żeby kompilowało się :D W razie czego znajdzie się coś lepszego
+        for row in range(self.height):
+            for column in range(self.width):
+                temp_key = self.map_data[row][column]#Te ify, żeby kompilowało się :D W razie czego znajdzie się coś lepszego
+                # print(temp_key, end='')
                 if temp_key == '0':
-                    self.tiles_data[column][row] = Bush(self.game, column, row, 1)
+                    self.tiles_data[row][column] = Bush(self.game, column, row, 1)
                 if temp_key == '1':
-                    self.tiles_data[column][row] = Bush(self.game, column, row, 2)
+                    self.tiles_data[row][column] = Bush(self.game, column, row, 2)
                 if temp_key == '2':
-                    self.tiles_data[column][row] = Rock(self.game, column, row, 1)
+                    self.tiles_data[row][column] = Rock(self.game, column, row, 1)
                 if temp_key == '3':
-                    self.tiles_data[column][row] = Rock(self.game, column, row, 2)
+                    self.tiles_data[row][column] = Rock(self.game, column, row, 2)
                 if temp_key == '4':
-                    self.tiles_data[column][row] = Rock(self.game, column, row, 3)
+                    self.tiles_data[row][column] = Rock(self.game, column, row, 3)
                 if temp_key == '5':
-                    self.tiles_data[column][row] = Water(self.game, column, row, 1)
-
-                #TO DO: naprawić kolejność rysowania by bohater nie był zasłaniany przez trawe
+                    self.tiles_data[row][column] = Water(self.game, column, row, 1)
                 if temp_key == '.':
-                    self.tiles_data[column][row] = Grass(self.game, column, row, 1)
+                    self.tiles_data[row][column] = Grass(self.game, column, row, 1)
 
 
     def apply_fog(self, screen, player):
         pass
 
     #wczytywanie mapy z pliku
-    def load_from_file(self, file_name):
+    def load_from_file(self, file_name="test_map", random_objects=True):
         self.map_data = []
+        temp_arr = []
         with open(MAP_FOLDER + "/" + file_name, "rt") as file:
+            state = 0 # 0 - wymiary,
+            temp_count = 0 # ilość potworów do wygenerowania
             for line in file:
-                self.map_data.append(line.replace("\n","").split(" "))
+                if state == 0:
+                    size = line.replace("\n","").split(";")
+                    GRIDWIDTH = int(size[0])
+                    GRIDHEIGHT = int(size[1])
+                    state = 1
+                    continue
+                if state == 1:
+                    if line[0] == "#":
+                        if random_objects: break
+                        state = 2
+                        continue
+                    self.map_data.append(line.replace("\n","").split(" "))
+                if state == 2:
+                    if line[0] == "#": break
+                    temp_arr.append(list(map(int, line.replace("\n","").split(";"))))
+
         self.camerawidth =  (GRIDWIDTH+4) * TILESIZE
         self.cameraheight =  (GRIDHEIGHT * TILESIZE)
-        print(len(self.map_data), len(self.map_data[0]))
-
+        self.init_tile_objects()
+        if random_objects:
+            self.random_spawn_monsters()
+            self.random_spawn_intems()
+        else:
+            for line_arr in temp_arr:
+                    if   line_arr[0] == 0: self.game.monsters.append(Mglak(self.game, line_arr[1], line_arr[2]))
+                    elif line_arr[0] == 1: self.game.monsters.append(Spider(self.game, line_arr[1], line_arr[2]))
+                    elif line_arr[0] == 2: self.game.monsters.append(Ghoul(self.game, line_arr[1], line_arr[2]))
+                    elif line_arr[0] == 3: self.game.monsters.append(Leszy(self.game, line_arr[1], line_arr[2]))
+                    elif line_arr[0] == 4: self.game.monsters.append(Olgierd(self.game, line_arr[1], line_arr[2]))
+                    elif line_arr[0] == 5: self.game.monsters.append(Dragon(self.game, line_arr[1], line_arr[2]))
+                    elif line_arr[0] == 6: self.game.mixtures.append(HP_Mixture(self.game, line_arr[1], line_arr[2]))
 
 
     def update(self):
@@ -94,7 +125,6 @@ class Map:
 
     def legendReturn(self):
         self.legend = copy.deepcopy(self.map_data)
-        # print(self.map_data)
         for i in range (0, len(self.legend)):
             for j in range (0, len(self.legend[i])):
                 if self.legend[i][j] == '2' or self.legend[i][j] == '3' or self.legend[i][j] == '4' or self.legend[i][j] == '5':
@@ -102,6 +132,43 @@ class Map:
                 else:
                     self.legend[i][j] = 0
         return self.legend
+
+    def random_spawn_monsters(self):
+        for i in range (0, 10):
+            rand = random.randint(0, len(MAP_PLACES)-1)
+            self.game.monsters.append(Mglak(self.game, MAP_PLACES[rand][0], MAP_PLACES[rand][1]))
+            MAP_PLACES.remove(MAP_PLACES[rand])
+
+        for i in range (0, 8):
+            rand = random.randint(0, len(MAP_PLACES)-1)
+            self.game.monsters.append(Spider(self.game, MAP_PLACES[rand][0], MAP_PLACES[rand][1]))
+            MAP_PLACES.remove(MAP_PLACES[rand])
+
+        for i in range (0, 6):
+            rand = random.randint(0, len(MAP_PLACES)-1)
+            self.game.monsters.append(Ghoul(self.game, MAP_PLACES[rand][0], MAP_PLACES[rand][1]))
+            MAP_PLACES.remove(MAP_PLACES[rand])
+
+        for i in range (0, 5):
+            rand = random.randint(0, len(MAP_PLACES)-1)
+            self.game.monsters.append(Leszy(self.game, MAP_PLACES[rand][0], MAP_PLACES[rand][1]))
+            MAP_PLACES.remove(MAP_PLACES[rand])
+
+        for i in range (0, 4):
+            rand = random.randint(0, len(MAP_PLACES)-1)
+            self.game.monsters.append(Olgierd(self.game, MAP_PLACES[rand][0], MAP_PLACES[rand][1]))
+            MAP_PLACES.remove(MAP_PLACES[rand])
+
+        for i in range (0, 3):
+            rand = random.randint(0, len(MAP_PLACES)-1)
+            self.game.monsters.append(Dragon(self.game, MAP_PLACES[rand][0], MAP_PLACES[rand][1]))
+            MAP_PLACES.remove(MAP_PLACES[rand])
+
+    def random_spawn_intems(self):
+        for i in range (0, 6):
+            rand = random.randint(0, len(MAP_PLACES))
+            self.game.mixtures.append(HP_Mixture(self.game, MAP_PLACES[rand][0], MAP_PLACES[rand][1]))
+            MAP_PLACES.remove(MAP_PLACES[rand])
 
 class Tile(pg.sprite.Sprite):
     def __init__(self, game, tileX, tileY, texture):
@@ -113,8 +180,8 @@ class Tile(pg.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.x = tileX
         self.y = tileY
-        self.rect.x = self.y * TILESIZE
-        self.rect.y = self.x * TILESIZE
+        self.rect.x = self.x * TILESIZE
+        self.rect.y = self.y * TILESIZE
         self.characterOccupyingTile = None
 
         # # zmienne potrzebne do A*
