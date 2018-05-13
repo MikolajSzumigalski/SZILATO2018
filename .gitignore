@@ -5,3 +5,6 @@
 .idea/SZILATO2018.iml
 __pycache__/
 frames.json
+.idea/misc.xml
+.idea/modules.xml
+simulated_frames.json
