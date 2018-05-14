@@ -90,14 +90,14 @@ class LogicEngine:
 
     def player_auto_move(self):
         #obsługa auto-ruchu bohatera, zaplanowana droga znajduje się w player.next_steps
-        # if not self.player.points_to_visit:
-        #     self.player.get_new_plan()
-        #     A = A_star_target_list(self.game)
-        #     temp = A.get_new_plan()
-        #     temp_new_plan = []
-        #     for obj in temp:
-        #         temp_new_plan.append([obj.x, obj.y])
-        #     self.player.points_to_visit = temp_new_plan
+        if not self.player.points_to_visit:
+            self.player.get_new_plan()
+            A = A_star_target_list(self)
+            temp = A.get_new_plan()
+            temp_new_plan = []
+            for obj in temp:
+                temp_new_plan.append([obj.x, obj.y])
+            self.player.points_to_visit = temp_new_plan
 
         if self.player.in_move:
 
@@ -122,7 +122,7 @@ class LogicEngine:
     def player_start_auto_move(self):
         # funkcja głównie do debugowania
         dest = list(map(int, input("move to: ").split()))
-        A = A_star_path(self.game)
+        A = A_star_path(self)
         path = A.get_path_to(dest)
         self.player.in_move = True
         self.player.next_steps = path
@@ -162,6 +162,18 @@ class LogicEngine:
                 pass
             else:
                 program_logic.gameover()
+
+    def get_monsters_positions(self):
+        out = []
+        for m in self.monsters:
+            out.append([m.x, m.y])
+        return out
+
+    def get_mixtures_positions(self):
+        out = []
+        for m in self.mixtures:
+            out.append([m.x, m.y])
+        return out
 
     # # Te rzeczy są po to, by branie klasy i próbowanie jej kopiowania dało tylko
     # # rzeczy logicznie (hp, exp etc), a nie grafiki i ten spam graficzny

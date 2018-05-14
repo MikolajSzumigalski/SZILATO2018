@@ -13,17 +13,17 @@ class Spot:
         return [self.x, self.y]
 
 class A_star_path:
-    def __init__(self, game):
-        self.start = [game.player.x, game.player.y]
-        self.monsters = game.get_monsters_positions()
-        self.mixtures = game.get_mixtures_positions()
-        self.map = game.map
+    def __init__(self, LogicEngine):
+        self.start = [LogicEngine.player.x, LogicEngine.player.y]
+        self.monsters = LogicEngine.get_monsters_positions()
+        self.mixtures = LogicEngine.get_mixtures_positions()
+        self.map = LogicEngine.map
         self.spot_map = [[0 for j in range(self.map.width)] for i in range(self.map.height)]
 
         #TO DO: naprawić błąd ze złymi współrzędnymi mapy!!!
         for x in range(self.map.width):
             for y in range(self.map.height):
-                self.spot_map[y][x] = Spot(x, y, game.map.tiles_data[y][x].isCollidable or [x,y] in self.monsters + self.mixtures, 1)
+                self.spot_map[y][x] = Spot(x, y, LogicEngine.map.tiles_data[y][x].isCollidable or [x, y] in self.monsters + self.mixtures, 1)
         # self.log_map()
 
     def log_map(self):
@@ -57,7 +57,7 @@ class A_star_path:
 
         return path
 
-    def get_avalible_neighbours(self, spot):
+    def get_available_neighbours(self, spot):
         #pozyskaj sąsiadów któży nie są ścianą lub potworem
         out = []
         x = spot.x
@@ -101,7 +101,7 @@ class A_star_path:
             openSet.remove(current)
             closedSet.append(current)
 
-            for n in self.get_avalible_neighbours(current):
+            for n in self.get_available_neighbours(current):
 
                 if n in closedSet:
                     continue
@@ -119,8 +119,9 @@ class A_star_path:
 
 
 class A_star_target_list:
-    def __init__(self, game):
-        self.game = game
+    def __init__(self, LogicEngine):
+        self.game = LogicEngine
 
     def get_new_plan(self):
         return self.game.monsters + self.game.mixtures
+
