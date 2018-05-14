@@ -171,7 +171,7 @@ class Player(Character):
 
     def die(self, simulated = False):
         #TODO PROPER GAME ENDING
-        print("GAMEOVER")
+        # print("GAMEOVER")
         self.hp = 0
         self.at = 0
         self.max_hp = 0
@@ -180,16 +180,19 @@ class Player(Character):
         self.alive = False
 
     def get_new_path(self):
-        A =A_star_path(self.game)
+        A = A_star_path(self.game)
         self.current_target = self.points_to_visit.pop(0)
         self.next_steps = A.get_path_to(self.current_target)
+        # print(self.next_steps)
         self.in_move = True
 
     def get_new_plan(self):
         A = A_star_target_list(self.game)
         temp = A.get_new_plan()
+        pg.time.set_timer(MOVEEVENT, PLAYER_MOVE_FREQUENCY)
         for obj in temp:
             self.points_to_visit.append([obj.x, obj.y])
+        print (self.points_to_visit)
 
     def update(self):
         pass
@@ -200,7 +203,7 @@ class Player(Character):
         self.deff += 10
         self.hp = self.max_hp
         self.lev += 1
-        print("level up, hp: {} totalexp: {} level{}".format(self.hp, self.total_exp, self.lev))
+        # print("level up, hp: {} totalexp: {} level{}".format(self.hp, self.total_exp, self.lev))
         # self.visual_health_update()
         pass
 

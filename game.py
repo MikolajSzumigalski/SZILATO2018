@@ -32,8 +32,6 @@ class Game:
         pg.mixer.init()
         bg_music = pg.mixer.music.load(path.join(music_folder, 'gamebackground.mp3'))
         self.logic_engine = LogicEngine(self)
-        self.MOVEEVENT = pg.USEREVENT+1
-        pg.time.set_timer(self.MOVEEVENT, PLAYER_MOVE_FREQUENCY)
         # pg.time.set_timer(self.MOVEEVENT, PLAYER_MOVE_FREQUENCY)
 
 
@@ -120,7 +118,7 @@ class Game:
 
             if event.type == pg.VIDEORESIZE:
                 self.__resize_window__(event)
-            if event.type == self.MOVEEVENT:
+            if event.type == MOVEEVENT:
                 self.logic_engine.player_auto_move()
 
     def get_monsters_positions(self):

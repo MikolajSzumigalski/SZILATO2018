@@ -24,22 +24,22 @@ class LogicEngine:
 
     #sprawdź czy na nowym polu (new_x, new_y) wystąpi jakaś kolizja
     def check_player_collisions(self, dx=0, dy=0, simulation = False, absolute_coordinates = False):
-        if(simulation):
-            print("<SIMULATION: ")
+        # if(simulation):
+            # print("<SIMULATION: ")
         if(absolute_coordinates):
             new_x = dx
             new_y = dy
         else:
             new_x = self.player.x + dx
             new_y = self.player.y + dy
-        print("player pos: ",new_x, new_y, " next_tile: ", self.map.map_data[new_y][new_x])
+        # print("player pos: ",new_x, new_y, " next_tile: ", self.map.map_data[new_y][new_x])
         #kolizje z potworami
         monster_collision = False
         mixture_collision = False
         for m in self.monsters:
             if new_x  == m.x and new_y == m.y and m.alive:
                 monster_collision = True
-                print("colision with monster!")
+                # print("colision with monster!")
                 if not (simulation):
                     geralt_sounds = []
                     for snd in ['geralt1.wav', 'geralt2.wav']:
@@ -49,7 +49,7 @@ class LogicEngine:
         #kolizje ze ścianami
         for m in self.mixtures:
             if new_x  == m.x and new_y == m.y:
-                print("Let's drink!")
+                # print("Let's drink!")
                 mixture_collision = True
                 self.player.hp = self.player.max_hp
                 m.die()
@@ -58,13 +58,13 @@ class LogicEngine:
             if self.map.map_data[new_y][new_x] in collidables:
                 print("collison with rock or water!")
             else:
-                print("move")
+                # print("move")
                 self.player.move(dx, dy)
-                print(self.map.map_data[new_y][new_x])
-        if (simulation):
-            print("/SIMULATION>")
+                # print(self.map.map_data[new_y][new_x])
+        # if (simulation):
+        #     # print("/SIMULATION>")
         self.check_gameover()
-            
+
     def fight(self, attacker, defender):
         '''
         this handles one turn of fighting in between characters
@@ -75,13 +75,16 @@ class LogicEngine:
 
         for current_attacker, current_defender in zip([attacker, defender], [defender, attacker]):
             if(current_attacker.at > current_defender.deff):
-                print(current_defender.hp)
+                # print(current_defender.hp)
                 current_defender.take_damage(current_attacker.at - current_defender.deff)
-                print(current_defender.hp)
+                # print(current_defender.hp)
             if(current_defender.hp <= 0):
                 exp_to_be_given = current_defender.get_worth_exp()
-                print("EXP TO BE GIVEN", exp_to_be_given)
+                # print("EXP TO BE GIVEN", exp_to_be_given)
                 current_attacker.add_exp(exp_to_be_given)
+                if current_attacker == attacker:
+                    attacker.x = current_defender.x
+                    attacker.y = current_defender.y
                 current_defender.die();
                 self.check_gameover()
                 break
@@ -110,7 +113,7 @@ class LogicEngine:
                 dy = next_tile[1] - self.player.y
 
                 if not dx in [-1, 0, 1] or not dy in [-1, 0, 1]:
-                    print("[Player auto move] tile ", next_tile, " too far from ", self.player.x, self.player.y)
+                    # print("[Player auto move] tile ", next_tile, " too far from ", self.player.x, self.player.y)
                     self.player.next_steps = []
                 else:
                     self.check_player_collisions(dx, dy)
