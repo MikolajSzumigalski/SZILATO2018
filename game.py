@@ -5,6 +5,7 @@ from map import *
 from game_logic import *
 from os import path
 from interface import *
+import successor_nastepnik
 
 import copy
 import knowledge_frames
@@ -117,6 +118,13 @@ class Game:
 
                     if event.key == pg.K_a:
                          self.player.get_new_plan()
+
+                    if event.key == pg.K_c:
+                        #debug for successor function
+                        successors = successor_nastepnik.successor(self.logic_engine)
+                        for index, outcome in enumerate(successors):
+                            knowledge_frames.save_data(outcome[1], str(index))
+
 
             if event.type == pg.VIDEORESIZE:
                 self.__resize_window__(event)
