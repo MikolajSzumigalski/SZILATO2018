@@ -388,12 +388,38 @@ class GaunterSprite(MonsterSprite):
         self.image.set_colorkey(BLACK)
         super(Gaunter, self).__init__(character, game);
 
-class HP_Mixture():
+class Item(metaclass=ABCMeta):
     def __init__(self, game, x, y):
         self.x = x
         self.y = y
         self.alive = True
+        self.id = id(self)
+        self.name = self.__class__.__name__
+        self.logic_attribute_name_list = ['logic_attribute_name_list', 'name', 'id', 'x', 'y',
+                                       'alive']
+
+    # Te rzeczy są po to, by branie klasy i próbowanie jej wyprintowania etc. dawało tylko i wyłącznie
+    # rzeczy logicznie (hp, exp etc), a nie grafiki i ten spam graficzny
+    def __getstate__(self):
+        state = self.__dict__.copy()
+        newstate = {k: state[k] for k in self.logic_attribute_name_list}
+        return newstate
+
+    def __setstate__(self, state):
+        self.__dict__.update(state)
+
+    @abstractmethod
+    def use(self, benefitor):
+        pass
+
+class HP_Mixture(Item):
+    def __init__(self, game, x, y):
+        super().__init__(game, x, y)
         HP_MixtureSprite(self, game, self.x,self.y )
+
+    def use(self, benefitor):
+        #TODO
+        self.die()
 
     def die(self):
         self.alive = False
