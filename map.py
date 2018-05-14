@@ -144,7 +144,7 @@ class Map:
             self.game.monsters.append(Spider(self.game, MAP_PLACES[rand][0], MAP_PLACES[rand][1]))
             MAP_PLACES.remove(MAP_PLACES[rand])
 
-        for i in range (0, 6):
+        for i in range (0, 8):
             rand = random.randint(0, len(MAP_PLACES)-1)
             self.game.monsters.append(Ghoul(self.game, MAP_PLACES[rand][0], MAP_PLACES[rand][1]))
             MAP_PLACES.remove(MAP_PLACES[rand])
@@ -165,7 +165,7 @@ class Map:
         #     MAP_PLACES.remove(MAP_PLACES[rand])
 
     def random_spawn_intems(self):
-        for i in range (0, 10):
+        for i in range (0, 3):
             rand = random.randint(0, len(MAP_PLACES))
             self.game.mixtures.append(HP_Mixture(self.game, MAP_PLACES[rand][0], MAP_PLACES[rand][1]))
             MAP_PLACES.remove(MAP_PLACES[rand])
