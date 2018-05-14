@@ -268,7 +268,7 @@ class A_star_target_list:
                 #koszt dotarcia
                 new_state.g = current_state.g + l
                 #heurystyka
-                h = new_state.get_all_hp() + new_state.alive_monsters_count() * 100
+                new_state.h = new_state.get_all_hp() + new_state.alive_monsters_count() * 100 - new_state.player.hp
                 new_state.f = new_state.g*2 + new_state.h
                 print(new_state.f, " ", end='')
 
