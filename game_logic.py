@@ -52,7 +52,7 @@ class LogicEngine:
                 # print("Let's drink!")
                 mixture_collision = True
                 self.player.hp = self.player.max_hp
-                self.map.map_data[m.x][m.y].setOccupiedBy(None);
+                self.map.tiles_data[m.x][m.y].setOccupiedBy(None);
 
                 m.die()
         if not monster_collision and not mixture_collision:
@@ -61,8 +61,8 @@ class LogicEngine:
                 print("collison with rock or water!")
             else:
                 # print("move")
-                self.map.map_data[self.player.x][self.player.y].setOccupiedBy(None);
-                self.map.map_data[dx][dy].setOccupiedBy(self.player);
+                self.map.tiles_data[self.player.x][self.player.y].setOccupiedBy(None);
+                self.map.tiles_data[dx][dy].setOccupiedBy(self.player);
 
                 self.player.move(dx, dy)
                 # print(self.map.map_data[new_y][new_x])
@@ -88,10 +88,10 @@ class LogicEngine:
                 # print("EXP TO BE GIVEN", exp_to_be_given)
                 current_attacker.add_exp(exp_to_be_given)
                 if current_attacker == attacker:
-                    self.map.map_data[attacker.x][attacker.y].setOccupiedBy(None);
+                    self.map.tiles_data[attacker.x][attacker.y].setOccupiedBy(None);
                     attacker.x = current_defender.x
                     attacker.y = current_defender.y
-                    self.map.map_data[attacker.x][attacker.y].setOccupiedBy(attacker);
+                    self.map.tiles_data[attacker.x][attacker.y].setOccupiedBy(attacker);
                     
                 current_defender.die();
                 self.check_gameover()
