@@ -26,8 +26,8 @@ GAME_FOLDER = os.path.dirname(__file__)
 IMAGE_FOLDER = os.path.join(GAME_FOLDER, "img")
 MAP_FOLDER = os.path.join(GAME_FOLDER, "maps")
 
-MAP = "labirynt_szumi_deluxe.map"
-#MAP = "test.map"
+#MAP = "labirynt_szumi_deluxe.map"
+MAP = "test.map"
 MAPLIST = []
 MAP_PLACES = []
 
@@ -45,7 +45,7 @@ with open(MAP_FOLDER + "/" + MAP, "rt") as file:
 GRIDWIDTH = len(MAPLIST[0])
 GRIDHEIGHT = len(MAPLIST)
 print("[debug] ",GRIDWIDTH, GRIDHEIGHT)
-RANDOM_SPAWN = True
+RANDOM_SPAWN = False
 MOVEEVENT = pg.USEREVENT+1
 for i in range (0, GRIDHEIGHT):
     for j in range (0, GRIDWIDTH):
