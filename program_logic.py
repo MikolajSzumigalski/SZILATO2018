@@ -20,4 +20,5 @@ def startup():
 
 def gameover():
     """ this handles gameover """
+    print("Game Over")
     startup()
