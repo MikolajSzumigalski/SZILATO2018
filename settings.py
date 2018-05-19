@@ -52,4 +52,4 @@ for i in range (0, GRIDHEIGHT):
         if MAPLIST[i][j] == ".":
             MAP_PLACES.append([j,i])
 
-PLAYER_MOVE_FREQUENCY = 75 #ms
+PLAYER_MOVE_FREQUENCY = 1 #ms
