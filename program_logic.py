@@ -13,8 +13,8 @@ def startup():
     """ this starts the entire program"""
     screen = pg.display.set_mode((WIDTH, HEIGHT), pg.RESIZABLE)
     #TO DO: przejście do menu, można np. dodać metodę z osobną pętlą.
-    intro = Intro(screen)
-    intro.run()
+    # intro = Intro(screen)
+    # intro.run()
     game = Game(screen)
     game.run()
 
