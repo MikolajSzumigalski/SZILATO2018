@@ -112,32 +112,32 @@ class Map:
         else:
             for line_arr in temp_arr:
                     if   line_arr[0] == 0:
-                        self.game.monsters.append(Mglak(self.game, line_arr[1], line_arr[2]))
                         obj = Mglak(self.game, line_arr[1], line_arr[2])
+                        self.game.monsters.append(obj)
                         self.tiles_data[obj.x][obj.y].setOccupiedBy(obj)
                     elif line_arr[0] == 1:
-                        self.game.monsters.append(Spider(self.game, line_arr[1], line_arr[2]))
                         obj = Spider(self.game, line_arr[1], line_arr[2])
+                        self.game.monsters.append(obj)
                         self.tiles_data[obj.x][obj.y].setOccupiedBy(obj)
                     elif line_arr[0] == 2:
-                        self.game.monsters.append(Ghoul(self.game, line_arr[1], line_arr[2]))
                         obj = Ghoul(self.game, line_arr[1], line_arr[2])
+                        self.game.monsters.append(obj)
                         self.tiles_data[obj.x][obj.y].setOccupiedBy(obj)
                     elif line_arr[0] == 3:
-                        self.game.monsters.append(Leszy(self.game, line_arr[1], line_arr[2]))
                         obj = Leszy(self.game, line_arr[1], line_arr[2])
+                        self.game.monsters.append(obj)                        
                         self.tiles_data[obj.x][obj.y].setOccupiedBy(obj)
                     elif line_arr[0] == 4:
-                        self.game.monsters.append(Olgierd(self.game, line_arr[1], line_arr[2]))
                         obj = Olgierd(self.game, line_arr[1], line_arr[2])
+                        self.game.monsters.append(obj)
                         self.tiles_data[obj.x][obj.y].setOccupiedBy(obj)
                     elif line_arr[0] == 5:
-                        self.game.monsters.append(Dragon(self.game, line_arr[1], line_arr[2]))
                         obj = Dragon(self.game, line_arr[1], line_arr[2])
+                        self.game.monsters.append(obj)
                         self.tiles_data[obj.x][obj.y].setOccupiedBy(obj)
                     elif line_arr[0] == 6:
-                        self.game.mixtures.append(HP_Mixture(self.game, line_arr[1], line_arr[2]))
                         obj = HP_Mixture(self.game, line_arr[1], line_arr[2])
+                        self.game.mixtures.append(obj)
                         self.tiles_data[obj.x][obj.y].setOccupiedBy(obj)
     def update(self):
         pass
