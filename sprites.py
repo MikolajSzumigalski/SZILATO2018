@@ -4,6 +4,7 @@ from abc import ABCMeta, abstractmethod
 import os
 import simplejson
 from A_star import *
+import interface
 # import A_star
 
 import program_logic
@@ -246,7 +247,9 @@ class Monster(Character, metaclass=ABCMeta):
 
 class MonsterSprite(CharacterSprite, metaclass=ABCMeta):
     def __init__(self, character, game):
+        # interface.draw_text(self.image, "0", 32, 8, 8)
         super(MonsterSprite, self).__init__(character, game)
+
 
     def update(self):
         self.visual_health_update()
@@ -257,7 +260,6 @@ class MonsterSprite(CharacterSprite, metaclass=ABCMeta):
 
         self.character.window_x = self.rect.x
         self.character.window_y = self.rect.y
-
         if not self.character.alive:
             self.delete()
             # pg.sprite.Sprite.remove(self, self.groups)
