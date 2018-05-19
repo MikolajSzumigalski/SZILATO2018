@@ -7,6 +7,8 @@ name = "pypi"
 jsonpickle = "==0.9.2"
 pygame = "*"
 simplejson = "*"
+deap = "*"
+numpy = "*"
 
 [dev-packages]
 
