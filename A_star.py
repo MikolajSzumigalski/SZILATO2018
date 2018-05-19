@@ -133,7 +133,7 @@ class A_star_path:
 
 class State:
     #klasa obiektu przechowującego wszystkie informacje o stanie, oraz wszystkie metody pomocnicze
-    def __init__(self, player, monsters, items, engine, action, parent):
+    def __init__(self, player, monsters, items, engine, action=None, parent=None):
         self.player = player
         self.monsters = monsters
         self.items = items
@@ -186,6 +186,8 @@ class State:
 
     def get_f_score(self):
         return self.g + self.h
+
+
 
 
 
