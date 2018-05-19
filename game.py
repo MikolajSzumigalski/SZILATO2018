@@ -8,6 +8,8 @@ from interface import *
 
 import copy
 import knowledge_frames
+import GeneticAlgorithm.genetic
+
 class Game:
     def __init__(self, screen):
         self.screen = screen
@@ -115,6 +117,9 @@ class Game:
 
                     if event.key == pg.K_a:
                          self.player.get_new_plan()
+
+                    if event.key == pg.K_0:
+                        GeneticAlgorithm.genetic.prepare_genetic(self.logic_engine)
 
             if event.type == pg.VIDEORESIZE:
                 self.__resize_window__(event)
