@@ -244,7 +244,6 @@ class LogicEngine:
                              index].y] in self.get_all_available_targets()):
                 self.player.points_to_visit.append([self.get_list_of_all_objects()[index].x, self.get_list_of_all_objects()[index].y])
                 self.player_auto_move()
-                self.game.run()
-                if (self.alive_monsters_count() == 0 or self.player.hp <= 0):
-                    break
+                pg.time.set_timer(MOVEEVENT, PLAYER_MOVE_FREQUENCY)
+                self.game.update()
 
