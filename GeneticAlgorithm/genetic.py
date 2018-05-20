@@ -142,7 +142,7 @@ def prepare_genetic(LogicEngine):
 
 
     # number of gens to go through
-    ngen = 0
+    ngen = 80
     pop, log = algorithms.eaSimple(pop, toolbox, cxpb=0.5, mutpb=0.2, ngen=ngen,
                                    stats=stats, halloffame=hof, verbose=True)
     print(hof)
