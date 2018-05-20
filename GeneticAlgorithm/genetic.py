@@ -19,6 +19,7 @@ def set_creator(cr):
 
 
 set_creator(creator)
+#really just cares about others when there is a draw)
 creator.create("FitnessMulti", base.Fitness, weights=(-100.0, 1.0, -10.0))
 creator.create("Individual", list, fitness=creator.FitnessMulti)
 
