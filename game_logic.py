@@ -242,9 +242,9 @@ class LogicEngine:
                     and [self.get_list_of_all_objects()[index].x,
                          self.get_list_of_all_objects()[
                              index].y] in self.get_all_available_targets()):
-                self.player_move_to_dest(
-                    x = self.get_list_of_all_objects()[index].x,
-                    y=self.get_list_of_all_objects()[index].y)
+                self.player.points_to_visit.append([self.get_list_of_all_objects()[index].x, self.get_list_of_all_objects()[index].y])
+                self.player_auto_move()
+                self.game.run()
                 if (self.alive_monsters_count() == 0 or self.player.hp <= 0):
                     break
 

@@ -111,7 +111,9 @@ def prepare_genetic(LogicEngine):
         print(record)
         print("GENETIC LOG: SIMULATED SCORES OF {} GEN".format(generation_count))
         print("Best three ever to live: ", hof)
-        #LogicEngine.play_from_list(hof[0])
+
+    print("out of loop")
+    LogicEngine.play_from_list(hof[0])
 
 
 
