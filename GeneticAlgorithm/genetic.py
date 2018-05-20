@@ -142,21 +142,22 @@ def prepare_genetic(LogicEngine):
 
 
     # number of gens to go through
-    ngen = 5
+    ngen = 15
     pop, log = algorithms.eaSimple(pop, toolbox, cxpb=0.5, mutpb=0.2, ngen=ngen,
                                    stats=stats, halloffame=hof, verbose=True)
     print(hof)
     knowledge_frames.__save_to_file__(str(log), "gen_outcome_{}".format(ngen))
     knowledge_frames.__save_to_file__("\n" + str(hof), "gen_outcome_{}".format(ngen), newFile=False)
-    knowledge_frames.__save_to_file__("\n" + "\n".join(str(get_fitness_for_hof(hof, LogicEngine))), "gen_outcome_{}".format(ngen), newFile=False)
+    knowledge_frames.__save_to_file__("\n" + (str(get_fitness_for_hof(hof, LogicEngine)), "gen_outcome_{}".format(ngen), newFile=False)
 
+    print(get_fitness_for_hof(hof, LogicEngine))
     wait = input("Pokaż zwycięzcę: ")
     LogicEngine.play_from_list(hof[0])
 
 
 
 def get_fitness_for_hof(hof, LogicEngine):
-    return [evaluate_state_after_moves(winner, LogicEngine) for winner in hof]
+    return [winner.fitness.values for winner in hof]
 
 def evaluate_state_after_moves(individual, LogicEngine):
     """
@@ -171,7 +172,7 @@ def evaluate_state_after_moves(individual, LogicEngine):
     if(player_hp > 0):
         return count_of_alive_enemies, player_hp, sum_of_enemy_hp
     else:
-        return 100000, 0, 100000
+        return 1000000000, 0, 10000000000
 
 def simulate_from_list(list_of_indexes_of_objects_to_visit, LogicEngine):
     """
