@@ -142,13 +142,13 @@ def prepare_genetic(LogicEngine):
 
 
     # number of gens to go through
-    ngen = 15
+    ngen = 0
     pop, log = algorithms.eaSimple(pop, toolbox, cxpb=0.5, mutpb=0.2, ngen=ngen,
                                    stats=stats, halloffame=hof, verbose=True)
     print(hof)
     knowledge_frames.__save_to_file__(str(log), "gen_outcome_{}".format(ngen))
     knowledge_frames.__save_to_file__("\n" + str(hof), "gen_outcome_{}".format(ngen), newFile=False)
-    knowledge_frames.__save_to_file__("\n" + (str(get_fitness_for_hof(hof, LogicEngine)), "gen_outcome_{}".format(ngen), newFile=False)
+    knowledge_frames.__save_to_file__("\n" + (str(get_fitness_for_hof(hof, LogicEngine))), "gen_outcome_{}".format(ngen), newFile=False)
 
     print(get_fitness_for_hof(hof, LogicEngine))
     wait = input("Pokaż zwycięzcę: ")
