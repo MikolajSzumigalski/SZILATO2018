@@ -122,7 +122,7 @@ class Game:
                         GeneticAlgorithm.genetic.prepare_genetic(self.logic_engine)
 
                     if event.key == pg.K_9:
-                        self.logic_engine.play_from_list([2, 0, 3, 1, 8, 0, 8, 8, 8, 6, 7, 8, 5, 4, 7, 0, 1, 4, 0, 2, 1, 0, 9, 4, 0, 4, 2, 3, 3, 7])
+                        self.logic_engine.play_from_list([2, 0, 1, 7, 6, 8, 3, 0, 0, 8, 4, 9, 9, 4, 8, 1, 5, 2, 4, 1, 4, 8, 2, 5, 3, 7, 1, 5, 5, 0])
 
             if event.type == pg.VIDEORESIZE:
                 self.__resize_window__(event)

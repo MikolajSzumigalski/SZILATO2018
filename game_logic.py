@@ -238,12 +238,15 @@ class LogicEngine:
         """
         original_object_list = copy.deepcopy(self.original_object_list)
         for index in list_of_indexes_of_objects_to_visit:
-            if (self.get_list_of_all_objects()[index].alive == True
+            try:
+                if (self.get_list_of_all_objects()[index].alive == True
                     and [self.get_list_of_all_objects()[index].x,
-                         self.get_list_of_all_objects()[
-                             index].y] in self.get_all_available_targets()):
-                self.player.points_to_visit.append([self.get_list_of_all_objects()[index].x, self.get_list_of_all_objects()[index].y])
-                self.player_auto_move()
-                pg.time.set_timer(MOVEEVENT, PLAYER_MOVE_FREQUENCY)
-                self.game.update()
+                        self.get_list_of_all_objects()[
+                        index].y] in self.get_all_available_targets()):
+                    self.player.points_to_visit.append([self.get_list_of_all_objects()[index].x, self.get_list_of_all_objects()[index].y])
+                    self.player_auto_move()
+                    pg.time.set_timer(MOVEEVENT, PLAYER_MOVE_FREQUENCY)
+                    self.game.update()
+            except:
+                pass
 

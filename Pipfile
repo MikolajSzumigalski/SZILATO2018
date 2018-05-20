@@ -9,6 +9,7 @@ pygame = "*"
 simplejson = "*"
 deap = "*"
 numpy = "*"
+scoop = "*"
 
 [dev-packages]
 

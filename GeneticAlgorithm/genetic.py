@@ -1,11 +1,30 @@
-from deap import creator, base, tools
+from deap import creator, base, tools, algorithms
 import random
 import A_star
 import game_logic
 import copy
 import numpy
+import knowledge_frames
+import pickle
+import multiprocessing
+import itertools
+
+
 #szansa crossover, szansa mutacji
 CXPB, MUTPB = 0.5, 0.2
+
+def set_creator(cr):
+    global creator
+    creator = cr
+
+
+set_creator(creator)
+creator.create("FitnessMulti", base.Fitness, weights=(-100.0, 1.0, -10.0))
+creator.create("Individual", list, fitness=creator.FitnessMulti)
+
+def set_creator(cr):
+    global creator
+    creator = cr
 
 def prepare_genetic(LogicEngine):
     """
@@ -17,11 +36,11 @@ def prepare_genetic(LogicEngine):
     #2 : my_own hp
     #3 : number of enemy hp
     #fitness function that aims to minimize first objective, and maximize the second, minimize the third
-    creator.create("FitnessMulti", base.Fitness, weights=(-100.0, 1.0, -10.0))
+    #creator.create("FitnessMulti", base.Fitness, weights=(-100.0, 1.0, -10.0))
 
     #this registers hall of fame
-    hof = tools.HallOfFame(3)
-    creator.create("Individual", list, fitness=creator.FitnessMulti)
+    hof = tools.HallOfFame(5)
+    #creator.create("Individual", list, fitness=creator.FitnessMulti)
     #individual with genes of the form of list, that take previously defined fitness function
     toolbox = base.Toolbox()
 
@@ -29,14 +48,17 @@ def prepare_genetic(LogicEngine):
     max_gene_value = len(LogicEngine.monsters + LogicEngine.mixtures)
     toolbox.register("attr_int", random.randrange, 0, max_gene_value,  1)
 
-    #registers how to make an individual
+        #registers how to make an individual
     toolbox.register("individual", tools.initRepeat, creator.Individual,
                      toolbox.attr_int,  len(LogicEngine.monsters + LogicEngine.mixtures) * 3)
 
 
     #register statistics
     stats = tools.Statistics(key=lambda ind: ind.fitness.values)
-    stats.register("avg", numpy.mean, axis=0)
+    stats.register("avg #1 count of enemies * 100 | #2 player hp | enemy hp total * 10", numpy.mean, axis=0)
+    stats.register("std #1 count of enemies * 100 | #2 player hp | enemy hp total * 10", numpy.std, axis=0)
+    stats.register("min #1 count of enemies * 100 | #2 player hp | enemy hp total * 10", numpy.min, axis=0)
+    stats.register("max #1 count of enemies * 100 | #2 player hp | enemy hp total * 10", numpy.max, axis=0)
 
     #this registers the way to select from population to crossover
     #tournament selection, choose random from population, run tournaments based on fitness score, winner goes through
@@ -62,63 +84,79 @@ def prepare_genetic(LogicEngine):
     toolbox.register("population", tools.initRepeat, list, toolbox.individual)
 
     #create population of 300
-    pop = toolbox.population(n=350)
+    pop = toolbox.population(n=300)
 
-    print("GENETIC LOG: PREPARED THE GENETIC ALGORITHM")
 
-    #evaluates the entire population
-    fitnesses = list(map(toolbox.evaluate, pop))
-    for ind, fit in zip(pop, fitnesses):
-        ind.fitness.values = fit
-    fits = [ind.fitness.values for ind in pop]
 
-    generation_count = 1
-    record = stats.compile(pop)
-    print(record)
-    print("GENETIC LOG: SIMULATED SCORES OF {} GEN".format(generation_count))
-    hof.update(pop)
+    #multiprocessing
+    pool = multiprocessing.Pool()
+    toolbox.register("map", pool.map)
+    #
+    # print("GENETIC LOG: PREPARED THE GENETIC ALGORITHM")
+    #
+    # #evaluates the entire population
+    # fitnesses = list(map(toolbox.evaluate, pop))
+    # for ind, fit in zip(pop, fitnesses):
+    #     ind.fitness.values = fit
+    # fits = [ind.fitness.values for ind in pop]
+    #
+    # generation_count = 1
+    # record = stats.compile(pop)
+    # print(record)
+    # print("GENETIC LOG: SIMULATED SCORES OF {} GEN".format(generation_count))
+    # hof.update(pop)
 
-    #evolution loop
-    while generation_count < 100 and fit[0] > 0 and fit[2] > 0:
-        generation_count += 1
+    # #evolution loop
+    # while generation_count < ngen and fit[0] > 0 and fit[2] > 0:
+    #     generation_count += 1
+    #
+    #     #Select new generation
+    #     offspring = toolbox.select(pop, len(pop))
+    #     # Clone the selected individuals
+    #     offspring = list(map(toolbox.clone, offspring))
+    #
+    #     # Apply crossover and mutation on the offspring
+    #     for child1, child2 in zip(offspring[::2], offspring[1::2]): #spółkowanie pierwszej połowy z drugą z wybranych
+    #         if random.random() < CXPB: #szansa spółkowania
+    #             toolbox.mate(child1, child2)
+    #             del child1.fitness.values
+    #             del child2.fitness.values #zmienia fitness na nieistniejący dzieci
+    #
+    #     for mutant in offspring:
+    #         if random.random() < MUTPB: #szansa mutacji
+    #             toolbox.mutate(mutant)
+    #             del mutant.fitness.values #zmienia fitness na nieistniejący tych, którzy mutated
+    #
+    #     # Evaluate the individuals with an invalid fitness
+    #     invalid_ind = [ind for ind in offspring if not ind.fitness.valid]
+    #     fitnesses = map(toolbox.evaluate, invalid_ind)
+    #     for ind, fit in zip(invalid_ind, fitnesses):
+    #         ind.fitness.values = fit
+    #
+    #     pop[:] = offspring #nowa populacja zamiast starej
+    #     record = stats.compile(pop)
+    #     hof.update(pop)
+    #     print(record)
+    #     print("GENETIC LOG: SIMULATED SCORES OF {} GEN".format(generation_count))
+    #     print("Best three ever to live: ", hof)
 
-        #Select new generation
-        offspring = toolbox.select(pop, len(pop))
-        # Clone the selected individuals
-        offspring = list(map(toolbox.clone, offspring))
 
-        # Apply crossover and mutation on the offspring
-        for child1, child2 in zip(offspring[::2], offspring[1::2]): #spółkowanie pierwszej połowy z drugą z wybranych
-            if random.random() < CXPB: #szansa spółkowania
-                toolbox.mate(child1, child2)
-                del child1.fitness.values
-                del child2.fitness.values #zmienia fitness na nieistniejący dzieci
+    # number of gens to go through
+    ngen = 5
+    pop, log = algorithms.eaSimple(pop, toolbox, cxpb=0.5, mutpb=0.2, ngen=ngen,
+                                   stats=stats, halloffame=hof, verbose=True)
+    print(hof)
+    knowledge_frames.__save_to_file__(str(log), "gen_outcome_{}".format(ngen))
+    knowledge_frames.__save_to_file__("\n" + str(hof), "gen_outcome_{}".format(ngen), newFile=False)
+    knowledge_frames.__save_to_file__("\n" + "\n".join(str(get_fitness_for_hof(hof, LogicEngine))), "gen_outcome_{}".format(ngen), newFile=False)
 
-        for mutant in offspring:
-            if random.random() < MUTPB: #szansa mutacji
-                toolbox.mutate(mutant)
-                del mutant.fitness.values #zmienia fitness na nieistniejący tych, którzy mutated
-
-        # Evaluate the individuals with an invalid fitness
-        invalid_ind = [ind for ind in offspring if not ind.fitness.valid]
-        fitnesses = map(toolbox.evaluate, invalid_ind)
-        for ind, fit in zip(invalid_ind, fitnesses):
-            ind.fitness.values = fit
-
-        pop[:] = offspring #nowa populacja zamiast starej
-        record = stats.compile(pop)
-        hof.update(pop)
-        print(record)
-        print("GENETIC LOG: SIMULATED SCORES OF {} GEN".format(generation_count))
-        print("Best three ever to live: ", hof)
-
-    print("out of loop")
+    wait = input("Pokaż zwycięzcę: ")
     LogicEngine.play_from_list(hof[0])
 
 
 
-
-
+def get_fitness_for_hof(hof, LogicEngine):
+    return [evaluate_state_after_moves(winner, LogicEngine) for winner in hof]
 
 def evaluate_state_after_moves(individual, LogicEngine):
     """

@@ -23,9 +23,13 @@ def save_data(LogicEngine, file_name="frames.json"):
     final_JSON = jsonpickle.encode([final_player_dict, final_monsters_dict, final_tiles_dict, final_mixtures_dict], unpicklable=False)
     __save_to_file__(final_JSON, file_name)
 
-def __save_to_file__(JSON, file_name):
+def __save_to_file__(JSON, file_name, newFile=True):
     """this function rewrites the file with data in JSON form"""
-    with open(str(file_name), "w") as f:
+    if(newFile):
+        mode = 'w'
+    else:
+        mode = 'a+'
+    with open(str(file_name), mode) as f:
         f.writelines(JSON)
 
 #THIS template method will jonsify its class
