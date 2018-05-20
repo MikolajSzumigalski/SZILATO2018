@@ -3,8 +3,9 @@ import random
 import A_star
 import game_logic
 import copy
-
-
+import numpy
+#szansa crossover, szansa mutacji
+CXPB, MUTPB = 0.5, 0.2
 
 def prepare_genetic(LogicEngine):
     """
@@ -12,11 +13,14 @@ def prepare_genetic(LogicEngine):
     :param LogicEngine:
     :return:
     """
-    #1: count of enemies, my_own hp, number of enemy hp
+    #1: count of enemies,
+    #2 : my_own hp
+    #3 : number of enemy hp
     #fitness function that aims to minimize first objective, and maximize the second, minimize the third
     creator.create("FitnessMulti", base.Fitness, weights=(-100.0, 1.0, -10.0))
 
-
+    #this registers hall of fame
+    hof = tools.HallOfFame(3)
     creator.create("Individual", list, fitness=creator.FitnessMulti)
     #individual with genes of the form of list, that take previously defined fitness function
     toolbox = base.Toolbox()
@@ -30,6 +34,28 @@ def prepare_genetic(LogicEngine):
                      toolbox.attr_int,  len(LogicEngine.monsters + LogicEngine.mixtures) * 3)
 
 
+    #register statistics
+    stats = tools.Statistics(key=lambda ind: ind.fitness.values)
+    stats.register("avg", numpy.mean, axis=0)
+
+    #this registers the way to select from population to crossover
+    #tournament selection, choose random from population, run tournaments based on fitness score, winner goes through
+    # tak naprawdę probabilistycznie wybiera: wybierz z szansą #1 że najlepszy wygra
+    # wybierz z szansą mniejszą że drugi wygra..
+    # słabsi przechodzą i jest diversity bo tournament size jest ograniczony, to znaczy że może być np
+    # 15 najsłabszych wybranych, i 15- najsłabszy wtedy przejdzie dalej
+    # https://en.wikipedia.org/wiki/Tournament_selection
+    toolbox.register("select", tools.selTournament, tournsize=15)
+
+
+    #registers how to mate
+    # wybiera dwa punkty na stringu (liście) DNA.
+    toolbox.register("mate", tools.cxTwoPoint)
+
+    #registers how to mutate
+    #szansa mutacji to indpb
+    #metoda to: szansa indpb że dla atrybutu wylosuje nowy z przedziału)
+    toolbox.register("mutate", tools.mutUniformInt, low= 0, up = max_gene_value - 1, indpb=0.05)
     #registers evaluate function
     toolbox.register("evaluate", evaluate_state_after_moves, LogicEngine = LogicEngine)
     #registers how to make a population
@@ -44,8 +70,50 @@ def prepare_genetic(LogicEngine):
     fitnesses = list(map(toolbox.evaluate, pop))
     for ind, fit in zip(pop, fitnesses):
         ind.fitness.values = fit
-        print(ind.fitness.values)
-    print("GENETIC LOG: SIMULATED SCORES OF 1ST GEN")
+    fits = [ind.fitness.values for ind in pop]
+
+    generation_count = 1
+    record = stats.compile(pop)
+    print(record)
+    print("GENETIC LOG: SIMULATED SCORES OF {} GEN".format(generation_count))
+    hof.update(pop)
+
+    #evolution loop
+    while generation_count < 100 and fit[0] > 0 and fit[2] > 0:
+        generation_count += 1
+
+        #Select new generation
+        offspring = toolbox.select(pop, len(pop))
+        # Clone the selected individuals
+        offspring = list(map(toolbox.clone, offspring))
+
+        # Apply crossover and mutation on the offspring
+        for child1, child2 in zip(offspring[::2], offspring[1::2]): #spółkowanie pierwszej połowy z drugą z wybranych
+            if random.random() < CXPB: #szansa spółkowania
+                toolbox.mate(child1, child2)
+                del child1.fitness.values
+                del child2.fitness.values #zmienia fitness na nieistniejący dzieci
+
+        for mutant in offspring:
+            if random.random() < MUTPB: #szansa mutacji
+                toolbox.mutate(mutant)
+                del mutant.fitness.values #zmienia fitness na nieistniejący tych, którzy mutated
+
+        # Evaluate the individuals with an invalid fitness
+        invalid_ind = [ind for ind in offspring if not ind.fitness.valid]
+        fitnesses = map(toolbox.evaluate, invalid_ind)
+        for ind, fit in zip(invalid_ind, fitnesses):
+            ind.fitness.values = fit
+
+        pop[:] = offspring #nowa populacja zamiast starej
+        record = stats.compile(pop)
+        hof.update(pop)
+        print(record)
+        print("GENETIC LOG: SIMULATED SCORES OF {} GEN".format(generation_count))
+        print("Best three ever to live: ", hof)
+        #LogicEngine.play_from_list(hof[0])
+
+
 
 
 

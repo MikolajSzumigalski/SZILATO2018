@@ -67,6 +67,7 @@ class LogicEngine:
         #     # print("/SIMULATION>")
         self.check_gameover()
 
+
     def fight(self, attacker, defender):
         '''
         this handles one turn of fighting in between characters
@@ -133,6 +134,14 @@ class LogicEngine:
         self.player.next_steps = path
         # pg.time.set_timer(self.game.MOVEEVENT, PLAYER_MOVE_FREQUENCY)
 
+    def player_move_to_dest(self, x,y):
+        dest = [x,y]
+        A = A_star.A_star_path(self.game)
+        path = A.get_path_to(dest)
+        self.player.in_move = True
+        self.player.next_steps = path
+        self.player_auto_move()
+        # pg.time.set_timer(self.game.MOVEEVENT, PLAYER_MOVE_FREQUENCY)
 
 
     def simulate_action(self, function_name, save_simulated_state_JSON = False, *args, **kwargs):
@@ -220,5 +229,22 @@ class LogicEngine:
                 A_star_instance.get_path_to(target) is not [[]] and (
         (A_star_instance.get_path_to(target))))]
 
-
+    def play_from_list(self, list_of_indexes_of_objects_to_visit):
+        """
+        plays the game from list of index of objects to visit
+        :param LogicEngine: starting state of LogicEngine
+        :param list_of_indexes_of_objects_to_visit:
+        :return:
+        """
+        original_object_list = copy.deepcopy(self.original_object_list)
+        for index in list_of_indexes_of_objects_to_visit:
+            if (self.get_list_of_all_objects()[index].alive == True
+                    and [self.get_list_of_all_objects()[index].x,
+                         self.get_list_of_all_objects()[
+                             index].y] in self.get_all_available_targets()):
+                self.player_move_to_dest(
+                    x = self.get_list_of_all_objects()[index].x,
+                    y=self.get_list_of_all_objects()[index].y)
+                if (self.alive_monsters_count() == 0 or self.player.hp <= 0):
+                    break
 
