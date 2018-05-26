@@ -33,9 +33,9 @@ class LogicEngine:
                 random.choice(geralt_sounds).play()
         #kolizje ze ścianami
         if not monster_collision:
-            collidables = [ROCK_1,ROCK_2,ROCK_3,WATER]
+            collidables = [ROCK_1,ROCK_2,ROCK_3]
             if self.map.map_data[new_y][new_x] in collidables:
-                print("collison with rock or water!")
+                print("collison with rock!")
             else:
                 print("move")
                 self.player.move(dx, dy)
