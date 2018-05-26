@@ -92,58 +92,9 @@ def prepare_genetic(LogicEngine):
     #multiprocessing
     pool = multiprocessing.Pool()
     toolbox.register("map", pool.map)
-    #
-    # print("GENETIC LOG: PREPARED THE GENETIC ALGORITHM")
-    #
-    # #evaluates the entire population
-    # fitnesses = list(map(toolbox.evaluate, pop))
-    # for ind, fit in zip(pop, fitnesses):
-    #     ind.fitness.values = fit
-    # fits = [ind.fitness.values for ind in pop]
-    #
-    # generation_count = 1
-    # record = stats.compile(pop)
-    # print(record)
-    # print("GENETIC LOG: SIMULATED SCORES OF {} GEN".format(generation_count))
-    # hof.update(pop)
-
-    # #evolution loop
-    # while generation_count < ngen and fit[0] > 0 and fit[2] > 0:
-    #     generation_count += 1
-    #
-    #     #Select new generation
-    #     offspring = toolbox.select(pop, len(pop))
-    #     # Clone the selected individuals
-    #     offspring = list(map(toolbox.clone, offspring))
-    #
-    #     # Apply crossover and mutation on the offspring
-    #     for child1, child2 in zip(offspring[::2], offspring[1::2]): #spółkowanie pierwszej połowy z drugą z wybranych
-    #         if random.random() < CXPB: #szansa spółkowania
-    #             toolbox.mate(child1, child2)
-    #             del child1.fitness.values
-    #             del child2.fitness.values #zmienia fitness na nieistniejący dzieci
-    #
-    #     for mutant in offspring:
-    #         if random.random() < MUTPB: #szansa mutacji
-    #             toolbox.mutate(mutant)
-    #             del mutant.fitness.values #zmienia fitness na nieistniejący tych, którzy mutated
-    #
-    #     # Evaluate the individuals with an invalid fitness
-    #     invalid_ind = [ind for ind in offspring if not ind.fitness.valid]
-    #     fitnesses = map(toolbox.evaluate, invalid_ind)
-    #     for ind, fit in zip(invalid_ind, fitnesses):
-    #         ind.fitness.values = fit
-    #
-    #     pop[:] = offspring #nowa populacja zamiast starej
-    #     record = stats.compile(pop)
-    #     hof.update(pop)
-    #     print(record)
-    #     print("GENETIC LOG: SIMULATED SCORES OF {} GEN".format(generation_count))
-    #     print("Best three ever to live: ", hof)
-
 
     # number of gens to go through
-    ngen = 80
+    ngen = 1
     pop, log = algorithms.eaSimple(pop, toolbox, cxpb=0.5, mutpb=0.2, ngen=ngen,
                                    stats=stats, halloffame=hof, verbose=True)
     print(hof)
@@ -191,3 +142,53 @@ def simulate_from_list(list_of_indexes_of_objects_to_visit, LogicEngine):
             if(simulated_logic_engine.alive_monsters_count() == 0 or simulated_logic_engine.player.hp <= 0):
                 break
     return simulated_logic_engine
+
+
+#
+    # print("GENETIC LOG: PREPARED THE GENETIC ALGORITHM")
+    #
+    # #evaluates the entire population
+    # fitnesses = list(map(toolbox.evaluate, pop))
+    # for ind, fit in zip(pop, fitnesses):
+    #     ind.fitness.values = fit
+    # fits = [ind.fitness.values for ind in pop]
+    #
+    # generation_count = 1
+    # record = stats.compile(pop)
+    # print(record)
+    # print("GENETIC LOG: SIMULATED SCORES OF {} GEN".format(generation_count))
+    # hof.update(pop)
+
+    # #evolution loop
+    # while generation_count < ngen and fit[0] > 0 and fit[2] > 0:
+    #     generation_count += 1
+    #
+    #     #Select new generation
+    #     offspring = toolbox.select(pop, len(pop))
+    #     # Clone the selected individuals
+    #     offspring = list(map(toolbox.clone, offspring))
+    #
+    #     # Apply crossover and mutation on the offspring
+    #     for child1, child2 in zip(offspring[::2], offspring[1::2]): #spółkowanie pierwszej połowy z drugą z wybranych
+    #         if random.random() < CXPB: #szansa spółkowania
+    #             toolbox.mate(child1, child2)
+    #             del child1.fitness.values
+    #             del child2.fitness.values #zmienia fitness na nieistniejący dzieci
+    #
+    #     for mutant in offspring:
+    #         if random.random() < MUTPB: #szansa mutacji
+    #             toolbox.mutate(mutant)
+    #             del mutant.fitness.values #zmienia fitness na nieistniejący tych, którzy mutated
+    #
+    #     # Evaluate the individuals with an invalid fitness
+    #     invalid_ind = [ind for ind in offspring if not ind.fitness.valid]
+    #     fitnesses = map(toolbox.evaluate, invalid_ind)
+    #     for ind, fit in zip(invalid_ind, fitnesses):
+    #         ind.fitness.values = fit
+    #
+    #     pop[:] = offspring #nowa populacja zamiast starej
+    #     record = stats.compile(pop)
+    #     hof.update(pop)
+    #     print(record)
+    #     print("GENETIC LOG: SIMULATED SCORES OF {} GEN".format(generation_count))
+    #     print("Best three ever to live: ", hof)
