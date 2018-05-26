@@ -26,7 +26,7 @@ GAME_FOLDER = os.path.dirname(__file__)
 IMAGE_FOLDER = os.path.join(GAME_FOLDER, "img")
 MAP_FOLDER = os.path.join(GAME_FOLDER, "maps")
 
-MAP = "labirynt_szumi_deluxe.map"
+MAP = "test.map"
 MAPLIST = []
 MAP_PLACES = []
 with open(MAP_FOLDER + "/" + MAP, "rt") as file:
@@ -37,5 +37,5 @@ GRIDHEIGHT = len(MAPLIST[0])
 
 for i in range (0, GRIDWIDTH):
     for j in range (0, GRIDHEIGHT):
-        if MAPLIST[i][j] == ".":
+        if MAPLIST[i][j] == "." or MAPLIST[i][j] =='6' or MAPLIST[i][j] =='5' :
             MAP_PLACES.append([j,i])

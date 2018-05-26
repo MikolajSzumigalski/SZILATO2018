@@ -15,10 +15,10 @@ class Game:
         pg.key.set_repeat(500, 100)
         #init sprites and map
         self.all_sprites = pg.sprite.Group()
-        self.player = Player(self, 1, 1)
-        self.ciri = Ciri(self, 1, 2)
         self.monsters = []
-        self.mixtures = []
+        self.map = Map(self)
+        self.map.load_from_file(MAP)
+        self.map.init_tile_objects()
         for i in range (0, 10):
             rand = random.randint(0, len(MAP_PLACES)-1)
             self.monsters.append(Mglak(self, MAP_PLACES[rand][0], MAP_PLACES[rand][1]))
@@ -49,17 +49,7 @@ class Game:
             self.monsters.append(Dragon(self, MAP_PLACES[rand][0], MAP_PLACES[rand][1]))
             MAP_PLACES.remove(MAP_PLACES[rand])
 
-        for i in range (0, 6):
-            rand = random.randint(0, len(MAP_PLACES))
-            self.mixtures.append(HP_Mixture(self, MAP_PLACES[rand][0], MAP_PLACES[rand][1]))
-            MAP_PLACES.remove(MAP_PLACES[rand])
-
-        #self.monsters = [Leszy(self, 5, 6), Leszy(self, 6, 6), Mglak(self, 12, 1), Mglak(self, 1, 5), Spider(self, 2, 3),
-        #                 Spider(self, 2, 2), Spider(self, 8, 4), Mglak(self, 1, 3)]
-        #self.mixtures = [HP_Mixture(self, 5,5)]
-        self.map = Map(self)
-        self.map.load_from_file(MAP)
-        self.map.init_tile_objects()
+        self.player = Player(self, 1, 1)
         self.map_of_all = copy.deepcopy(self.map.legendReturn())
         self.dynamic_map = copy.deepcopy(self.map_of_all[:])
         self.dynamic_map = self.dynamic_map_update()
@@ -74,12 +64,14 @@ class Game:
     def run(self):
         # game loop - set self.playing = False to end the game
         self.playing = True
+        self.pause = True
         pg.mixer.music.play()
         while self.playing:
-            self.dt = self.clock.tick(FPS) / 1000
-            self.events()
-            self.update()
-            self.draw()
+            while self.pause:
+                self.dt = self.clock.tick(FPS) / 1000
+                self.events()
+                self.update()
+                self.draw()
 
     def quit(self):
         pg.quit()
@@ -96,8 +88,6 @@ class Game:
         dynamic_map = copy.deepcopy(self.map_of_all)
         for m in self.monsters:
             dynamic_map[m.y][m.x] = 2
-        for m in self.mixtures:
-            dynamic_map[m.y][m.x] = 3
         dynamic_map[self.player.y][self.player.x] = 4
         return dynamic_map
 
@@ -118,19 +108,35 @@ class Game:
             if event.type == pg.KEYDOWN:
                 if event.key == pg.K_ESCAPE:
                     self.quit()
-                if event.key == pg.K_LEFT:
-                    #sprawdź co się stanie jeśli player się przesunie
-                    self.logic_engine.check_player_collisions(dx=-1)
-                    # self.player.move(dx=-1)
-                if event.key == pg.K_RIGHT:
-                    self.logic_engine.check_player_collisions(dx=1)
-                    # self.player.move(dx=1)
-                if event.key == pg.K_UP:
-                    self.logic_engine.check_player_collisions(dy=-1)
-                    # self.player.move(dy=-1)
-                if event.key == pg.K_DOWN:
-                    self.logic_engine.check_player_collisions(dy=1)
-                    # self.player.move(dy=1)
+                if self.player.pausemove:
+                    if event.key == pg.K_LEFT:
+                        #sprawdź co się stanie jeśli player się przesunie
+                        self.logic_engine.check_player_collisions(dx=-1)
+                        # self.player.move(dx=-1)
+                    if event.key == pg.K_RIGHT:
+                        self.logic_engine.check_player_collisions(dx=1)
+                        # self.player.move(dx=1)
+                    if event.key == pg.K_UP:
+                        self.logic_engine.check_player_collisions(dy=-1)
+                        # self.player.move(dy=-1)
+                    if event.key == pg.K_DOWN:
+                        self.logic_engine.check_player_collisions(dy=1)
+                        # self.player.move(dy=1)
+                if not self.player.pausemove:
+                    if event.key == pg.K_1:
+                         self.logic_engine.choose.stalowy()
+                    if event.key == pg.K_2:
+                        self.logic_engine.choose.silver()
+                    if event.key == pg.K_3:
+                        self.logic_engine.choose.axe()
+                    if event.key == pg.K_4:
+                        self.logic_engine.choose.bow()
+                    if event.key == pg.K_5:
+                        self.logic_engine.choose.fireball()
+                    if event.key == pg.K_6:
+                        self.logic_engine.choose.mixture()
+                    if event.key == pg.K_7:
+                        print("TU BĘDZIE DRZEWKO DECYZYJNE")
                 self.dynamic_map = self.dynamic_map_update()
                 self.inteface.draw_legend(self.dynamic_map)
             if event.type == pg.VIDEORESIZE:

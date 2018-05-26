@@ -9,6 +9,7 @@ ROCK_1 = '2'
 ROCK_2 = '3'
 ROCK_3 = '4'
 WATER = '5'
+MUD = '6'
 
 #textury zasobów
 textures = {
@@ -18,6 +19,7 @@ textures = {
     str(ROCK_2) : pg.transform.scale(pg.image.load(IMAGE_FOLDER + "/rock2.png"), (TILESIZE, TILESIZE)),
     str(ROCK_3) : pg.transform.scale(pg.image.load(IMAGE_FOLDER + "/rock3.png"), (TILESIZE, TILESIZE)),
     str(WATER)  : pg.transform.scale(pg.image.load(IMAGE_FOLDER + "/water.png"), (TILESIZE, TILESIZE)),
+    str(MUD)  : pg.transform.scale(pg.image.load(IMAGE_FOLDER + "/mud.png"), (TILESIZE, TILESIZE)),
 }
 
 #generowanie testowej mapy
@@ -68,6 +70,8 @@ class Map:
                     self.tiles_data[column][row] = Rock(self.game, column, row, 3)
                 if temp_key == '5':
                     self.tiles_data[column][row] = Water(self.game, column, row, 1)
+                if temp_key == '6':
+                    self.tiles_data[column][row] = Mud(self.game, column, row, 1)
 
 
     def apply_fog(self, screen, player):
@@ -93,7 +97,7 @@ class Map:
         print(self.map_data)
         for i in range (0, len(self.legend)):
             for j in range (0, len(self.legend[i])):
-                if self.legend[i][j] == '2' or self.legend[i][j] == '3' or self.legend[i][j] == '4' or self.legend[i][j] == '5':
+                if self.legend[i][j] == '2' or self.legend[i][j] == '3' or self.legend[i][j] == '4':
                     self.legend[i][j] = 1
                 else:
                     self.legend[i][j] = 0
@@ -134,6 +138,13 @@ class Water(Tile):
         }
         super(Water, self).__init__(game, tileX, tileY, self.textures[type])
 
+class Mud(Tile):
+    def __init__(self, game, tileX, tileY, type):
+        self.textures = {
+            1  : pg.transform.scale(pg.image.load(IMAGE_FOLDER + "/mud.png"), (TILESIZE, TILESIZE)),
+        }
+        super(Mud, self).__init__(game, tileX, tileY, self.textures[type])
+
 class Rock(Tile):
     def __init__(self, game, tileX, tileY, type):
         self.textures = {
@@ -153,12 +164,12 @@ class Camera:
         return entity.rect.move(self.camera.topleft)
 
     def update(self, target):
-        x = -target.rect.x + int(WIDTH / 2)
-        y = -target.rect.y + int(HEIGHT / 2)
+        self.x = -target.rect.x + int(WIDTH / 2)
+        self.y = -target.rect.y + int(HEIGHT / 2)
 
         # limit scrolling to map size
-        x = min(0, x)  # left
-        y = min(0, y)  # top
-        x = max(-(self.width - WIDTH), x)  # right
-        y = max(-(self.height - HEIGHT), y)  # bottom
-        self.camera = pg.Rect(x, y, self.width, self.height)
+        self.x = min(0, self.x)  # left
+        self.y = min(0, self.y)  # top
+        self.x = max(-(self.width - WIDTH), self.x)  # right
+        self.y = max(-(self.height - HEIGHT), self.y)  # bottom
+        self.camera = pg.Rect(self.x, self.y, self.width, self.height)

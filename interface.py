@@ -42,17 +42,9 @@ class Interface:
         self.surface.blit(self.image, (0,65))
         draw_hp(self.surface, str(player.hp), 25, 65, 65)
         #WYŚWIETLANIE POZIOMU
-        draw_text(self.surface, "LEVEL: ", 20, 40, 95)
-        draw_text(self.surface,  str(player.lev), 20, 90, 95)
+        draw_text(self.surface, "PKT: ", 20, 40, 95)
+        draw_text(self.surface,  str(player.points), 20, 90, 95)
         #WYŚWIETLANIE EXPA
-        draw_text(self.surface, "EXP: ", 20, 32, 130)
-        draw_text(self.surface,  str(player.total_exp) + " / " + str(sum([100 * level for level in range(1, player.lev+1)])), 20, 100, 130)
-        #WYŚWIETLANIE ATAKU
-        draw_text(self.surface,  "ATK: ", 20, 32, 150)
-        draw_text(self.surface,  str(player.at), 20, 120, 150)
-        #WYŚWIETLNIE OBRONY
-        draw_text(self.surface,  "DEF: ", 20, 32, 170)
-        draw_text(self.surface,  str(player.deff), 20, 120, 170)
         #WYSWIETLANIE LEGENDY POTWORÓW
         self.image = pg.Surface((32, 32))
         #self.image = pg.image.load(os.path.join(img_folder, "monsters.png")).convert()
@@ -90,7 +82,4 @@ class Interface:
 
     def update(self, player):
         draw_hp(self.surface, str(player.hp), 25, 65, 65)
-        draw_text(self.surface,  str(player.lev), 20, 90, 95)
-        draw_text(self.surface,  str(player.total_exp) + " / " + str(sum([100 * level for level in range(1, player.lev+1)])), 20, 100, 130)
-        draw_text(self.surface,  str(player.at), 20, 120, 150)
-        draw_text(self.surface,  str(player.deff), 20, 120, 170)
+        draw_text(self.surface,  str(player.points), 20, 90, 95)
