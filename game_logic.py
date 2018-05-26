@@ -71,7 +71,7 @@ class LogicEngine:
             self.game.player.pausemove = True
             starthp = self.game.player.hp
             for i in range(0, 1):
-                if self.defender.fly == True or self.game.map.map_data[self.attacker.x][self.attacker.y] == '5':
+                if self.defender.fly == True or self.game.map.map_data[self.attacker.y][self.attacker.x] == '5':
                     print("Latam, lub jesteś w wodzie")
                     plik = open('przypadki.txt', 'a')
                     plik.writelines(
@@ -152,7 +152,7 @@ class LogicEngine:
             self.game.player.pausemove = True
             starthp = self.game.player.hp
             for i in range(0, 1):
-                if self.defender.fly == True or self.game.map.map_data[self.attacker.x][self.attacker.y] == '5':
+                if self.defender.fly == True or self.game.map.map_data[self.attacker.y][self.attacker.x] == '5':
                     print("Latam, lub jesteś w wodzie")
                     plik = open('przypadki.txt', 'a')
                     plik.writelines(
@@ -233,7 +233,7 @@ class LogicEngine:
             self.game.player.pausemove = True
             starthp = self.game.player.hp
             for i in range(0, 1):
-                if self.game.map.map_data[self.attacker.x][self.attacker.y] == '5':
+                if self.game.map.map_data[self.attacker.y][self.attacker.x] == '5':
                     print("Jesteś w wodzie")
                     plik = open('przypadki.txt', 'a')
                     plik.writelines(
@@ -283,7 +283,7 @@ class LogicEngine:
             self.game.player.pausemove = True
             starthp = self.game.player.hp
             for i in range(0, 1):
-                if self.defender.fly == True or self.game.map.map_data[self.attacker.x][self.attacker.y] == '5':
+                if self.defender.fly == True or self.game.map.map_data[self.attacker.y][self.attacker.x] == '5':
                     print("Latam, lub jesteś w wodzie")
                     plik = open('przypadki.txt', 'a')
                     plik.writelines(
@@ -297,7 +297,7 @@ class LogicEngine:
                     plik.close()
                     self.attacker.die()
                     return -2000
-                if self.game.map.map_data[self.attacker.x][self.attacker.y] == '6':
+                if self.game.map.map_data[self.attacker.y][self.attacker.x] == '6':
                     print("Błoto")
                     self.attacker.hp -=3
                     if self.attacker.hp <= 0:
@@ -332,7 +332,7 @@ class LogicEngine:
             starthp = self.game.player.hp
             self.game.player.pausemove = True
             for i in range(0, 1):
-                if self.game.map.map_data[self.attacker.x][self.attacker.y] == '5':
+                if self.game.map.map_data[self.attacker.y][self.attacker.x] == '5':
                     print("Jesteś w wodzie")
                     plik = open('przypadki.txt', 'a')
                     plik.writelines(
