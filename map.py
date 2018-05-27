@@ -135,10 +135,21 @@ class Map:
                         obj = Dragon(self.game, line_arr[1], line_arr[2])
                         self.game.monsters.append(obj)
                         self.tiles_data[obj.x][obj.y].setOccupiedBy(obj)
-                    elif line_arr[0] == 6:
+                    elif line_arr[0] == 60:
                         obj = HP_Mixture(self.game, line_arr[1], line_arr[2])
                         self.game.items.append(obj)
                         self.tiles_data[obj.x][obj.y].setOccupiedBy(obj)
+                    elif line_arr[0] == 61:
+                        obj = Axe(self.game, line_arr[1], line_arr[2])
+                        self.game.items.append(obj)
+                        self.tiles_data[obj.x][obj.y].setOccupiedBy(obj)
+                    elif line_arr[0] == 62:
+                        obj = Armor(self.game, line_arr[1], line_arr[2])
+                        self.game.items.append(obj)
+                        self.tiles_data[obj.x][obj.y].setOccupiedBy(obj)
+                    else:
+                        print("[load map] number '" + str(line_arr[0]) + "' do not match any known object")
+
     def update(self):
         pass
 

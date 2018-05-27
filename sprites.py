@@ -15,7 +15,7 @@ music_folder = os.path.join(game_folder, "music")
 
 class Character(metaclass=ABCMeta):
     """ this is a general character abstract class that provides basis of drawing any character on screen"""
-    def __init__(self, game, x, y, hp, at, deff, lev, exp, max_hp=0):
+    def __init__(self, game, x, y, hp, at, deff, lev, exp, score=0, max_hp=0):
 
         # Atrybuty postaci LOGICZNE
         self.name = self.__class__.__name__
@@ -27,11 +27,12 @@ class Character(metaclass=ABCMeta):
         self.deff = deff # obrona
         self.lev = lev # poziom
         self.total_exp = exp;
+        self.score = score
         self.max_hp = max_hp;
         self.alive = True
         if (self.max_hp == 0):
             self.max_hp = self.hp
-        self.logic_attribute_name_list = ['logic_attribute_name_list' , 'name', 'id','hp', 'x', 'y', 'at', 'deff', 'lev', 'total_exp', 'max_hp', 'alive']
+        self.logic_attribute_name_list = ['logic_attribute_name_list' , 'name', 'id','hp', 'x', 'y', 'at', 'deff', 'lev', 'total_exp', 'max_hp', 'alive', 'score']
 
     # Te rzeczy są po to, by branie klasy i próbowanie jej wyprintowania etc. dawało tylko i wyłącznie
     # rzeczy logicznie (hp, exp etc), a nie grafiki i ten spam graficzny
@@ -70,10 +71,10 @@ class Character(metaclass=ABCMeta):
         pass;
 
     def add_exp(self, exp):
-        self.total_exp += exp;
+        self.total_exp += exp
         while self.total_exp >= sum([100 * level for level in range(1, self.lev+1)]):
-             self.level_up();
-        #TODO
+             self.level_up()
+        self.score += exp
 
     @abstractmethod
     def die(self):
@@ -161,7 +162,8 @@ class Player(Character):
         deff = 20
         lev = 1
         exp = 0 #punkty doświadczenia
-        super(Player, self).__init__(game, x, y, hp, at, deff, lev, exp);
+        score = 0
+        super(Player, self).__init__(game, x, y, hp, at, deff, lev, exp, score);
         PlayerSprite(self, game)
         self.in_move = False #czy gracz znajduje się w ruchu?
         self.next_steps = [] #zaplanowana droga, gdy coś tu jest in_move zmieni się na True
@@ -178,6 +180,7 @@ class Player(Character):
         self.lev = 0
         self.deff = 0
         self.alive = False
+        self.score = 0
 
     def get_new_path(self):
         A = A_star_path(self.game)
@@ -203,6 +206,8 @@ class Player(Character):
         self.deff += 10
         self.hp = self.max_hp
         self.lev += 1
+
+        self.score += 10
         # print("level up, hp: {} totalexp: {} level{}".format(self.hp, self.total_exp, self.lev))
         # self.visual_health_update()
         pass
@@ -259,7 +264,10 @@ class MonsterSprite(CharacterSprite, metaclass=ABCMeta):
         self.character.window_y = self.rect.y
 
         if not self.character.alive:
-            self.delete()
+            # self.delete()
+            self.image = pg.image.load(os.path.join(img_folder, "rip.png")).convert()
+            self.image = pg.transform.scale(self.image, (TILESIZE, TILESIZE))
+            self.image.set_colorkey(BLACK)
             # pg.sprite.Sprite.remove(self, self.groups)
             # self.game.monsters.remove(self)
 
@@ -419,6 +427,66 @@ class HP_MixtureSprite(pg.sprite.Sprite):
         pg.sprite.Sprite.__init__(self, self.groups)
         self.image = pg.Surface((TILESIZE, TILESIZE))
         self.image = pg.image.load(os.path.join(img_folder, "red_elix.png")).convert()
+        self.image = pg.transform.scale(self.image, (TILESIZE, TILESIZE))
+        self.image.set_colorkey(BLACK)
+        self.rect = self.image.get_rect()
+        self.rect.x = x * TILESIZE
+        self.rect.y = y * TILESIZE
+
+    def update(self):
+        if not self.character.alive:
+            pg.sprite.Sprite.remove(self, self.groups)
+            self.game.items.remove(self.character)
+            del self
+
+
+class Axe(Item):
+    def __init__(self, game, x, y, draw=True):
+        super(Axe, self).__init__(x,y)
+        if draw: AxeSprite(self, game, self.x,self.y)
+
+    def use(self, player):
+        player.at *= 2
+        self.alive = False
+
+class AxeSprite(pg.sprite.Sprite):
+    def __init__(self, character,  game, x, y):
+        self.game = game
+        self.character = character
+        self.groups = game.all_sprites
+        pg.sprite.Sprite.__init__(self, self.groups)
+        self.image = pg.Surface((TILESIZE, TILESIZE))
+        self.image = pg.image.load(os.path.join(img_folder, "axe.png")).convert()
+        self.image = pg.transform.scale(self.image, (TILESIZE, TILESIZE))
+        self.image.set_colorkey(BLACK)
+        self.rect = self.image.get_rect()
+        self.rect.x = x * TILESIZE
+        self.rect.y = y * TILESIZE
+
+    def update(self):
+        if not self.character.alive:
+            pg.sprite.Sprite.remove(self, self.groups)
+            self.game.items.remove(self.character)
+            del self
+
+
+class Armor(Item):
+    def __init__(self, game, x, y, draw=True):
+        super(Armor, self).__init__(x,y)
+        if draw: ArmorSprite(self, game, self.x,self.y)
+
+    def use(self, player):
+        player.deff *= 2
+        self.alive = False
+
+class ArmorSprite(pg.sprite.Sprite):
+    def __init__(self, character,  game, x, y):
+        self.game = game
+        self.character = character
+        self.groups = game.all_sprites
+        pg.sprite.Sprite.__init__(self, self.groups)
+        self.image = pg.Surface((TILESIZE, TILESIZE))
+        self.image = pg.image.load(os.path.join(img_folder, "armor.png")).convert()
         self.image = pg.transform.scale(self.image, (TILESIZE, TILESIZE))
         self.image.set_colorkey(BLACK)
         self.rect = self.image.get_rect()

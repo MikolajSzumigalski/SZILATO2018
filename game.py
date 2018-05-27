@@ -46,7 +46,7 @@ class Game:
             self.events()
             self.update()
             self.draw()
-        return self.player.hp
+        return self.player.score
 
     def quit(self):
         pg.quit()
@@ -100,7 +100,7 @@ class Game:
                         self.logic_engine.check_player_collisions(dy=-1)
                     if event.key == pg.K_DOWN:
                         self.logic_engine.check_player_collisions(dy=1)
-                        
+
                     if event.key == pg.K_w:
                         self.logic_engine.player_start_auto_move()
 
