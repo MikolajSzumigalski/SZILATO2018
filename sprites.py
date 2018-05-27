@@ -189,6 +189,7 @@ class Player(Character):
         else: return self.deff + self.armor.deff
 
     def equip_weapon(self, obj):
+        print(obj)
         if self.weapon: self.weapon.drop(obj.x, obj.y)
         self.weapon = obj
 
@@ -423,10 +424,11 @@ class GaunterSprite(MonsterSprite):
 #--items--------------------------------------------------
 class Item(metaclass=ABCMeta):
     """ this is a general character abstract class that provides basis of drawing any character on screen"""
-    def __init__(self, x, y):
+    def __init__(self, game, x, y):
         self.x = x
         self.y = y
         self.alive = True
+        self.game = game
 
     @abstractmethod
     def drop(self, x, y):
@@ -439,7 +441,7 @@ class Item(metaclass=ABCMeta):
 
 class HP_Mixture(Item):
     def __init__(self, game, x, y, draw=True):
-        super(HP_Mixture, self).__init__(x,y)
+        super(HP_Mixture, self).__init__(game,x,y)
         if draw: HP_MixtureSprite(self, game, self.x,self.y)
 
     def drop(self, x, y):
@@ -472,16 +474,18 @@ class HP_MixtureSprite(pg.sprite.Sprite):
 
 class Axe(Item):
     def __init__(self, game, x, y, draw=True):
-        super(Axe, self).__init__(x,y)
+        super(Axe, self).__init__(game,x,y)
         if draw: AxeSprite(self, game, self.x,self.y)
-        self.at = 100
+        self.at = 50
         self.equiped = False
 
     def drop(self, x, y):
         if self.equiped:
-            self.x = x
-            self.y = y
-            self.equiped = False
+            # self.x = x
+            # self.y = y
+            # self.equiped = False
+            self.alive = False
+            # AxeSprite(self, self.game, x, y)
 
     def use(self, player):
         player.equip_weapon(self)
@@ -505,21 +509,23 @@ class AxeSprite(pg.sprite.Sprite):
     def update(self):
         if not self.character.alive:
             pg.sprite.Sprite.remove(self, self.groups)
-            self.game.items.remove(self.character)
+            if not self.character.equiped: self.game.items.remove(self.character)
             del self
 
 class Sword(Item):
     def __init__(self, game, x, y, draw=True):
-        super(Sword, self).__init__(x,y)
+        super(Sword, self).__init__(game,x,y)
         if draw: SwordSprite(self, game, self.x,self.y)
-        self.at = 50
+        self.at = 20
         self.equiped = False
 
     def drop(self, x, y):
         if self.equiped:
-            self.x = x
-            self.y = y
+            # self.x = x
+            # self.y = y
             self.equiped = False
+            # self.alive = True
+            # SwordSprite(self, self.game, x, y)
 
     def use(self, player):
         player.equip_weapon(self)
@@ -533,7 +539,7 @@ class SwordSprite(pg.sprite.Sprite):
         self.groups = game.all_sprites
         pg.sprite.Sprite.__init__(self, self.groups)
         self.image = pg.Surface((TILESIZE, TILESIZE))
-        self.image = pg.image.load(os.path.join(img_folder, "axe.png")).convert()
+        self.image = pg.image.load(os.path.join(img_folder, "srebrnysword.png")).convert()
         self.image = pg.transform.scale(self.image, (TILESIZE, TILESIZE))
         self.image.set_colorkey(BLACK)
         self.rect = self.image.get_rect()
@@ -543,22 +549,24 @@ class SwordSprite(pg.sprite.Sprite):
     def update(self):
         if not self.character.alive:
             pg.sprite.Sprite.remove(self, self.groups)
-            self.game.items.remove(self.character)
+            if not self.character.equiped: self.game.items.remove(self.character)
             del self
 
 
 class Armor(Item):
     def __init__(self, game, x, y, draw=True):
-        super(Armor, self).__init__(x,y)
+        super(Armor, self).__init__(game,x,y)
         if draw: ArmorSprite(self, game, self.x,self.y)
-        self.deff = 100
+        self.deff = 50
         self.equiped = False
 
     def drop(self, x, y):
         if self.equiped:
-            self.x = x
-            self.y = y
+            # self.x = x
+            # self.y = y
             self.equiped = False
+            # self.alive = True
+            ArmorSprite(self, self.game, x, y)
 
     def use(self, player):
         player.equip_armor(self)
@@ -582,5 +590,5 @@ class ArmorSprite(pg.sprite.Sprite):
     def update(self):
         if not self.character.alive:
             pg.sprite.Sprite.remove(self, self.groups)
-            self.game.items.remove(self.character)
+            if not self.character.equiped: self.game.items.remove(self.character)
             del self

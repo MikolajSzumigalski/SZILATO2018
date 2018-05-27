@@ -45,12 +45,13 @@ class LogicEngine:
                     random.choice(geralt_sounds).play()
                 self.fight(self.player, m)
         #kolizje ze ścianami
+        # print(self.items)
         for i in self.items:
             if new_x  == i.x and new_y == i.y and i.alive:
                 i.use(self.player)
                 mixture_collision = True
-                # print("Let's drink!")
                 self.map.tiles_data[i.x][i.y].setOccupiedBy(None);
+                break
 
         if not monster_collision and not mixture_collision:
             collidables = [ROCK_1,ROCK_2,ROCK_3,WATER]
