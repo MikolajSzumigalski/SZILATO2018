@@ -24,8 +24,6 @@ class LogicEngine:
 
     #sprawdź czy na nowym polu (new_x, new_y) wystąpi jakaś kolizja
     def check_player_collisions(self, dx=0, dy=0, simulation = False, absolute_coordinates = False):
-        # if(simulation):
-            # print("<SIMULATION: ")
         if(absolute_coordinates):
             new_x = dx
             new_y = dy
@@ -52,7 +50,6 @@ class LogicEngine:
                 i.use(self.player)
                 mixture_collision = True
                 # print("Let's drink!")
-                # self.player.hp = self.player.max_hp
                 self.map.tiles_data[i.x][i.y].setOccupiedBy(None);
 
         if not monster_collision and not mixture_collision:
@@ -62,9 +59,7 @@ class LogicEngine:
                 self.map.tiles_data[dx][dy].setOccupiedBy(self.player);
 
                 self.player.move(dx, dy)
-                # print(self.map.map_data[new_y][new_x])
-        # if (simulation):
-        #     # print("/SIMULATION>")
+
         self.check_gameover()
 
     def fight(self, attacker, defender):

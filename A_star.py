@@ -102,7 +102,7 @@ class A_star_path:
             current = self.lowest_f_cost_spot(openSet)
             # print([current.x, current.y])
             if [current.x, current.y] == dest:
-                #print ("Path exists!")
+                print ("Path exists!")
                 if only_lenght:
                     return len(self.reconstruct_path(cameFrom, current))
                 else:
@@ -124,7 +124,7 @@ class A_star_path:
                 n.g = temp_g_score
                 n.f = n.g + self.manhattan_dist([n.x, n.y], dest)
 
-        #print("There is no path!")
+        print("There is no path!")
         if not only_lenght:
             return []
         else:
