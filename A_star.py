@@ -18,18 +18,18 @@ class A_star_path:
     def __init__(self, game, exceptions=[]):
         self.start = [game.player.x, game.player.y]
         self.monsters = game.get_monsters_positions()
-        self.mixtures = game.get_mixtures_positions()
+        self.items = game.get_items_positions()
         self.map = game.map
         self.spot_map = [[0 for j in range(self.map.width)] for i in range(self.map.height)]
 
         for m in game.monsters:
             if not m.alive: exceptions.append([m.x, m.y])
-        for i in game.mixtures:
+        for i in game.items:
             if not i.alive: exceptions.append([i.x, i.y])
 
         for x in range(self.map.width):
             for y in range(self.map.height):
-                self.spot_map[y][x] = Spot(x, y, [x,y] not in exceptions and (game.map.tiles_data[y][x].isCollidable or [x,y] in self.monsters + self.mixtures), 1)
+                self.spot_map[y][x] = Spot(x, y, [x,y] not in exceptions and (game.map.tiles_data[y][x].isCollidable or [x,y] in self.monsters + self.items), 1)
         # self.log_map()
     def set_start(self, pos):
         self.start = pos
@@ -194,12 +194,12 @@ class A_star_target_list:
     def __init__(self, game):
         self.game = game
         #początkowy stan ma pola parent i action ustawione na None, przydatne w self.get_instructions_chain()
-        self.start_state = State(game.player, game.monsters, game.mixtures, game.logic_engine, None, None)
+        self.start_state = State(game.player, game.monsters, game.items, game.logic_engine, None, None)
 
     def next_state(self, object_to_visit, state):
         #przy pomocy symulwanego silnika logicznego z game_logic.py pozyskujemy kolejny stan
         new_engine = state.engine.simulate_move_absolute_coordinate(False, object_to_visit.x, object_to_visit.y)
-        return State(new_engine.player, new_engine.monsters, new_engine.mixtures, new_engine, object_to_visit, state)
+        return State(new_engine.player, new_engine.monsters, new_engine.items, new_engine, object_to_visit, state)
 
     def get_all_lenghts(self, state):
         #pozyskaj tablicę odległości do poszczególnych obiektów Monster|Item ze stanu 'state'
@@ -270,7 +270,7 @@ class A_star_target_list:
                 #heurystyka
                 new_state.h = new_state.get_all_hp() + new_state.alive_monsters_count() * 100 - new_state.player.hp
                 new_state.f = new_state.g*2 + new_state.h
-                print(new_state.f, " ", end='')
+                # print(new_state.f, " ", end='')
 
                 '''
                 mamy teraz 3 możliwości:
@@ -300,7 +300,7 @@ class A_star_target_list:
                 if not in_closed_list:
                     open_list.append(new_state)
 
-            print("")
+            # print("")
 
         print("nie znaleziono!")
         return []

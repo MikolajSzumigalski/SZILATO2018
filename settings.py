@@ -44,7 +44,6 @@ with open(MAP_FOLDER + "/" + MAP, "rt") as file:
 
 GRIDWIDTH = len(MAPLIST[0])
 GRIDHEIGHT = len(MAPLIST)
-print("[debug] ",GRIDWIDTH, GRIDHEIGHT)
 RANDOM_SPAWN = False
 MOVEEVENT = pg.USEREVENT+1
 for i in range (0, GRIDHEIGHT):

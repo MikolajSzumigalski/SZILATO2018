@@ -16,10 +16,10 @@ class LogicEngine:
         self.game = game
         self.player = game.player
         self.monsters = game.monsters
-        self.mixtures = game.mixtures
+        self.items = game.items
         self.map = game.map
-        self.logic_attribute_name_list = ['player', 'monsters', 'mixtures', 'map', 'gameover', 'simulation', 'logic_attribute_name_list']
-        self.gameover = False
+        self.logic_attribute_name_list = ['player', 'monsters', 'items', 'map', 'gameover', 'simulation', 'logic_attribute_name_list']
+        # self.gameover = False
         self.simulation = False
 
     #sprawdź czy na nowym polu (new_x, new_y) wystąpi jakaś kolizja
@@ -47,20 +47,17 @@ class LogicEngine:
                     random.choice(geralt_sounds).play()
                 self.fight(self.player, m)
         #kolizje ze ścianami
-        for m in self.mixtures:
-            if new_x  == m.x and new_y == m.y:
-                # print("Let's drink!")
+        for i in self.items:
+            if new_x  == i.x and new_y == i.y:
+                i.use(self.player)
                 mixture_collision = True
-                self.player.hp = self.player.max_hp
-                self.map.tiles_data[m.x][m.y].setOccupiedBy(None);
+                # print("Let's drink!")
+                # self.player.hp = self.player.max_hp
+                self.map.tiles_data[i.x][i.y].setOccupiedBy(None);
 
-                m.die()
         if not monster_collision and not mixture_collision:
             collidables = [ROCK_1,ROCK_2,ROCK_3,WATER]
-            if self.map.map_data[new_y][new_x] in collidables:
-                print("collison with rock or water!")
-            else:
-                # print("move")
+            if not self.map.map_data[new_y][new_x] in collidables:
                 self.map.tiles_data[self.player.x][self.player.y].setOccupiedBy(None);
                 self.map.tiles_data[dx][dy].setOccupiedBy(self.player);
 
@@ -92,7 +89,7 @@ class LogicEngine:
                     attacker.x = current_defender.x
                     attacker.y = current_defender.y
                     self.map.tiles_data[attacker.x][attacker.y].setOccupiedBy(attacker);
-                    
+
                 current_defender.die();
                 self.check_gameover()
                 break
@@ -167,12 +164,12 @@ class LogicEngine:
         return self.simulate_action('check_player_collisions', save_simulated_state_JSON, x, y, simulation=True, absolute_coordinates = True)
 
     def check_gameover(self):
-        if(self.player.hp <= 0):
-            self.gameover = True;
+        if self.player.hp <= 0 or not self.game.get_alive_monsters():
+            # self.gameover = True
             if(self.simulation == True):
                 pass
             else:
-                program_logic.gameover()
+                self.game.gameover = True
 
     # # Te rzeczy są po to, by branie klasy i próbowanie jej kopiowania dało tylko
     # # rzeczy logicznie (hp, exp etc), a nie grafiki i ten spam graficzny

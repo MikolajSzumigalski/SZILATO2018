@@ -17,7 +17,7 @@ class Game:
         #init sprites and map
         self.all_sprites = pg.sprite.Group()
         self.monsters = []
-        self.mixtures = []
+        self.items = []
         self.map = Map(self)
         self.map.load_from_file(MAP, RANDOM_SPAWN)
 
@@ -34,17 +34,19 @@ class Game:
         self.logic_engine = LogicEngine(self)
         # pg.time.set_timer(self.MOVEEVENT, PLAYER_MOVE_FREQUENCY)
 
+        self.logic_attribute_name_list = ['monsters', 'items', 'map', 'player', 'logic_engine', 'logic_attribute_name_list']
+        self.gameover = False
 
-        self.logic_attribute_name_list = ['monsters', 'mixtures', 'map', 'player', 'logic_engine', 'logic_attribute_name_list']
     def run(self):
         # game loop - set self.playing = False to end the game
-        self.playing = True
+        # self.playing = True
         pg.mixer.music.play()
-        while self.playing:
+        while not self.gameover:
             self.dt = self.clock.tick(FPS) / 1000
             self.events()
             self.update()
             self.draw()
+        return self.player.hp
 
     def quit(self):
         pg.quit()
@@ -63,7 +65,7 @@ class Game:
         for m in self.monsters:
             if m.alive:
                 dynamic_map[m.y][m.x] = 2
-        for m in self.mixtures:
+        for m in self.items:
             dynamic_map[m.y][m.x] = 3
         dynamic_map[self.player.y][self.player.x] = 4
         return dynamic_map
@@ -127,10 +129,16 @@ class Game:
             out.append([m.x, m.y])
         return out
 
-    def get_mixtures_positions(self):
+    def get_items_positions(self):
         out = []
-        for m in self.mixtures:
+        for m in self.items:
             out.append([m.x, m.y])
+        return out
+
+    def get_alive_monsters(self):
+        out = []
+        for m in self.monsters:
+            if m.alive: out.append(m)
         return out
 
     def __resize_window__(self, event):

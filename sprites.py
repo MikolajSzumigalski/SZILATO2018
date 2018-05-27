@@ -118,17 +118,17 @@ class CharacterSprite(pg.sprite.Sprite):
 
 
     def visual_health_update(self):
-        current_health_percentage = self.character.hp / self.character.max_hp
-        if(current_health_percentage > 0):
-            new_size = int(TILESIZE * current_health_percentage)
-            width = new_size
-            hb = pg.Surface((width, self.hbHeight))
-            hb.fill(GREEN)
+        if self.character.hp == 0: current_health_percentage = 0
+        else: current_health_percentage = self.character.hp / self.character.max_hp
+        width = 0
+        if(current_health_percentage > 0): width = int(TILESIZE * current_health_percentage)
+        hb = pg.Surface((width, self.hbHeight))
+        hb.fill(GREEN)
 
-            self.hbBase.fill(RED)
-            self.hbBase.blit(hb, (0,0))
+        self.hbBase.fill(RED)
+        self.hbBase.blit(hb, (0,0))
 
-            self.image.blit(self.hbBase, (5,45))
+        self.image.blit(self.hbBase, (5,45))
 
     def hit_animation(self):
         if(self.fadepom):
@@ -386,16 +386,29 @@ class GaunterSprite(MonsterSprite):
         self.image = pg.image.load(os.path.join(img_folder, "gaunter.png")).convert()
         self.image = pg.transform.scale(self.image, (TILESIZE, TILESIZE))
         self.image.set_colorkey(BLACK)
-        super(Gaunter, self).__init__(character, game);
+        super(GaunterSprite, self).__init__(character, game);
 
-class HP_Mixture():
-    def __init__(self, game, x, y):
+
+#--items--------------------------------------------------
+class Item(metaclass=ABCMeta):
+    """ this is a general character abstract class that provides basis of drawing any character on screen"""
+    def __init__(self, x, y):
         self.x = x
         self.y = y
         self.alive = True
-        HP_MixtureSprite(self, game, self.x,self.y )
 
-    def die(self):
+    @abstractmethod
+    def use(self, player):
+        pass;
+
+
+class HP_Mixture(Item):
+    def __init__(self, game, x, y, draw=True):
+        super(HP_Mixture, self).__init__(x,y)
+        if draw: HP_MixtureSprite(self, game, self.x,self.y)
+
+    def use(self, player):
+        player.hp = player.max_hp
         self.alive = False
 
 class HP_MixtureSprite(pg.sprite.Sprite):
@@ -415,28 +428,5 @@ class HP_MixtureSprite(pg.sprite.Sprite):
     def update(self):
         if not self.character.alive:
             pg.sprite.Sprite.remove(self, self.groups)
-            self.game.mixtures.remove(self.character)
+            self.game.items.remove(self.character)
             del self
-
-
-
-
-
-#class Ciri(pg.sprite.Sprite):
-#    def __init__(self, game, x, y):
-#        self.groups = game.all_sprites
-#        pg.sprite.Sprite.__init__(self, self.groups)
-#        self.game = game
-#        self.rect = self.image.get_rect()
-#        self.x = x
-#        self.y = y
-#        self.rect.x = self.x * TILESIZE
-#        self.rect.y = self.y * TILESIZE
-
-#class CiriSprite(CharacterSprite):
-#    def __init__(self, character, game):
-#        self.image = pg.Surface((TILESIZE, TILESIZE))
-#        self.image = pg.image.load(os.path.join(img_folder, "ciri.png")).convert()
-#        self.image = pg.transform.scale(self.image, (TILESIZE, TILESIZE))
-#        self.image.set_colorkey(WHITE)
-#        super(PlayerSprite, self).__init__(character, game)
