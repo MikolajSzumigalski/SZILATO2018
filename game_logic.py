@@ -46,7 +46,7 @@ class LogicEngine:
                 self.fight(self.player, m)
         #kolizje ze ścianami
         for i in self.items:
-            if new_x  == i.x and new_y == i.y:
+            if new_x  == i.x and new_y == i.y and i.alive:
                 i.use(self.player)
                 mixture_collision = True
                 # print("Let's drink!")
@@ -71,9 +71,11 @@ class LogicEngine:
         '''
 
         for current_attacker, current_defender in zip([attacker, defender], [defender, attacker]):
-            if(current_attacker.at > current_defender.deff):
+            if(current_attacker.get_total_at() > current_defender.get_total_deff()):
                 # print(current_defender.hp)
-                current_defender.take_damage(current_attacker.at - current_defender.deff)
+                print("attacker AT:",current_attacker.get_total_at())
+                print("attacker DEF:",current_attacker.get_total_deff(),"\n")
+                current_defender.take_damage(current_attacker.get_total_at() - current_defender.get_total_deff())
                 # print(current_defender.hp)
             if(current_defender.hp <= 0):
                 exp_to_be_given = current_defender.get_worth_exp()

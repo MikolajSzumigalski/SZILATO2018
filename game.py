@@ -110,7 +110,9 @@ class Game:
 
                     if event.key == pg.K_q:
                         #simulate going down 1
-                        self.logic_engine.simulate_move(True, 0, 1)
+                        # self.logic_engine.simulate_move(True, 0, 1)
+                        print(self.player.get_total_at(), self.player.get_total_deff())
+                        print(self.player.weapon, self.player.armor)
 
                     if event.key == pg.K_g:
                         #simulate going down 1
