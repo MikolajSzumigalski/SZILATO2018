@@ -85,7 +85,6 @@ class Map:
                 self.map_data.append(line.replace("\n","").split(" "))
         self.camerawidth =  (GRIDWIDTH+4) * TILESIZE
         self.cameraheight =  (GRIDHEIGHT * TILESIZE)
-        print(len(self.map_data), len(self.map_data[0]))
 
 
 
@@ -94,7 +93,6 @@ class Map:
 
     def legendReturn(self):
         self.legend = copy.deepcopy(self.map_data)
-        print(self.map_data)
         for i in range (0, len(self.legend)):
             for j in range (0, len(self.legend[i])):
                 if self.legend[i][j] == '2' or self.legend[i][j] == '3' or self.legend[i][j] == '4':

@@ -4,7 +4,7 @@ from map import *
 from game import *
 import random
 from os import path
-
+from decisionTree import *
 #metody dla całej logiki gry (kolizje, eventy w grze itp.)
 
 class LogicEngine:
@@ -365,3 +365,23 @@ class LogicEngine:
             self.game.player.pausemove = True
             self.game.player.hp = self.game.player.max_hp
             self.game.player.points -= (700)
+
+        def tree(self):
+            print("Robimy drzewko!")
+            hp = self.attacker.hp
+            if self.game.map.map_data[self.attacker.y][self.attacker.x] == ".":
+                pod = 0
+            elif self.game.map.map_data[self.attacker.y][self.attacker.x] == "5":
+                pod = 1
+            else:
+                pod = 2
+
+
+            przypadek = [
+            ["podloze", pod],
+            ["fly", int(self.defender.fly)],
+            ["tarcza", int(self.defender.shield)],
+            ["potwor", int(self.defender.monster)]
+            ]
+            przypadki = generowaniePrzypadkow(hp, self.game.przypadki, self.game.countprzypadki)
+            podejmijDecyzje(przypadek, przypadki, hp)

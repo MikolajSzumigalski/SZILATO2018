@@ -5,8 +5,10 @@ from map import *
 from game_logic import *
 from os import path
 from interface import *
+from decisionTree import *
 import random
 import copy
+import linecache
 class Game:
     def __init__(self, screen):
         self.screen = screen
@@ -19,6 +21,14 @@ class Game:
         self.map = Map(self)
         self.map.load_from_file(MAP)
         self.map.init_tile_objects()
+        count = len(open('przypadki.txt', 'rU').readlines())
+        self.przypadki = [[],[],[],[],[]]
+        self.countprzypadki = [0,0,0,0,0]
+        for i in range (1, count+1):
+            line = linecache.getline('przypadki.txt', i).split(" ")
+            line[7] = str(int(line[7]))
+            self.przypadki[int(line[0])-1].append(line)
+            self.countprzypadki[int(line[0])-1] += 1
         for i in range (0, 10):
             rand = random.randint(0, len(MAP_PLACES)-1)
             self.monsters.append(Mglak(self, MAP_PLACES[rand][0], MAP_PLACES[rand][1]))
@@ -136,7 +146,7 @@ class Game:
                     if event.key == pg.K_6:
                         self.logic_engine.choose.mixture()
                     if event.key == pg.K_7:
-                        print("TU BĘDZIE DRZEWKO DECYZYJNE")
+                        self.logic_engine.choose.tree()
                 self.dynamic_map = self.dynamic_map_update()
                 self.inteface.draw_legend(self.dynamic_map)
             if event.type == pg.VIDEORESIZE:
