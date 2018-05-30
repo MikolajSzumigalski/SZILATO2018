@@ -170,7 +170,7 @@ class Player(Character):
         exp = 0 #punkty doświadczenia
         score = 0
         super(Player, self).__init__(game, x, y, hp, at, deff, lev, exp, score);
-        PlayerSprite(self, game)
+        if not game.no_graphics: PlayerSprite(self, game)
         self.logic_attribute_name_list = ['logic_attribute_name_list' , 'name', 'id','hp', 'x', 'y', 'at', 'deff', 'lev', 'total_exp', 'max_hp', 'alive', 'score', 'weapon', 'armor']
         self.in_move = False #czy gracz znajduje się w ruchu?
         self.next_steps = [] #zaplanowana droga, gdy coś tu jest in_move zmieni się na True
@@ -189,11 +189,12 @@ class Player(Character):
         else: return self.deff + self.armor.deff
 
     def equip_weapon(self, obj):
-        print(obj)
+        self.score += 10
         if self.weapon: self.weapon.drop(obj.x, obj.y)
         self.weapon = obj
 
     def equip_armor(self, obj):
+        self.score += 10
         if self.armor != None: self.weapon.drop(obj.x, obj.y)
         self.armor = obj
 
@@ -204,7 +205,7 @@ class Player(Character):
         self.lev = 0
         self.deff = 0
         self.alive = False
-        self.score = 0
+        self.score -= 1000
 
     def get_new_path(self):
         A = A_star_path(self.game)
@@ -306,7 +307,7 @@ class Mglak(Monster):
         deff = 20
         lev = 1
         super(Mglak, self).__init__(game, x, y, hp, at, deff, lev);
-        MglakSprite(self, game)
+        if not game.no_graphics: MglakSprite(self, game)
 
 class MglakSprite(MonsterSprite):
     def __init__(self, character, game):
@@ -325,7 +326,7 @@ class Spider(Monster):
         deff = 30
         lev = 2
         super(Spider, self).__init__(game, x, y, hp, at, deff, lev);
-        SpiderSprite(self, game)
+        if not game.no_graphics: SpiderSprite(self, game)
 
 class SpiderSprite(MonsterSprite):
     def __init__(self, character, game):
@@ -343,7 +344,7 @@ class Ghoul(Monster):
         deff = 40
         lev = 3
         super(Ghoul, self).__init__(game, x, y, hp, at, deff, lev);
-        GhoulSprite(self, game)
+        if not game.no_graphics: GhoulSprite(self, game)
 
 class GhoulSprite(MonsterSprite):
     def __init__(self, character, game):
@@ -360,7 +361,7 @@ class Leszy(Monster):
         deff = 50
         lev = 4
         super(Leszy, self).__init__(game, x, y, hp, at, deff, lev);
-        LeszySprite(self, game)
+        if not game.no_graphics: LeszySprite(self, game)
 
 class LeszySprite(MonsterSprite):
     def __init__(self, character, game):
@@ -377,7 +378,7 @@ class Olgierd(Monster):
         deff = 60
         lev = 5
         super(Olgierd, self).__init__(game, x, y, hp, at, deff, lev);
-        OlgierdSprite(self, game)
+        if not game.no_graphics: OlgierdSprite(self, game)
 
 class OlgierdSprite(MonsterSprite):
     def __init__(self, character, game):
@@ -394,7 +395,7 @@ class Dragon(Monster):
         deff = 70
         lev = 6
         super(Dragon, self).__init__(game, x, y, hp, at, deff, lev);
-        DragonSprite(self, game)
+        if not game.no_graphics: DragonSprite(self, game)
 
 class DragonSprite(MonsterSprite):
     def __init__(self, character, game):
@@ -411,7 +412,7 @@ class Gaunter(Monster):
         deff = 100
         lev = 7
         super(Gaunter, self).__init__(game, x, y, hp, at, deff, lev);
-        GaunterSprite(self, game)
+        if not game.no_graphics: GaunterSprite(self, game)
 
 class GaunterSprite(MonsterSprite):
     def __init__(self, character, game):
@@ -440,9 +441,9 @@ class Item(metaclass=ABCMeta):
 
 
 class HP_Mixture(Item):
-    def __init__(self, game, x, y, draw=True):
+    def __init__(self, game, x, y):
         super(HP_Mixture, self).__init__(game,x,y)
-        if draw: HP_MixtureSprite(self, game, self.x,self.y)
+        if not game.no_graphics: HP_MixtureSprite(self, game, self.x,self.y)
 
     def drop(self, x, y):
         pass;
@@ -473,9 +474,9 @@ class HP_MixtureSprite(pg.sprite.Sprite):
 
 
 class Axe(Item):
-    def __init__(self, game, x, y, draw=True):
+    def __init__(self, game, x, y):
         super(Axe, self).__init__(game,x,y)
-        if draw: AxeSprite(self, game, self.x,self.y)
+        if not game.no_graphics: AxeSprite(self, game, self.x,self.y)
         self.at = 50
         self.equiped = False
 
@@ -513,9 +514,9 @@ class AxeSprite(pg.sprite.Sprite):
             del self
 
 class Sword(Item):
-    def __init__(self, game, x, y, draw=True):
+    def __init__(self, game, x, y):
         super(Sword, self).__init__(game,x,y)
-        if draw: SwordSprite(self, game, self.x,self.y)
+        if not game.no_graphics: SwordSprite(self, game, self.x,self.y)
         self.at = 20
         self.equiped = False
 
@@ -554,9 +555,9 @@ class SwordSprite(pg.sprite.Sprite):
 
 
 class Armor(Item):
-    def __init__(self, game, x, y, draw=True):
+    def __init__(self, game, x, y):
         super(Armor, self).__init__(game,x,y)
-        if draw: ArmorSprite(self, game, self.x,self.y)
+        if not game.no_graphics: ArmorSprite(self, game, self.x,self.y)
         self.deff = 50
         self.equiped = False
 

@@ -14,8 +14,14 @@ def startup():
     screen = pg.display.set_mode((WIDTH, HEIGHT), pg.RESIZABLE)
     # intro = Intro(screen)
     # intro.run()
-    game = Game(screen)
-    print("GAME SCORE: ",game.run())
+    game_1 = Game(screen)
+    game_1.set_mode("normal", 50)
+    print("GAME SCORE: ",game_1.run())
+    game_2 = Game(screen)
+    game_2.set_mode("normal", 50)
+    print("GAME SCORE: ",game_2.run())
+
+    # gameover()
 
 def gameover():
     """ this handles gameover """

@@ -16,6 +16,7 @@ class Spot:
 
 class A_star_path:
     def __init__(self, game, exceptions=[]):
+        self.exceptions = list(exceptions)
         self.start = [game.player.x, game.player.y]
         self.monsters = game.get_monsters_positions()
         self.items = game.get_items_positions()
@@ -23,14 +24,15 @@ class A_star_path:
         self.spot_map = [[0 for j in range(self.map.width)] for i in range(self.map.height)]
 
         for m in game.monsters:
-            if not m.alive: exceptions.append([m.x, m.y])
+            if not m.alive: self.exceptions.append([m.x, m.y])
         for i in game.items:
-            if not i.alive: exceptions.append([i.x, i.y])
+            if not i.alive: self.exceptions.append([i.x, i.y])
 
         for x in range(self.map.width):
             for y in range(self.map.height):
-                self.spot_map[y][x] = Spot(x, y, [x,y] not in exceptions and (game.map.tiles_data[y][x].isCollidable or [x,y] in self.monsters + self.items), 1)
-        # self.log_map()
+                self.spot_map[y][x] = Spot(x, y, [x,y] not in self.exceptions and (game.map.tiles_data[y][x].isCollidable or [x,y] in self.monsters + self.items), 1)
+        # print(self.spot_map[3][7].is_wall)
+
     def set_start(self, pos):
         self.start = pos
 
@@ -102,7 +104,7 @@ class A_star_path:
             current = self.lowest_f_cost_spot(openSet)
             # print([current.x, current.y])
             if [current.x, current.y] == dest:
-                print ("Path exists!")
+                # print ("Path exists!")
                 if only_lenght:
                     return len(self.reconstruct_path(cameFrom, current))
                 else:
@@ -124,7 +126,7 @@ class A_star_path:
                 n.g = temp_g_score
                 n.f = n.g + self.manhattan_dist([n.x, n.y], dest)
 
-        print("There is no path!")
+        # print("There is no path!")
         if not only_lenght:
             return []
         else:

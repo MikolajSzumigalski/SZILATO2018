@@ -29,7 +29,7 @@ for x in range(GRIDWIDTH):
 
 #klasa Map odpowiada za wszystko co związane z rysowaniem mapy
 class Map:
-    def __init__(self, game):
+    def __init__(self, game, no_graphics=False):
         self.game = game
         self.width = GRIDWIDTH
         self.height = GRIDHEIGHT
@@ -37,6 +37,8 @@ class Map:
         self.cameraheight = 0
         self.map_data = test_map
         self.tiles_data = [[0 for j in range(self.width)] for i in range(self.height)]
+        self.collidables = [ROCK_1,ROCK_2,ROCK_3,WATER]
+        self.no_graphics = no_graphics
         # print("debug", len(self.tiles_data), len(self.tiles_data[0]))
 
     #rysowanie pomocniczej siatki
@@ -61,19 +63,19 @@ class Map:
                 temp_key = self.map_data[row][column]#Te ify, żeby kompilowało się :D W razie czego znajdzie się coś lepszego
                 # print(temp_key, end='')
                 if temp_key == '0':
-                    self.tiles_data[row][column] = Bush(self.game, column, row, 1)
+                    self.tiles_data[row][column] = Bush(self.game, column, row, 1 )
                 if temp_key == '1':
-                    self.tiles_data[row][column] = Bush(self.game, column, row, 2)
+                    self.tiles_data[row][column] = Bush(self.game, column, row, 2 )
                 if temp_key == '2':
-                    self.tiles_data[row][column] = Rock(self.game, column, row, 1)
+                    self.tiles_data[row][column] = Rock(self.game, column, row, 1 )
                 if temp_key == '3':
-                    self.tiles_data[row][column] = Rock(self.game, column, row, 2)
+                    self.tiles_data[row][column] = Rock(self.game, column, row, 2 )
                 if temp_key == '4':
-                    self.tiles_data[row][column] = Rock(self.game, column, row, 3)
+                    self.tiles_data[row][column] = Rock(self.game, column, row, 3 )
                 if temp_key == '5':
-                    self.tiles_data[row][column] = Water(self.game, column, row, 1)
+                    self.tiles_data[row][column] = Water(self.game, column, row, 1 )
                 if temp_key == '.':
-                    self.tiles_data[row][column] = Grass(self.game, column, row, 1)
+                    self.tiles_data[row][column] = Grass(self.game, column, row, 1 )
 
 
     def apply_fog(self, screen, player):
@@ -112,47 +114,47 @@ class Map:
         else:
             for line_arr in temp_arr:
                     if   line_arr[0] == 0:
-                        obj = Mglak(self.game, line_arr[1], line_arr[2])
+                        obj = Mglak(self.game, line_arr[1], line_arr[2] )
                         self.game.monsters.append(obj)
                         self.tiles_data[obj.x][obj.y].setOccupiedBy(obj)
                     elif line_arr[0] == 1:
-                        obj = Spider(self.game, line_arr[1], line_arr[2])
+                        obj = Spider(self.game, line_arr[1], line_arr[2] )
                         self.game.monsters.append(obj)
                         self.tiles_data[obj.x][obj.y].setOccupiedBy(obj)
                     elif line_arr[0] == 2:
-                        obj = Ghoul(self.game, line_arr[1], line_arr[2])
+                        obj = Ghoul(self.game, line_arr[1], line_arr[2] )
                         self.game.monsters.append(obj)
                         self.tiles_data[obj.x][obj.y].setOccupiedBy(obj)
                     elif line_arr[0] == 3:
-                        obj = Leszy(self.game, line_arr[1], line_arr[2])
+                        obj = Leszy(self.game, line_arr[1], line_arr[2] )
                         self.game.monsters.append(obj)
                         self.tiles_data[obj.x][obj.y].setOccupiedBy(obj)
                     elif line_arr[0] == 4:
-                        obj = Olgierd(self.game, line_arr[1], line_arr[2])
+                        obj = Olgierd(self.game, line_arr[1], line_arr[2] )
                         self.game.monsters.append(obj)
                         self.tiles_data[obj.x][obj.y].setOccupiedBy(obj)
                     elif line_arr[0] == 5:
-                        obj = Dragon(self.game, line_arr[1], line_arr[2])
+                        obj = Dragon(self.game, line_arr[1], line_arr[2] )
                         self.game.monsters.append(obj)
                         self.tiles_data[obj.x][obj.y].setOccupiedBy(obj)
                     elif line_arr[0] == 60:
-                        obj = HP_Mixture(self.game, line_arr[1], line_arr[2])
+                        obj = HP_Mixture(self.game, line_arr[1], line_arr[2] )
                         self.game.items.append(obj)
                         self.tiles_data[obj.x][obj.y].setOccupiedBy(obj)
                     elif line_arr[0] == 61:
-                        obj = Axe(self.game, line_arr[1], line_arr[2])
+                        obj = Axe(self.game, line_arr[1], line_arr[2] )
                         self.game.items.append(obj)
                         self.tiles_data[obj.x][obj.y].setOccupiedBy(obj)
                     elif line_arr[0] == 62:
-                        obj = Armor(self.game, line_arr[1], line_arr[2])
+                        obj = Armor(self.game, line_arr[1], line_arr[2] )
                         self.game.items.append(obj)
                         self.tiles_data[obj.x][obj.y].setOccupiedBy(obj)
                     elif line_arr[0] == 63:
-                        obj = Sword(self.game, line_arr[1], line_arr[2])
+                        obj = Sword(self.game, line_arr[1], line_arr[2] )
                         self.game.items.append(obj)
                         self.tiles_data[obj.x][obj.y].setOccupiedBy(obj)
                     else:
-                        print("[load map] number '" + str(line_arr[0]) + "' do not match any known object")
+                        print("[load map] error(1): number '" + str(line_arr[0]) + "' do not match any known object")
 
     def update(self):
         pass
@@ -170,68 +172,71 @@ class Map:
     def random_spawn_monsters(self):
         for i in range (0, 10):
             rand = random.randint(0, len(MAP_PLACES)-1)
-            obj = Mglak(self.game, MAP_PLACES[rand][0], MAP_PLACES[rand][1])
+            obj = Mglak(self.game, MAP_PLACES[rand][0], MAP_PLACES[rand][1] )
             self.game.monsters.append(obj)
             self.tiles_data[obj.x][obj.y].setOccupiedBy(obj)
             MAP_PLACES.remove(MAP_PLACES[rand])
 
         for i in range (0, 8):
             rand = random.randint(0, len(MAP_PLACES)-1)
-            obj = Spider(self.game, MAP_PLACES[rand][0], MAP_PLACES[rand][1])
+            obj = Spider(self.game, MAP_PLACES[rand][0], MAP_PLACES[rand][1] )
             self.game.monsters.append(obj)
             self.tiles_data[obj.x][obj.y].setOccupiedBy(obj)
             MAP_PLACES.remove(MAP_PLACES[rand])
 
         for i in range (0, 8):
             rand = random.randint(0, len(MAP_PLACES)-1)
-            obj = Ghoul(self.game, MAP_PLACES[rand][0], MAP_PLACES[rand][1])
+            obj = Ghoul(self.game, MAP_PLACES[rand][0], MAP_PLACES[rand][1] )
             self.game.monsters.append(obj)
             self.tiles_data[obj.x][obj.y].setOccupiedBy(obj)
             MAP_PLACES.remove(MAP_PLACES[rand])
         #
         for i in range (0, 1):
             rand = random.randint(0, len(MAP_PLACES)-1)
-            obj = Leszy(self.game, MAP_PLACES[rand][0], MAP_PLACES[rand][1])
+            obj = Leszy(self.game, MAP_PLACES[rand][0], MAP_PLACES[rand][1] )
             self.game.monsters.append(obj)
             self.tiles_data[obj.x][obj.y].setOccupiedBy(obj)
             MAP_PLACES.remove(MAP_PLACES[rand])
 
         # for i in range (0, 1):
         #     rand = random.randint(0, len(MAP_PLACES)-1)
-        #     self.game.monsters.append(Olgierd(self.game, MAP_PLACES[rand][0], MAP_PLACES[rand][1]))
+        #     self.game.monsters.append(Olgierd(self.game, MAP_PLACES[rand][0], MAP_PLACES[rand][1]) )
         #     MAP_PLACES.remove(MAP_PLACES[rand])
 
         # for i in range (0, 1):
         #     rand = random.randint(0, len(MAP_PLACES)-1)
-        #     self.game.monsters.append(Dragon(self.game, MAP_PLACES[rand][0], MAP_PLACES[rand][1]))
+        #     self.game.monsters.append(Dragon(self.game, MAP_PLACES[rand][0], MAP_PLACES[rand][1]) )
         #     MAP_PLACES.remove(MAP_PLACES[rand])
 
     def random_spawn_intems(self):
         for i in range (0, 3):
             rand = random.randint(0, len(MAP_PLACES))
-            obj = HP_Mixture(self.game, MAP_PLACES[rand][0], MAP_PLACES[rand][1])
+            obj = HP_Mixture(self.game, MAP_PLACES[rand][0], MAP_PLACES[rand][1] )
             self.game.items.append(obj)
             self.tiles_data[obj.x][obj.y].setOccupiedBy(obj)
             MAP_PLACES.remove(MAP_PLACES[rand])
 
 class Tile(pg.sprite.Sprite):
     def __init__(self, game, tileX, tileY, texture):
-        self.logic_attribute_name_list = ['x', 'y', 'name', 'id', 'isCollidable', 'logic_attribute_name_list'];
         self.game = game
-        self.groups = self.game.all_sprites
-        pg.sprite.Sprite.__init__(self, self.groups)
-        self.image = pg.Surface((TILESIZE, TILESIZE))
-        self.image = texture
-        self.rect = self.image.get_rect()
-        #ATRYBUTY LOGICZNE
         self.x = tileX
         self.y = tileY
+
+        if not game.no_graphics:
+            self.groups = self.game.all_sprites
+            pg.sprite.Sprite.__init__(self, self.groups)
+            self.image = pg.Surface((TILESIZE, TILESIZE))
+            self.image = texture
+            self.rect = self.image.get_rect()
+            self.rect.x = self.x * TILESIZE
+            self.rect.y = self.y * TILESIZE
+
+        self.logic_attribute_name_list = ['x', 'y', 'name', 'id', 'isCollidable', 'logic_attribute_name_list'];
+        #ATRYBUTY LOGICZNE
         self.name = self.__class__.__name__
         self.id = id(self)
         self.isCollidable = None;
 
-        self.rect.x = self.x * TILESIZE
-        self.rect.y = self.y * TILESIZE
         self.characterOccupyingTile = None
 
         # # zmienne potrzebne do A*

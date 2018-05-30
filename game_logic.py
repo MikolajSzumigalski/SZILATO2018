@@ -22,6 +22,35 @@ class LogicEngine:
         # self.gameover = False
         self.simulation = False
 
+    def auto_run(self):
+        possible_moves = [[-1,0], [1,0], [0,-1], [0,1]]
+        random_move = random.choice(possible_moves)
+        self.check_player_collisions(random_move[0], random_move[1])
+
+    def handle_monster_collision(self, new_x, new_y, simulation=False):
+        out = False
+        for m in self.monsters:
+            if new_x  == m.x and new_y == m.y and m.alive:
+                out = True
+                # print("colision with monster!")
+                if not (simulation) and not self.game.no_graphics:
+                    geralt_sounds = []
+                    for snd in ['geralt1.wav', 'geralt2.wav']:
+                        geralt_sounds.append(pg.mixer.Sound(path.join(music_folder, snd)))
+                    random.choice(geralt_sounds).play()
+                self.fight(self.player, m)
+        return out
+
+    def handle_item_collision(self, new_x, new_y):
+        out = False
+        for i in self.items:
+            if new_x  == i.x and new_y == i.y and i.alive:
+                i.use(self.player)
+                out = True
+                self.map.tiles_data[i.x][i.y].setOccupiedBy(None);
+                break
+        return out
+
     #sprawdź czy na nowym polu (new_x, new_y) wystąpi jakaś kolizja
     def check_player_collisions(self, dx=0, dy=0, simulation = False, absolute_coordinates = False):
         if(absolute_coordinates):
@@ -30,35 +59,35 @@ class LogicEngine:
         else:
             new_x = self.player.x + dx
             new_y = self.player.y + dy
-        # print("player pos: ",new_x, new_y, " next_tile: ", self.map.map_data[new_y][new_x])
-        #kolizje z potworami
-        monster_collision = False
-        mixture_collision = False
-        for m in self.monsters:
-            if new_x  == m.x and new_y == m.y and m.alive:
-                monster_collision = True
-                # print("colision with monster!")
-                if not (simulation):
-                    geralt_sounds = []
-                    for snd in ['geralt1.wav', 'geralt2.wav']:
-                        geralt_sounds.append(pg.mixer.Sound(path.join(music_folder, snd)))
-                    random.choice(geralt_sounds).play()
-                self.fight(self.player, m)
-        #kolizje ze ścianami
-        # print(self.items)
-        for i in self.items:
-            if new_x  == i.x and new_y == i.y and i.alive:
-                i.use(self.player)
-                mixture_collision = True
-                self.map.tiles_data[i.x][i.y].setOccupiedBy(None);
-                break
+
+        monster_collision = self.handle_monster_collision(new_x, new_y, simulation)
+        mixture_collision = self.handle_item_collision(new_x, new_y)
+
+        # monster_collision = False
+        # mixture_collision = False
+        # for m in self.monsters:
+        #     if new_x  == m.x and new_y == m.y and m.alive:
+        #         monster_collision = True
+        #         # print("colision with monster!")
+        #         if not (simulation):
+        #             geralt_sounds = []
+        #             for snd in ['geralt1.wav', 'geralt2.wav']:
+        #                 geralt_sounds.append(pg.mixer.Sound(path.join(music_folder, snd)))
+        #             random.choice(geralt_sounds).play()
+        #         self.fight(self.player, m)
+
+        # for i in self.items:
+        #     if new_x  == i.x and new_y == i.y and i.alive:
+        #         i.use(self.player)
+        #         mixture_collision = True
+        #         self.map.tiles_data[i.x][i.y].setOccupiedBy(None);
+        #         break
 
         if not monster_collision and not mixture_collision:
-            collidables = [ROCK_1,ROCK_2,ROCK_3,WATER]
-            if not self.map.map_data[new_y][new_x] in collidables:
+            # collidables = [ROCK_1,ROCK_2,ROCK_3,WATER]
+            if not self.map.map_data[new_y][new_x] in self.map.collidables:
                 self.map.tiles_data[self.player.x][self.player.y].setOccupiedBy(None);
                 self.map.tiles_data[dx][dy].setOccupiedBy(self.player);
-
                 self.player.move(dx, dy)
 
         self.check_gameover()
@@ -74,8 +103,8 @@ class LogicEngine:
         for current_attacker, current_defender in zip([attacker, defender], [defender, attacker]):
             if(current_attacker.get_total_at() > current_defender.get_total_deff()):
                 # print(current_defender.hp)
-                print("attacker AT:",current_attacker.get_total_at())
-                print("attacker DEF:",current_attacker.get_total_deff(),"\n")
+                # print("attacker AT:",current_attacker.get_total_at())
+                # print("attacker DEF:",current_attacker.get_total_deff(),"\n")
                 current_defender.take_damage(current_attacker.get_total_at() - current_defender.get_total_deff())
                 # print(current_defender.hp)
             if(current_defender.hp <= 0):
@@ -89,21 +118,13 @@ class LogicEngine:
                     self.map.tiles_data[attacker.x][attacker.y].setOccupiedBy(attacker);
 
                 current_defender.die();
-                self.check_gameover()
+                # self.check_gameover()
                 break
             # else:
                 # current_defender.fade()
 
     def player_auto_move(self):
         #obsługa auto-ruchu bohatera, zaplanowana droga znajduje się w player.next_steps
-        # if not self.player.points_to_visit:
-        #     self.player.get_new_plan()
-        #     A = A_star_target_list(self.game)
-        #     temp = A.get_new_plan()
-        #     temp_new_plan = []
-        #     for obj in temp:
-        #         temp_new_plan.append([obj.x, obj.y])
-        #     self.player.points_to_visit = temp_new_plan
 
         if self.player.in_move:
 
@@ -123,6 +144,12 @@ class LogicEngine:
         else:
             if self.player.points_to_visit:
                 self.player.get_new_path()
+                # print("NEW PATH: ", self.player.next_steps)
+                temp_monsters = []
+                for m in self.monsters:
+                    if not m.alive: temp_monsters.append([m.x, m.y])
+                # print("ACTUAL MONSTERS: ", temp_monsters, "\n")
+
         # print(self.player.points_to_visit)
 
     def player_start_auto_move(self):
@@ -162,8 +189,13 @@ class LogicEngine:
         return self.simulate_action('check_player_collisions', save_simulated_state_JSON, x, y, simulation=True, absolute_coordinates = True)
 
     def check_gameover(self):
+        if self.game.mode == "auto-random" and not self.simulation:
+            if not self.game.steps > 0:
+                self.game.gameover = True
+            else:
+                self.game.steps -= 1
+
         if self.player.hp <= 0 or not self.game.get_alive_monsters():
-            # self.gameover = True
             if(self.simulation == True):
                 pass
             else:
