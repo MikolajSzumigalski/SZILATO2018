@@ -5,6 +5,7 @@ from map import *
 from game_logic import *
 from os import path
 from interface import *
+import numpy as np
 
 import copy
 import knowledge_frames
@@ -164,10 +165,11 @@ class Game:
                     # prints to file current map status in JSON form
                         knowledge_frames.save_data(self.logic_engine)
 
-                    # if event.key == pg.K_q:
-                    #     #simulate going down 1
-                    #     self.logic_engine.simulate_move(True, 0, 1)
-                    #
+                    if event.key == pg.K_q:
+                        #simulate going down 1
+                        # self.logic_engine.simulate_move(True, 0, 1)
+                        print(self.get_tiles_around_player_simplified(2))
+
                     # if event.key == pg.K_g:
                     #     #simulate going down 1
                     #     self.logic_engine.simulate_move_absolute_coordinate(False, 1, 2);
@@ -198,6 +200,25 @@ class Game:
             if m.alive: out.append(m)
         return out
 
+    def get_alive_items(self):
+        out = []
+        for i in self.items:
+            if i.alive: out.append(i)
+        return out
+
+    def get_alive_monsters_positions(self):
+        out = []
+        for m in self.monsters:
+            if m.alive: out.append(m)
+        return out
+
+    def get_alive_items_positions(self):
+        out = []
+        for i in self.items:
+            if i.alive: out.append(i)
+        return out
+
+
     def __resize_window__(self, event):
         """
         this handles resizing of a window, is called by events loop
@@ -207,6 +228,54 @@ class Game:
         HEIGHT = event.h
         self.screen = pg.display.set_mode((WIDTH, HEIGHT), pg.RESIZABLE);
 
+    def get_tiles_around_player_simplified(self, n=1):
+        """
+        Get simplified matrix of states of tiles around playerself in ranges:
+         x - n <= player_x <= x + n
+         y - n <= player_y <= y + n
+        Eg. for n = 2
+        11111
+        00100
+        00x22
+        01122
+        01220
+        222
+        where:
+         -1 - player (always in the center)
+         0 - wall or another obstacle
+         1 - unvisited tile
+         2 - visited tile
+        """
+        monsters_and_items_positions = self.get_monsters_positions() + self.get_items_positions()
+        out = np.zeros((2*n + 1, 2*n + 1))
+        temp_x = 0
+        temp_y = 0
+        for i in range(0, 2*n + 1):
+            for j in range(0, 2*n + 1):
+                temp_x = self.player.x + (i - n)
+                temp_y = self.player.y + (j - n)
+                print(temp_x, temp_y, i, j)
+                if temp_x == self.player.x and temp_y == self.player.y:
+                    out[j][i] = -1
+                    continue
+                elif temp_x < 0 or temp_y < 0 or temp_x >= self.map.width or temp_y >= self.map.height:
+                    out[j][i] = 0
+                    print("here")
+                    continue
+                elif self.map.tiles_data[temp_y][temp_x].isCollidable:
+                    out[j][i] = 0
+                    continue
+                elif not self.map.tiles_data[temp_y][temp_x].isCollidable:
+                    if self.map.tiles_data[temp_y][temp_x].visited: out[j][i] = 2
+                    else: out[j][i] = 1 
+                    continue
+                else:
+                    out[j][i] = -2
+
+        return out
+
+    def get_tiles_around_player(self, n=1):
+        pass
 
     def __getstate__(self):
         state = self.__dict__.copy()

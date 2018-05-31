@@ -4,7 +4,10 @@
 3 - Leszy
 4 - Olgierd
 5 - Dragon
-6 - HP_Mixture
+60 - HP_Mixture
+61 - Axe
+62 - Armor
+63 - Sword
 
 budowa pliku .map:
 

@@ -180,6 +180,8 @@ class Player(Character):
         self.armor = None
         self.weapon = None
 
+        self.game.map.tiles_data[y][x].visited = True
+
     def get_total_at(self):
         if not self.weapon: return self.at
         else: return self.at + self.weapon.at

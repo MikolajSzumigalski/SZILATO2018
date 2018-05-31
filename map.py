@@ -157,7 +157,8 @@ class Map:
                         print("[load map] error(1): number '" + str(line_arr[0]) + "' do not match any known object")
 
     def update(self):
-        pass
+        if self.tiles_data[self.game.player.y][self.game.player.x].visited != True:
+            self.tiles_data[self.game.player.y][self.game.player.x].visited =True
 
     def legendReturn(self):
         self.legend = copy.deepcopy(self.map_data)
@@ -221,6 +222,7 @@ class Tile(pg.sprite.Sprite):
         self.game = game
         self.x = tileX
         self.y = tileY
+        self.visited = False
 
         if not game.no_graphics:
             self.groups = self.game.all_sprites

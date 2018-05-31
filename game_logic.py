@@ -89,7 +89,7 @@ class LogicEngine:
                 self.map.tiles_data[self.player.x][self.player.y].setOccupiedBy(None);
                 self.map.tiles_data[dx][dy].setOccupiedBy(self.player);
                 self.player.move(dx, dy)
-
+        self.map.update()
         self.check_gameover()
 
     def fight(self, attacker, defender):
