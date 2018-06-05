@@ -201,7 +201,7 @@ class Map:
 
 class Tile(pg.sprite.Sprite):
     def __init__(self, game, tileX, tileY, texture):
-        self.logic_attribute_name_list = ['x', 'y', 'name', 'id', 'isCollidable', 'logic_attribute_name_list'];
+        self.logic_attribute_name_list = ['x', 'y', 'name', 'id', 'isCollidable', 'logic_attribute_name_list','characterOccupyingTile'];
         self.game = game
         self.groups = self.game.all_sprites
         pg.sprite.Sprite.__init__(self, self.groups)
