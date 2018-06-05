@@ -92,7 +92,7 @@ class Intro:
         self.bg = pg.image.load(os.path.join(img_folder, "background.png")).convert()
         self.screen.blit(self.bg, (0,0))
         self.all_sprites.draw(self.screen)
-        self.start = self.button(125, "START GAME", "play")
+        self.start = self.button(125, "(basic+genetic_mikbal)", "play")
         self.quit = self.button(210, "QUIT", "quit")
         pg.display.flip()
 

@@ -4,6 +4,7 @@ from abc import ABCMeta, abstractmethod
 import os
 import simplejson
 from A_star import *
+import interface
 # import A_star
 
 import program_logic
@@ -246,7 +247,9 @@ class Monster(Character, metaclass=ABCMeta):
 
 class MonsterSprite(CharacterSprite, metaclass=ABCMeta):
     def __init__(self, character, game):
+        # interface.draw_text(self.image, "0", 32, 8, 8)
         super(MonsterSprite, self).__init__(character, game)
+
 
     def update(self):
         self.visual_health_update()
@@ -257,7 +260,6 @@ class MonsterSprite(CharacterSprite, metaclass=ABCMeta):
 
         self.character.window_x = self.rect.x
         self.character.window_y = self.rect.y
-
         if not self.character.alive:
             self.delete()
             # pg.sprite.Sprite.remove(self, self.groups)
@@ -388,12 +390,38 @@ class GaunterSprite(MonsterSprite):
         self.image.set_colorkey(BLACK)
         super(Gaunter, self).__init__(character, game);
 
-class HP_Mixture():
+class Item(metaclass=ABCMeta):
     def __init__(self, game, x, y):
         self.x = x
         self.y = y
         self.alive = True
+        self.id = id(self)
+        self.name = self.__class__.__name__
+        self.logic_attribute_name_list = ['logic_attribute_name_list', 'name', 'id', 'x', 'y',
+                                       'alive']
+
+    # Te rzeczy są po to, by branie klasy i próbowanie jej wyprintowania etc. dawało tylko i wyłącznie
+    # rzeczy logicznie (hp, exp etc), a nie grafiki i ten spam graficzny
+    def __getstate__(self):
+        state = self.__dict__.copy()
+        newstate = {k: state[k] for k in self.logic_attribute_name_list}
+        return newstate
+
+    def __setstate__(self, state):
+        self.__dict__.update(state)
+
+    @abstractmethod
+    def use(self, benefitor):
+        pass
+
+class HP_Mixture(Item):
+    def __init__(self, game, x, y):
+        super().__init__(game, x, y)
         HP_MixtureSprite(self, game, self.x,self.y )
+
+    def use(self, benefitor):
+        #TODO
+        self.die()
 
     def die(self):
         self.alive = False

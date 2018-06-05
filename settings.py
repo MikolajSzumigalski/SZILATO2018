@@ -26,7 +26,7 @@ GAME_FOLDER = os.path.dirname(__file__)
 IMAGE_FOLDER = os.path.join(GAME_FOLDER, "img")
 MAP_FOLDER = os.path.join(GAME_FOLDER, "maps")
 
-# MAP = "labirynt_szumi_deluxe.map"
+#MAP = "labirynt_szumi_deluxe.map"
 MAP = "test.map"
 MAPLIST = []
 MAP_PLACES = []
@@ -52,4 +52,4 @@ for i in range (0, GRIDHEIGHT):
         if MAPLIST[i][j] == ".":
             MAP_PLACES.append([j,i])
 
-PLAYER_MOVE_FREQUENCY = 75 #ms
+PLAYER_MOVE_FREQUENCY = 300 #ms

@@ -7,6 +7,7 @@ import copy
 import random
 import knowledge_frames
 from os import path
+import A_star
 
 
 
@@ -21,6 +22,7 @@ class LogicEngine:
         self.logic_attribute_name_list = ['player', 'monsters', 'mixtures', 'map', 'gameover', 'simulation', 'logic_attribute_name_list']
         self.gameover = False
         self.simulation = False
+        self.original_object_list = self.__create_list_of_all_objects__()
 
     #sprawdź czy na nowym polu (new_x, new_y) wystąpi jakaś kolizja
     def check_player_collisions(self, dx=0, dy=0, simulation = False, absolute_coordinates = False):
@@ -69,6 +71,7 @@ class LogicEngine:
         # if (simulation):
         #     # print("/SIMULATION>")
         self.check_gameover()
+
 
     def fight(self, attacker, defender):
         '''
@@ -139,6 +142,14 @@ class LogicEngine:
         self.player.next_steps = path
         # pg.time.set_timer(self.game.MOVEEVENT, PLAYER_MOVE_FREQUENCY)
 
+    def player_move_to_dest(self, x,y):
+        dest = [x,y]
+        A = A_star.A_star_path(self.game)
+        path = A.get_path_to(dest)
+        self.player.in_move = True
+        self.player.next_steps = path
+        self.player_auto_move()
+        # pg.time.set_timer(self.game.MOVEEVENT, PLAYER_MOVE_FREQUENCY)
 
 
     def simulate_action(self, function_name, save_simulated_state_JSON = False, *args, **kwargs):
@@ -183,3 +194,67 @@ class LogicEngine:
     #
     # def __setstate__(self, state):
     #     self.__dict__.update(state)
+
+    def alive_monsters_count(self):
+        out = 0
+        for m in self.monsters:
+            if m.alive: out += 1
+        return out
+
+    def __create_list_of_all_objects__(self):
+        return copy.deepcopy(self.monsters + self.mixtures)
+
+    def get_list_of_all_objects(self):
+        return copy.deepcopy(self.monsters + self.mixtures)
+
+    def get_all_hp(self):
+        out = 0
+        for m in self.monsters:
+            out += m.hp
+        return out
+
+    def get_monsters_positions(self):
+        out = []
+        for m in self.monsters:
+            out.append([m.x, m.y])
+        return out
+
+    def get_mixtures_positions(self):
+        out = []
+        for m in self.mixtures:
+            out.append([m.x, m.y])
+        return out
+
+    def get_all_available_targets(self):
+        """
+        this function checks for which monsters and mixtures there is available a direct path for the player
+        :param LogicEngine:
+        :return: list of [x,y] attributes of mixtures and monsters the player can get to
+        """
+        potential_targets = self.get_mixtures_positions() + self.get_monsters_positions()
+        A_star_instance = A_star.A_star_path(self.game)
+        return [target for target in potential_targets if (
+                A_star_instance.get_path_to(target) is not [[]] and (
+        (A_star_instance.get_path_to(target))))]
+
+    def play_from_list(self, list_of_indexes_of_objects_to_visit):
+        """
+        plays the game from list of index of objects to visit
+        :param LogicEngine: starting state of LogicEngine
+        :param list_of_indexes_of_objects_to_visit:
+        :return:
+        """
+        original_object_list = copy.deepcopy(self.original_object_list)
+        for index in list_of_indexes_of_objects_to_visit:
+            try:
+                if (self.get_list_of_all_objects()[index].alive == True
+                    and [self.get_list_of_all_objects()[index].x,
+                        self.get_list_of_all_objects()[
+                        index].y] in self.get_all_available_targets()):
+                    self.player.points_to_visit.append([self.get_list_of_all_objects()[index].x, self.get_list_of_all_objects()[index].y])
+                    self.player_auto_move()
+                    pg.time.set_timer(MOVEEVENT, PLAYER_MOVE_FREQUENCY)
+                    self.game.update()
+            except:
+                pass
+
