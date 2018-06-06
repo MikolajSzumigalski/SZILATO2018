@@ -5,13 +5,16 @@ from map import *
 from game_logic import *
 from os import path
 from interface import *
+from neural_network import *
 import numpy as np
 
 import copy
 import knowledge_frames
 class Game:
-    def __init__(self, screen, no_graphics=False):
+    def __init__(self, screen, no_graphics=False, logs=True):
         self.no_graphics = no_graphics
+        self.all_modes = ["normal", "auto-random", "auto-a-star", "neural-network","auto-neural-network"]
+        self.logs = logs
         if no_graphics:
             # self.screen = screen
             pg.display.set_caption(TITLE)
@@ -38,7 +41,6 @@ class Game:
 
             self.logic_attribute_name_list = ['monsters', 'items', 'map', 'player', 'logic_engine', 'logic_attribute_name_list']
             self.gameover = False
-            self.all_modes = ["normal", "auto-random", "auto-a-star"]
             self.mode = "normal"
             self.steps = -1
 
@@ -70,28 +72,42 @@ class Game:
 
             self.logic_attribute_name_list = ['mode','monsters', 'items', 'map', 'player', 'logic_engine', 'logic_attribute_name_list']
             self.gameover = False
-            self.all_modes = ["normal", "auto-random", "auto-a-star"]
             self.steps = -1
 
     def set_mode(self, mode, steps=100):
         if mode in self.all_modes:
             self.mode = mode
             self.steps = steps
-            print("game mode switched to: '" + str(mode) + "'")
+            if self.logs: print("game mode switched to: '" + str(mode) + "'")
+            if mode == "neural-network" and not self.no_graphics:
+                pg.time.set_timer(MOVEEVENT, PLAYER_MOVE_FREQUENCY)
+                # print("here")
         else:
-            print("this mode is not known: '" + str(mode) + "'")
+            if self.logs: print("this mode is not known: '" + str(mode) + "'")
 
+
+    def set_network(self, neural_network):
+        self.neural_network = neural_network
 
     def run(self):
         # game loop - set self.playing = False to end the game
         # self.playing = True
-        print("GAME START")
+        if self.logs: print("GAME START")
         if not self.no_graphics: pg.mixer.music.play()
         while not self.gameover:
             self.dt = self.clock.tick(FPS) / 1000
             if self.mode == "auto-random":
                 self.events()
-                self.logic_engine.auto_run()
+                self.logic_engine.auto_random_move()
+                if not self.no_graphics:
+                    self.draw()
+                    self.update()
+            elif self.mode == "neural-network":
+                self.events()
+                # self.logic_engine.auto_neural_move()
+                if self.no_graphics:
+                    self.logic_engine.auto_neural_move()
+
                 if not self.no_graphics:
                     self.draw()
                     self.update()
@@ -101,7 +117,7 @@ class Game:
                      self.draw()
                      self.update()
 
-        print("GAME END")
+        if self.logs: print("GAME END")
         return self.player.score
 
     def quit(self):
@@ -168,7 +184,13 @@ class Game:
                     if event.key == pg.K_q:
                         #simulate going down 1
                         # self.logic_engine.simulate_move(True, 0, 1)
-                        print(self.get_tiles_around_player_simplified(2))
+                        print(self.get_tiles_around_player_simplified())
+
+                    if event.key == pg.K_n:
+                        # print(self.get_tiles_around_player_simplified())
+                        if self.mode == "auto-neural-network":
+                            self.logic_engine.auto_neural_move()
+                        # print(self.neural_network.evaluate(self.get_tiles_around_player_simplified()))
 
                     # if event.key == pg.K_g:
                     #     #simulate going down 1
@@ -180,7 +202,8 @@ class Game:
             if event.type == pg.VIDEORESIZE:
                 self.__resize_window__(event)
             if event.type == MOVEEVENT:
-                self.logic_engine.player_auto_move()
+                if self.mode == "neural-network": self.logic_engine.auto_neural_move()
+                else: self.logic_engine.player_auto_move()
 
     def get_monsters_positions(self):
         out = []
@@ -228,6 +251,40 @@ class Game:
         HEIGHT = event.h
         self.screen = pg.display.set_mode((WIDTH, HEIGHT), pg.RESIZABLE);
 
+    def get_tile_code(self, y, x):
+        print(self.map.tiles_data[y][x].x,self.map.tiles_data[y][x].y, self.player.x, self.player.y)
+        if x == self.player.x and y == self.player.y: return -1
+        elif self.map.tiles_data[y][x].isCollidable: return 0
+        elif not self.map.tiles_data[y][x].isCollidable:
+            if self.map.tiles_data[y][x].visited: return 2
+            else: return 1
+
+
+    def get_tiles_around_player_simplified_directed(self, direction):
+        if not direction in ["UP", "DOWN", "RIGHT", "LEFT"]:
+            print("unknown direction '", direction,"'")
+        else:
+            out = np.zeros(3)
+            if direction == "UP":
+                out[0] = self.get_tile_code(self.player.y - 1, self.player.x - 1)
+                out[1] = self.get_tile_code(self.player.y - 1, self.player.x)
+                out[2] = self.get_tile_code(self.player.y - 1, self.player.x + 1)
+
+            elif direction == "DOWN":
+                out[0] = self.get_tile_code(self.player.y + 1, self.player.x + 1)
+                out[1] = self.get_tile_code(self.player.y + 1, self.player.x)
+                out[2] = self.get_tile_code(self.player.y + 1, self.player.x - 1)
+            elif direction == "RIGHT":
+                out[0] = self.get_tile_code(self.player.y - 1, self.player.x + 1)
+                out[1] = self.get_tile_code(self.player.y, self.player.x + 1)
+                out[2] = self.get_tile_code(self.player.y + 1, self.player.x + 1)
+            elif direction == "LEFT":
+                out[0] = self.get_tile_code(self.player.y + 1, self.player.x - 1)
+                out[1] = self.get_tile_code(self.player.y, self.player.x - 1)
+                out[2] = self.get_tile_code(self.player.y - 1, self.player.x - 1)
+        return out
+
+
     def get_tiles_around_player_simplified(self, n=1):
         """
         Get simplified matrix of states of tiles around playerself in ranges:
@@ -247,31 +304,30 @@ class Game:
          2 - visited tile
         """
         monsters_and_items_positions = self.get_monsters_positions() + self.get_items_positions()
-        out = np.zeros((2*n + 1, 2*n + 1))
+        out = np.zeros((2*n + 1, 2*n + 1), np.int8)
         temp_x = 0
         temp_y = 0
         for i in range(0, 2*n + 1):
             for j in range(0, 2*n + 1):
                 temp_x = self.player.x + (i - n)
                 temp_y = self.player.y + (j - n)
-                print(temp_x, temp_y, i, j)
+                # print(temp_x, temp_y, i, j)
                 if temp_x == self.player.x and temp_y == self.player.y:
                     out[j][i] = -1
                     continue
                 elif temp_x < 0 or temp_y < 0 or temp_x >= self.map.width or temp_y >= self.map.height:
                     out[j][i] = 0
-                    print("here")
                     continue
                 elif self.map.tiles_data[temp_y][temp_x].isCollidable:
                     out[j][i] = 0
                     continue
                 elif not self.map.tiles_data[temp_y][temp_x].isCollidable:
                     if self.map.tiles_data[temp_y][temp_x].visited: out[j][i] = 2
-                    else: out[j][i] = 1 
+                    else: out[j][i] = 1
                     continue
                 else:
                     out[j][i] = -2
-
+        # print(out)
         return out
 
     def get_tiles_around_player(self, n=1):

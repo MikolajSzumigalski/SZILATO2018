@@ -22,10 +22,33 @@ class LogicEngine:
         # self.gameover = False
         self.simulation = False
 
-    def auto_run(self):
+    def auto_random_move(self):
         possible_moves = [[-1,0], [1,0], [0,-1], [0,1]]
         random_move = random.choice(possible_moves)
         self.check_player_collisions(random_move[0], random_move[1])
+
+    def auto_neural_move(self):
+        UP = 0
+        DOWN = 1
+        RIGHT = 2
+        LEFT = 3
+        moves_probs = self.game.neural_network.evaluate_no_hidden_layer(self.game.get_tiles_around_player_simplified(2))
+        # print(moves_probs)
+        _max = moves_probs.tolist().index(max(moves_probs.tolist()))
+        if(_max == UP):
+            self.check_player_collisions(dy=-1)
+        elif(_max == DOWN):
+            self.check_player_collisions(dy=1)
+        elif(_max == RIGHT):
+            self.check_player_collisions(dx=1)
+        elif(_max == LEFT):
+            self.check_player_collisions(dx=-1)
+
+        # moves = ["UP", "DOWN", "RIGHT", "LEFT"]
+        # moves_probs = [self.game.get_tiles_around_player_simplified_directed("UP"),self.game.get_tiles_around_player_simplified_directed("DOWN"),self.game.get_tiles_around_player_simplified_directed("RIGHT"), self.game.get_tiles_around_player_simplified_directed("LEFT")]
+        # for i in range(4):
+        #     print(moves[i], moves_probs[i])
+
 
     def handle_monster_collision(self, new_x, new_y, simulation=False):
         out = False
@@ -63,32 +86,20 @@ class LogicEngine:
         monster_collision = self.handle_monster_collision(new_x, new_y, simulation)
         mixture_collision = self.handle_item_collision(new_x, new_y)
 
-        # monster_collision = False
-        # mixture_collision = False
-        # for m in self.monsters:
-        #     if new_x  == m.x and new_y == m.y and m.alive:
-        #         monster_collision = True
-        #         # print("colision with monster!")
-        #         if not (simulation):
-        #             geralt_sounds = []
-        #             for snd in ['geralt1.wav', 'geralt2.wav']:
-        #                 geralt_sounds.append(pg.mixer.Sound(path.join(music_folder, snd)))
-        #             random.choice(geralt_sounds).play()
-        #         self.fight(self.player, m)
-
-        # for i in self.items:
-        #     if new_x  == i.x and new_y == i.y and i.alive:
-        #         i.use(self.player)
-        #         mixture_collision = True
-        #         self.map.tiles_data[i.x][i.y].setOccupiedBy(None);
-        #         break
 
         if not monster_collision and not mixture_collision:
             # collidables = [ROCK_1,ROCK_2,ROCK_3,WATER]
             if not self.map.map_data[new_y][new_x] in self.map.collidables:
                 self.map.tiles_data[self.player.x][self.player.y].setOccupiedBy(None);
                 self.map.tiles_data[dx][dy].setOccupiedBy(self.player);
+                if self.map.tiles_data[new_y][new_x].visited:
+                    self.player.score += 1
+                else:
+                    self.player.score += 100
                 self.player.move(dx, dy)
+            elif self.player.score >= 20:
+                # self.player.score -= 20
+                self.game.gameover = True
         self.map.update()
         self.check_gameover()
 
@@ -189,13 +200,14 @@ class LogicEngine:
         return self.simulate_action('check_player_collisions', save_simulated_state_JSON, x, y, simulation=True, absolute_coordinates = True)
 
     def check_gameover(self):
-        if self.game.mode == "auto-random" and not self.simulation:
+        if (self.game.mode == "auto-random" or self.game.mode == "neural-network") or self.game.mode == "auto-neural-network" and not self.simulation:
+            if self.game.logs: print("[logic engine] #log steps left: ", self.game.steps)
             if not self.game.steps > 0:
                 self.game.gameover = True
             else:
                 self.game.steps -= 1
 
-        if self.player.hp <= 0 or not self.game.get_alive_monsters():
+        elif self.player.hp <= 0 or not self.game.get_alive_monsters():
             if(self.simulation == True):
                 pass
             else:
