@@ -115,31 +115,31 @@ class Map:
                     if   line_arr[0] == 0:
                         obj = Mglak(self.game, line_arr[1], line_arr[2])
                         self.game.monsters.append(obj)
-                        getTileData(obj.x, obj.y).setOccupiedBy(obj)
+                        self.getTileData(obj.x, obj.y).setOccupiedBy(obj)
                     elif line_arr[0] == 1:
                         obj = Spider(self.game, line_arr[1], line_arr[2])
                         self.game.monsters.append(obj)
-                        getTileData(obj.x, obj.y).setOccupiedBy(obj)
+                        self.getTileData(obj.x, obj.y).setOccupiedBy(obj)
                     elif line_arr[0] == 2:
                         obj = Ghoul(self.game, line_arr[1], line_arr[2])
                         self.game.monsters.append(obj)
-                        getTileData(obj.x, obj.y).setOccupiedBy(obj)
+                        self.getTileData(obj.x, obj.y).setOccupiedBy(obj)
                     elif line_arr[0] == 3:
                         obj = Leszy(self.game, line_arr[1], line_arr[2])
                         self.game.monsters.append(obj)                        
-                        getTileData(obj.x, obj.y).setOccupiedBy(obj)
+                        self.getTileData(obj.x, obj.y).setOccupiedBy(obj)
                     elif line_arr[0] == 4:
                         obj = Olgierd(self.game, line_arr[1], line_arr[2])
                         self.game.monsters.append(obj)
-                        getTileData(obj.x, obj.y).setOccupiedBy(obj)
+                        self.getTileData(obj.x, obj.y).setOccupiedBy(obj)
                     elif line_arr[0] == 5:
                         obj = Dragon(self.game, line_arr[1], line_arr[2])
                         self.game.monsters.append(obj)
-                        getTileData(obj.x, obj.y).setOccupiedBy(obj)
+                        self.getTileData(obj.x, obj.y).setOccupiedBy(obj)
                     elif line_arr[0] == 6:
                         obj = HP_Mixture(self.game, line_arr[1], line_arr[2])
                         self.game.mixtures.append(obj)
-                        getTileData(obj.x, obj.y).setOccupiedBy(obj)
+                        self.getTileData(obj.x, obj.y).setOccupiedBy(obj)
     def update(self):
         pass
 
@@ -160,28 +160,28 @@ class Map:
             rand = random.randint(0, len(MAP_PLACES)-1)
             obj = Mglak(self.game, MAP_PLACES[rand][0], MAP_PLACES[rand][1])
             self.game.monsters.append(obj)
-            getTileData(obj.x, obj.y).setOccupiedBy(obj)
+            self.getTileData(obj.x, obj.y).setOccupiedBy(obj)
             MAP_PLACES.remove(MAP_PLACES[rand])
 
         for i in range (0, 8):
             rand = random.randint(0, len(MAP_PLACES)-1)
             obj = Spider(self.game, MAP_PLACES[rand][0], MAP_PLACES[rand][1])
             self.game.monsters.append(obj)
-            getTileData(obj.x, obj.y).setOccupiedBy(obj)
+            self.getTileData(obj.x, obj.y).setOccupiedBy(obj)
             MAP_PLACES.remove(MAP_PLACES[rand])
 
         for i in range (0, 8):
             rand = random.randint(0, len(MAP_PLACES)-1)
             obj = Ghoul(self.game, MAP_PLACES[rand][0], MAP_PLACES[rand][1])
             self.game.monsters.append(obj)
-            getTileData(obj.x, obj.y).setOccupiedBy(obj)
+            self.getTileData(obj.x, obj.y).setOccupiedBy(obj)
             MAP_PLACES.remove(MAP_PLACES[rand])
         #
         for i in range (0, 1):
             rand = random.randint(0, len(MAP_PLACES)-1)
             obj = Leszy(self.game, MAP_PLACES[rand][0], MAP_PLACES[rand][1])
             self.game.monsters.append(obj)
-            getTileData(obj.x, obj.y).setOccupiedBy(obj)
+            self.getTileData(obj.x, obj.y).setOccupiedBy(obj)
             MAP_PLACES.remove(MAP_PLACES[rand])
 
         # for i in range (0, 1):
@@ -199,7 +199,7 @@ class Map:
             rand = random.randint(0, len(MAP_PLACES))
             obj = HP_Mixture(self.game, MAP_PLACES[rand][0], MAP_PLACES[rand][1])
             self.game.mixtures.append(obj)
-            getTileData(obj.x, obj.y).setOccupiedBy(obj)
+            self.getTileData(obj.x, obj.y).setOccupiedBy(obj)
             MAP_PLACES.remove(MAP_PLACES[rand])
 
 class Tile(pg.sprite.Sprite):
