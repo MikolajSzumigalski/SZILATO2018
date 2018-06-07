@@ -64,7 +64,7 @@ class LogicEngine:
             else:
                 # print("move")
                 self.map.getTileData(self.player.x, self.player.y).setOccupiedBy(None);
-                self.map.getTileData(dx, dy).setOccupiedBy(self.player);
+                self.map.getTileData(self.player.x + dx, self.player.y + dy).setOccupiedBy(self.player);
 
                 self.player.move(dx, dy)
                 # print(self.map.map_data[new_y][new_x])
