@@ -143,7 +143,7 @@ class Map:
     def update(self):
         pass
 
-    def getTileData(x,y):
+    def getTileData(self,x,y):
         return self.tiles_data[y][x]
     def legendReturn(self):
         self.legend = copy.deepcopy(self.map_data)
