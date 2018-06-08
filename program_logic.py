@@ -12,10 +12,10 @@ from intro import *
 def startup():
     """ this starts the entire program"""
     screen = pg.display.set_mode((WIDTH, HEIGHT), pg.RESIZABLE)
-    #TO DO: przejście do menu, można np. dodać metodę z osobną pętlą.
     intro = Intro(screen)
-    intro.run()
-    game = Game(screen)
+    mode = intro.run()
+    print("-----START GAME------")
+    game = Game(screen, mode)
     game.run()
 
 def gameover():

@@ -41,6 +41,7 @@ class Intro:
         self.screen = screen
         pg.display.set_caption(TITLE)
         self.clock = pg.time.Clock()
+        self.action = None
         #init music
         pg.mixer.init()
         bg_music = pg.mixer.music.load(path.join(music_folder, 'menu.mp3'))
@@ -61,6 +62,8 @@ class Intro:
             self.events()
             self.update()
 
+        return self.mode
+
     def quit(self):
         pg.quit()
         sys.exit()
@@ -77,12 +80,12 @@ class Intro:
             pg.draw.rect(self.screen, DARKGREY,(550,btn_y+5,200,50))
             draw_text(self.screen,  btn_msg, 20, 650, btn_y+13, DARKGREY)
             if(click[0] == 1 and action != None):
-                if (action == "play"):
-                    game = Game(self.screen)
-                    game.run()
-                elif (action == "quit"):
+                if (action == "quit"):
                     pg.quit()
                     quit()
+                else:
+                    self.mode = action
+                    self.playing = False
         else:
             pg.draw.rect(self.screen, WHITE,(545,btn_y,210,60))
             pg.draw.rect(self.screen, BLACK,(550,btn_y+5,200,50))
@@ -92,8 +95,15 @@ class Intro:
         self.bg = pg.image.load(os.path.join(img_folder, "background.png")).convert()
         self.screen.blit(self.bg, (0,0))
         self.all_sprites.draw(self.screen)
-        self.start = self.button(125, "(basic+genetic_mikbal)", "play")
-        self.quit = self.button(210, "QUIT", "quit")
+        """
+        Tutaj dodajemy nowe guziki w menu.
+        #pierwszy argument to wsp. y guzika, trzeba ustawic tak by guziki się na siebie nie nakładały
+        #drugi argument to napis wyświetlany na guziku
+        #trzeci argument to tryb ('mode') który będzie zwrócony przez intro.run() po zakończenu głównej pętli
+        """
+        self.button(105, "(basic+genetic_mikbal)", "basic-genetic")
+        self.button(190, "neural_network_stagol", "neural-networks")
+        self.button(275, "QUIT", "quit")
         pg.display.flip()
 
     def events(self):

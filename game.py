@@ -10,8 +10,15 @@ import copy
 import knowledge_frames
 import GeneticAlgorithm.genetic
 
+avalible_modes = ["basic-genetic", "neural-networks"]
+
 class Game:
-    def __init__(self, screen):
+    def __init__(self, screen, mode="normal-genetic"):
+        if not mode in avalible_modes:
+            raise Exception("[game init] dany tryb (mode) nie jest znany, może zapomniałeś go dodać do 'avalible_modes'?")
+        else:
+            self.mode = mode
+            print("\n[game init] #log game mode set to '" + mode + "'")
         self.screen = screen
         pg.display.set_caption(TITLE)
         self.clock = pg.time.Clock()
