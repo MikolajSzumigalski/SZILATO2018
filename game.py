@@ -10,12 +10,12 @@ import copy
 import knowledge_frames
 import GeneticAlgorithm.genetic
 
-avalible_modes = ["basic-genetic", "neural-networks"]
+available_modes = ["basic-genetic", "neural-networks"]
 
 class Game:
     def __init__(self, screen, mode="normal-genetic"):
-        if not mode in avalible_modes:
-            raise Exception("[game init] dany tryb (mode) nie jest znany, może zapomniałeś go dodać do 'avalible_modes'?")
+        if not mode in available_modes:
+            raise Exception("[game init] dany tryb (mode) nie jest znany, może zapomniałeś go dodać do 'available_modes'?")
         else:
             self.mode = mode
             print("\n[game init] #log game mode set to '" + mode + "'")
