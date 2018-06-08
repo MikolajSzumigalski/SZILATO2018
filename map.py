@@ -38,7 +38,7 @@ class Map:
         self.cameraheight = 0
         self.map_data = test_map
         self.tiles_data = [[0 for j in range(self.width)] for i in range(self.height)]
-        print("debug", len(self.tiles_data), len(self.tiles_data[0]))
+        # print("debug", len(self.tiles_data), len(self.tiles_data[0]))
 
     #rysowanie pomocniczej siatki
     def draw_grid(self, screen):
@@ -126,7 +126,7 @@ class Map:
                         self.getTileData(obj.x, obj.y).setOccupiedBy(obj)
                     elif line_arr[0] == 3:
                         obj = Leszy(self.game, line_arr[1], line_arr[2])
-                        self.game.monsters.append(obj)                        
+                        self.game.monsters.append(obj)
                         self.getTileData(obj.x, obj.y).setOccupiedBy(obj)
                     elif line_arr[0] == 4:
                         obj = Olgierd(self.game, line_arr[1], line_arr[2])
