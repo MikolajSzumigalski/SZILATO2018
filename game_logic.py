@@ -153,6 +153,7 @@ class LogicEngine:
         # pg.time.set_timer(self.game.MOVEEVENT, PLAYER_MOVE_FREQUENCY)
 
 
+
     def simulate_action(self, function_name, save_simulated_state_JSON = False, *args, **kwargs):
         """
         this method simulates behaviour of any of the LogicEngine methods without actually executing them in the game
@@ -258,3 +259,6 @@ class LogicEngine:
                     self.game.update()
             except:
                 pass
+
+    def nn_move(self):
+        print(self.game.get_tiles_around_player_simplified(n=1))

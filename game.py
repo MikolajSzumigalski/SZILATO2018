@@ -1,4 +1,5 @@
 import pygame as pg
+import numpy as np
 import sys
 from sprites import *
 from map import *
@@ -125,6 +126,11 @@ class Game:
                     if event.key == pg.K_a:
                          self.player.get_new_plan()
 
+                    if event.key == pg.K_n:
+                        if not self.mode == "neural-networks":
+                            print("[game] #info if you want to use neural network, switch game mode")
+                        self.logic_engine.nn_move()
+
                     if event.key == pg.K_0:
                         GeneticAlgorithm.genetic.prepare_genetic(self.logic_engine)
 
@@ -136,17 +142,62 @@ class Game:
             if event.type == MOVEEVENT:
                 self.logic_engine.player_auto_move()
 
-    def get_monsters_positions(self):
+    def get_monsters_positions(self, alive_only=False):
         out = []
         for m in self.monsters:
-            out.append([m.x, m.y])
+            if not alive_only: out.append([m.x, m.y])
+            elif m.alive: out.append([m.x, m.y])
         return out
 
-    def get_mixtures_positions(self):
+    def get_mixtures_positions(self, alive_only=False):
         out = []
         for m in self.mixtures:
-            out.append([m.x, m.y])
+            if not alive_only: out.append([m.x, m.y])
+            elif m.alive: out.append([m.x, m.y])
         return out
+
+    def get_tiles_around_player_simplified(self, n=1):
+        """
+        Get simplified matrix of states of tiles around player in ranges:
+         x - n <= player_x <= x + n
+         y - n <= player_y <= y + n
+        Eg. for n = 1
+        0  1  0
+        0 -1  2
+        1  1  2
+        where:
+        -2 - unknown tile (error)
+         -1 - player (always in the center)
+         0 - wall or another obstacle
+         1 - unvisited tile
+         2 - visited tile
+         3 - monster tile
+         4 - item tile
+        """
+        monsters = self.get_monsters_positions(alive_only=True)
+        items = self.get_mixtures_positions(alive_only=True)
+        out = np.zeros((2*n + 1, 2*n + 1), np.int8)
+        temp_x = 0
+        temp_y = 0
+        for i in range(0, 2*n + 1):
+            for j in range(0, 2*n + 1):
+                temp_x = self.player.x + (i - n)
+                temp_y = self.player.y + (j - n)
+
+                if temp_x == self.player.x and temp_y == self.player.y:
+                     out[j][i] = -1
+                elif temp_x < 0 or temp_y < 0 or temp_x >= self.map.width or temp_y >= self.map.height:
+                     out[j][i] = 0
+                elif self.map.tiles_data[temp_y][temp_x].isCollidable:
+                     out[j][i] = 0
+                elif not self.map.tiles_data[temp_y][temp_x].isCollidable:
+                    if self.map.tiles_data[temp_y][temp_x].visited: out[j][i] = 2
+                    elif [temp_x, temp_y] in monsters: out[j][i] = 3
+                    elif [temp_x, temp_y] in items: out[j][i] = 4
+                    else:  out[j][i] = 1
+                else: out[j][i] = -2
+        return out
+
 
     def __resize_window__(self, event):
         """
