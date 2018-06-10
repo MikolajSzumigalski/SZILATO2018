@@ -134,7 +134,7 @@ class Game:
                     if event.key == pg.K_n:
                         if not self.mode == "neural-networks":
                             print("[game] #info if you want to use neural network, switch game mode")
-                        self.logic_engine.nn_move()
+                        else: self.logic_engine.nn_move()
 
                     if event.key == pg.K_0:
                         GeneticAlgorithm.genetic.prepare_genetic(self.logic_engine)

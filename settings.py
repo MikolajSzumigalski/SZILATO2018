@@ -27,7 +27,7 @@ IMAGE_FOLDER = os.path.join(GAME_FOLDER, "img")
 MAP_FOLDER = os.path.join(GAME_FOLDER, "maps")
 
 #MAP = "labirynt_szumi_deluxe.map"
-MAP = "test.map"
+MAP = "NN_test.map"
 MAPLIST = []
 MAP_PLACES = []
 
