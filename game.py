@@ -3,6 +3,7 @@ import numpy as np
 import sys
 from sprites import *
 from map import *
+from neural_network import NeuralNetwork
 from game_logic import *
 from os import path
 from interface import *
@@ -43,6 +44,10 @@ class Game:
         bg_music = pg.mixer.music.load(path.join(music_folder, 'gamebackground.mp3'))
         self.logic_engine = LogicEngine(self)
         # pg.time.set_timer(self.MOVEEVENT, PLAYER_MOVE_FREQUENCY)
+        if mode == "neural-networks" :
+            network = NeuralNetwork(1,1,1)
+            network.load_from(DEFAULT_NN)
+            self.neural_network = network
 
 
         self.logic_attribute_name_list = ['monsters', 'mixtures', 'map', 'player', 'logic_engine', 'logic_attribute_name_list']

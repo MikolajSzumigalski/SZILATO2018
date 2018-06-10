@@ -52,3 +52,7 @@ for i in range (0, GRIDHEIGHT):
             MAP_PLACES.append([j,i])
 
 PLAYER_MOVE_FREQUENCY = 300 #ms
+
+#NN SETTINGS
+
+DEFAULT_NN = "networks/best_new.npy"
