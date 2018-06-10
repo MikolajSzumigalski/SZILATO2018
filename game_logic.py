@@ -67,6 +67,7 @@ class LogicEngine:
                 self.map.getTileData(self.player.x + dx, self.player.y + dy).setOccupiedBy(self.player);
 
                 self.player.move(dx, dy)
+                self.map.tiles_data[new_y][new_x].visited = True
                 # print(self.map.map_data[new_y][new_x])
         # if (simulation):
         #     # print("/SIMULATION>")
@@ -95,7 +96,7 @@ class LogicEngine:
                     attacker.x = current_defender.x
                     attacker.y = current_defender.y
                     self.map.getTileData(attacker.x, attacker.y).setOccupiedBy(attacker);
-                    
+
                 current_defender.die();
                 self.check_gameover()
                 break
@@ -257,4 +258,3 @@ class LogicEngine:
                     self.game.update()
             except:
                 pass
-

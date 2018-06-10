@@ -217,6 +217,7 @@ class Tile(pg.sprite.Sprite):
         self.name = self.__class__.__name__
         self.id = id(self)
         self.isCollidable = None;
+        self.visited = False
 
         self.rect.x = self.x * TILESIZE
         self.rect.y = self.y * TILESIZE
