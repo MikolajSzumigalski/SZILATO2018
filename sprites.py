@@ -16,7 +16,7 @@ music_folder = os.path.join(game_folder, "music")
 
 class Character(metaclass=ABCMeta):
     """ this is a general character abstract class that provides basis of drawing any character on screen"""
-    def __init__(self, game, x, y, hp, at, deff, lev, exp, max_hp=0):
+    def __init__(self, game, x, y, hp, at, deff, lev, exp, max_hp=1):
 
         # Atrybuty postaci LOGICZNE
         self.name = self.__class__.__name__
@@ -119,6 +119,8 @@ class CharacterSprite(pg.sprite.Sprite):
 
 
     def visual_health_update(self):
+        if self.character.max_hp <= 0:
+            self.character.max_hp = 1
         current_health_percentage = self.character.hp / self.character.max_hp
         if(current_health_percentage > 0):
             new_size = int(TILESIZE * current_health_percentage)
@@ -169,16 +171,26 @@ class Player(Character):
         self.game = game
         self.points_to_visit = []
         self.current_target = []
+        self.pausemove = True # pausemove potrzebny do drzew decyzyjnych
+        self.decissionhp = 10 # życie dla decission mode
 
     def die(self, simulated = False):
         #TODO PROPER GAME ENDING
         # print("GAMEOVER")
-        self.hp = 0
-        self.at = 0
-        self.max_hp = 0
-        self.lev = 0
-        self.deff = 0
-        self.alive = False
+        print(self.game.mode)
+        if self.game.mode != "decission-tree":
+            self.hp = 0
+            self.at = 0
+            self.max_hp = 0
+            self.lev = 0
+            self.deff = 0
+            self.alive = False
+        else:
+            self.decissionhp = 10
+            self.x = 1
+            self.y = 1
+
+
 
     def get_new_path(self):
         A = A_star_path(self.game)

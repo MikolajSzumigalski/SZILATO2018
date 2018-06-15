@@ -12,10 +12,11 @@ import copy
 import knowledge_frames
 import GeneticAlgorithm.genetic
 
-available_modes = ["basic-genetic", "neural-networks"]
+available_modes = ["basic-genetic", "neural-networks", "decission-tree"]
 
 class Game:
     def __init__(self, screen, mode="normal-genetic"):
+        self.mode = mode
         if not mode in available_modes:
             raise Exception("[game init] dany tryb (mode) nie jest znany, może zapomniałeś go dodać do 'available_modes'?")
         else:
@@ -31,6 +32,7 @@ class Game:
         self.mixtures = []
         self.map = Map(self)
         self.map.load_from_file(MAP, RANDOM_SPAWN)
+        self.tree = Tree()
 
         self.player = Player(self, 1, 1)
         self.map_of_all = copy.deepcopy(self.map.legendReturn())
@@ -104,49 +106,68 @@ class Game:
 
                 # nie przyjmujemy nowych inputów podczas ruchu Geralta
                 if not self.player.in_move:
-                    if event.key == pg.K_LEFT:
-                    #sprawdź co się stanie jeśli player się przesunie
-                        self.logic_engine.check_player_collisions(dx=-1)
-                    if event.key == pg.K_RIGHT:
-                        self.logic_engine.check_player_collisions(dx=1)
-                    if event.key == pg.K_UP:
-                        self.logic_engine.check_player_collisions(dy=-1)
-                    if event.key == pg.K_DOWN:
-                        self.logic_engine.check_player_collisions(dy=1)
-                    if event.key == pg.K_w:
-                        self.logic_engine.player_start_auto_move()
+                    if self.mode == "decission-tree":
+                        if self.player.pausemove:
+                            if event.key == pg.K_LEFT:
+                            #sprawdź co się stanie jeśli player się przesunie
+                                self.logic_engine.check_player_collisions(dx=-1)
+                            if event.key == pg.K_RIGHT:
+                                self.logic_engine.check_player_collisions(dx=1)
+                            if event.key == pg.K_UP:
+                                self.logic_engine.check_player_collisions(dy=-1)
+                            if event.key == pg.K_DOWN:
+                                self.logic_engine.check_player_collisions(dy=1)
+                            if event.key == pg.K_w:
+                                self.logic_engine.player_start_auto_move()
+                        if not self.player.pausemove:
+                            if event.key == pg.K_t:
+                                 self.logic_engine.choose.atakuj(self.logic_engine.choose.tabMonster)
+                            if event.key == pg.K_n:
+                                 self.player.pausemove = True
+                    else:
+                        if event.key == pg.K_LEFT:
+                        #sprawdź co się stanie jeśli player się przesunie
+                            self.logic_engine.check_player_collisions(dx=-1)
+                        if event.key == pg.K_RIGHT:
+                            self.logic_engine.check_player_collisions(dx=1)
+                        if event.key == pg.K_UP:
+                            self.logic_engine.check_player_collisions(dy=-1)
+                        if event.key == pg.K_DOWN:
+                            self.logic_engine.check_player_collisions(dy=1)
+                        if event.key == pg.K_w:
+                            self.logic_engine.player_start_auto_move()
 
-                    if event.key == pg.K_p:
-                    # prints to file current map status in JSON form
-                        knowledge_frames.save_data(self.logic_engine)
+                        if event.key == pg.K_p:
+                        # prints to file current map status in JSON form
+                            knowledge_frames.save_data(self.logic_engine)
 
-                    if event.key == pg.K_q:
-                        #simulate going down 1
-                        self.logic_engine.simulate_move(True, 0, 1)
+                        if event.key == pg.K_q:
+                            #simulate going down 1
+                            self.logic_engine.simulate_move(True, 0, 1)
 
-                    if event.key == pg.K_g:
-                        #simulate going down 1
-                        self.logic_engine.simulate_move_absolute_coordinate(False, 1, 2);
+                        if event.key == pg.K_g:
+                            #simulate going down 1
+                            self.logic_engine.simulate_move_absolute_coordinate(False, 1, 2);
 
-                    if event.key == pg.K_a:
-                         self.player.get_new_plan()
+                        if event.key == pg.K_a:
+                             self.player.get_new_plan()
 
-                    if event.key == pg.K_n:
-                        if not self.mode == "neural-networks":
-                            print("[game] #info if you want to use neural network, switch game mode")
-                        else: self.logic_engine.nn_move()
+                        if event.key == pg.K_n:
+                            if not self.mode == "neural-networks":
+                                print("[game] #info if you want to use neural network, switch game mode")
+                            else: self.logic_engine.nn_move()
 
-                    if event.key == pg.K_0:
-                        if not self.mode == "basic-genetic":
+                        if event.key == pg.K_0:
+                            if not self.mode == "basic-genetic":
+                                    print("[game] #info if you want to use genetic mikbal, switch game mode")
+                            else:
+                                GeneticAlgorithm.genetic.prepare_genetic(self.logic_engine)
+
+                        if event.key == pg.K_9:
+                            if not self.mode == "basic-genetic":
                                 print("[game] #info if you want to use genetic mikbal, switch game mode")
-                        else:
-                            GeneticAlgorithm.genetic.prepare_genetic(self.logic_engine)
-
-                    if event.key == pg.K_9:
-                        if not self.mode == "basic-genetic":
-                            print("[game] #info if you want to use genetic mikbal, switch game mode")
-                        else:
-                            self.logic_engine.play_from_list([2, 0, 1, 7, 6, 8, 3, 0, 0, 8, 4, 9, 9, 4, 8, 1, 5, 2, 4, 1, 4, 8, 2, 5, 3, 7, 1, 5, 5, 0])
+                            else:
+                                self.logic_engine.play_from_list([2, 0, 1, 7, 6, 8, 3, 0, 0, 8, 4, 9, 9, 4, 8, 1, 5, 2, 4, 1, 4, 8, 2, 5, 3, 7, 1, 5, 5, 0])
 
             if event.type == pg.VIDEORESIZE:
                 self.__resize_window__(event)
