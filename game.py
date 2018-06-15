@@ -21,7 +21,7 @@ class Game:
             raise Exception("[game init] dany tryb (mode) nie jest znany, może zapomniałeś go dodać do 'available_modes'?")
         else:
             self.mode = mode
-            print("\n[game init] #log game mode set to '" + mode + "'")
+            print("\n[game init] #log game mode set to '" + mode + "'")  
         self.screen = screen
         pg.display.set_caption(TITLE)
         self.clock = pg.time.Clock()
@@ -32,7 +32,8 @@ class Game:
         self.mixtures = []
         self.map = Map(self)
         self.map.load_from_file(MAP, RANDOM_SPAWN)
-        self.tree = Tree()
+        if self.mode == "decission-tree":
+            self.tree = Tree()
 
         self.player = Player(self, 1, 1)
         self.map_of_all = copy.deepcopy(self.map.legendReturn())
