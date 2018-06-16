@@ -10,6 +10,8 @@ simplejson = "*"
 deap = "*"
 numpy = "*"
 scoop = "*"
+scipy = "*"
+"decision-tree-id3" = "*"
 
 [dev-packages]
 
