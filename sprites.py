@@ -16,7 +16,7 @@ music_folder = os.path.join(game_folder, "music")
 
 class Character(metaclass=ABCMeta):
     """ this is a general character abstract class that provides basis of drawing any character on screen"""
-    def __init__(self, game, x, y, hp, at, deff, lev, exp, max_hp=1):
+    def __init__(self, game, x, y, hp, at, deff, lev, exp, max_hp=0):
 
         # Atrybuty postaci LOGICZNE
         self.name = self.__class__.__name__
@@ -119,8 +119,8 @@ class CharacterSprite(pg.sprite.Sprite):
 
 
     def visual_health_update(self):
-        if self.character.max_hp <= 0:
-            self.character.max_hp = 1
+        #if self.character.max_hp <= 0:
+        #    self.character.max_hp = 1
         current_health_percentage = self.character.hp / self.character.max_hp
         if(current_health_percentage > 0):
             new_size = int(TILESIZE * current_health_percentage)

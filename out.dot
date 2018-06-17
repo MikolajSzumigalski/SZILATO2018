@@ -2,7 +2,7 @@ digraph ID3_Tree {
 "0" [shape=box, style=filled, label="hp
 ", weight=1]
 "1" [shape=box, style=filled, label="0
-(25)
+(26)
 ", weight=2]
 0 -> 1 [ label = "<=5.50"];
 "2" [shape=box, style=filled, label="czy lata
