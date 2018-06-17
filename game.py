@@ -73,7 +73,7 @@ class Game:
             if self.mode ==  "neural-networks-training":
                 if self.rounds > 0:
                     self.rounds -= 1
-                    # self.logic_engine.cośtam
+                    self.logic_engine.nn_move()
                 else:
                     self.playing = False
 
