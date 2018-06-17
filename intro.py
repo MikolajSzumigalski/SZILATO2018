@@ -104,12 +104,12 @@ class Intro:
 
         self.button(100, "(basic+genetic_mikbal)", "basic-genetic")
         self.button(180, "neural_network_stagol", "neural-networks")
-        self.button(260, "decission_tree_mikszu", "decission-tree")
+        #self.button(260, "decission_tree_mikszu", "decission-tree")
         self.button(340, "placing__genetic_grzegorz", "placing-genetic")
         self.button(420, "standard", "standard")
 
-        self.button(105, "(basic+genetic_mikbal)", "basic-genetic")
-        self.button(190, "neural_network_stagol", "neural-networks")
+        # self.button(105, "(basic+genetic_mikbal)", "basic-genetic")
+        # self.button(190, "neural_network_stagol", "neural-networks")
         self.button(275, "QUIT", "quit")
         pg.display.flip()
 
