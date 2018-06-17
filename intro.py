@@ -5,6 +5,8 @@ from settings import *
 from game import *
 from os import *
 import random
+from time import sleep
+
 
 game_folder = os.path.dirname(__file__)
 img_folder = os.path.join(game_folder, "img")
@@ -42,6 +44,8 @@ class Intro:
         pg.display.set_caption(TITLE)
         self.clock = pg.time.Clock()
         self.action = None
+        self.submenu = False
+        self.submenu_type = None
         #init music
         pg.mixer.init()
         bg_music = pg.mixer.music.load(path.join(music_folder, 'menu.mp3'))
@@ -58,7 +62,8 @@ class Intro:
         # game loop - set self.playing = False to end the game
         pg.mixer.music.play(loops = -1)
         while self.playing:
-            self.draw()
+            if self.submenu: self.draw_submenu_nn()
+            else: self.draw()
             self.events()
             self.update()
 
@@ -72,7 +77,7 @@ class Intro:
         # update portion of the game loop
         self.all_sprites.update()
 
-    def button(self, btn_y, btn_msg, action ):
+    def button(self, btn_y, btn_msg, action):
         mouse = pg.mouse.get_pos()
         click = pg.mouse.get_pressed()
         if(545+210 > mouse[0] > 545 and btn_y + 60 > mouse[1] > btn_y):
@@ -83,6 +88,14 @@ class Intro:
                 if (action == "quit"):
                     pg.quit()
                     quit()
+                elif action == 'back':
+                    self.submenu = False
+                    self.submenu_type = None
+                    sleep(0.2)
+                elif action == 'neural-networks-submenu':
+                    self.submenu = True
+                    self.submenu_type = "neural-networks"
+                    sleep(0.2)
                 else:
                     self.mode = action
                     self.playing = False
@@ -102,11 +115,21 @@ class Intro:
         #trzeci argument to tryb ('mode') który będzie zwrócony przez intro.run() po zakończenu głównej pętli
         """
         self.button(100, "(basic+genetic_mikbal)", "basic-genetic")
-        self.button(180, "neural_network_stagol", "neural-networks")
+        self.button(180, "neural_network_stagol", "neural-networks-submenu")
         self.button(260, "decission_tree_mikszu", "decission-tree")
         self.button(340, "placing__genetic_grzegorz", "placing-genetic")
         self.button(420, "standard", "standard")
         pg.display.flip()
+
+    def draw_submenu_nn(self):
+        self.bg = pg.image.load(os.path.join(img_folder, "background.png")).convert()
+        self.screen.blit(self.bg, (0,0))
+        self.all_sprites.draw(self.screen)
+        self.button(100, "run game", "neural-networks")
+        self.button(180, "train network", "neural-networks-training")
+        self.button(260, "back", "back")
+        pg.display.flip()
+
 
     def events(self):
         # catch all events here
