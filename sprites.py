@@ -169,18 +169,14 @@ class Player(Character):
         self.game = game
         self.points_to_visit = []
         self.current_target = []
-<<<<<<< HEAD
         self.pausemove = True # pausemove potrzebny do drzew decyzyjnych
         self.decissionhp = 10 # życie dla decission mode
         self.mode = game.mode
         self.logic_attribute_name_list = ['logic_attribute_name_list', 'mode' , 'name', 'id','hp', 'x', 'y', 'at', 'deff', 'lev', 'total_exp', 'max_hp', 'alive']
-=======
->>>>>>> parent of f5c80c9... decissionTreeMerge
 
     def die(self, simulated = False):
         #TODO PROPER GAME ENDING
         # print("GAMEOVER")
-<<<<<<< HEAD
         if self.mode != "decission-tree":
             self.hp = 0
             self.at = 0
@@ -193,15 +189,13 @@ class Player(Character):
             self.x = 1
             self.y = 1
 
-
-=======
         self.hp = 0
         self.at = 0
         self.max_hp = 0
         self.lev = 0
         self.deff = 0
         self.alive = False
->>>>>>> parent of f5c80c9... decissionTreeMerge
+
 
     def get_new_path(self):
         A = A_star_path(self.game)

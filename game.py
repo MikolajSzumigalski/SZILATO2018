@@ -12,12 +12,8 @@ import copy
 import knowledge_frames
 import GeneticAlgorithm.genetic
 
-<<<<<<< HEAD
-available_modes = ["basic-genetic", "neural-networks", "decission-tree", "placing-genetic", "standard"]
-=======
-available_modes = ["basic-genetic", "neural-networks"]
->>>>>>> parent of f5c80c9... decissionTreeMerge
 
+available_modes = ["basic-genetic", "neural-networks", "decission-tree", "placing-genetic", "standard"]
 class Game:
     def __init__(self, screen, mode="normal-genetic"):
         if not mode in available_modes:
@@ -111,7 +107,6 @@ class Game:
 
                 # nie przyjmujemy nowych inputów podczas ruchu Geralta
                 if not self.player.in_move:
-<<<<<<< HEAD
                     if self.mode == "decission-tree":
                         if self.player.pausemove:
                             if event.key == pg.K_LEFT:
@@ -173,7 +168,10 @@ class Game:
 
                         if event.key == pg.K_9:
                             if not self.mode == "basic-genetic":
-=======
+                                print("[game] #info if you want to use genetic mikbal, switch game mode")
+                            else:
+                                self.logic_engine.play_from_list([2, 0, 1, 7, 6, 8, 3, 0, 0, 8, 4, 9, 9, 4, 8, 1, 5, 2, 4, 1, 4, 8, 2, 5, 3, 7, 1, 5, 5, 0])
+
                     if event.key == pg.K_LEFT:
                     #sprawdź co się stanie jeśli player się przesunie
                         self.logic_engine.check_player_collisions(dx=-1)
@@ -208,7 +206,6 @@ class Game:
 
                     if event.key == pg.K_0:
                         if not self.mode == "basic-genetic":
->>>>>>> parent of f5c80c9... decissionTreeMerge
                                 print("[game] #info if you want to use genetic mikbal, switch game mode")
                         else:
                             GeneticAlgorithm.genetic.prepare_genetic(self.logic_engine)

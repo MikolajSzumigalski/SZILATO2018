@@ -101,17 +101,16 @@ class Intro:
         #drugi argument to napis wyświetlany na guziku
         #trzeci argument to tryb ('mode') który będzie zwrócony przez intro.run() po zakończenu głównej pętli
         """
-<<<<<<< HEAD
+
         self.button(100, "(basic+genetic_mikbal)", "basic-genetic")
         self.button(180, "neural_network_stagol", "neural-networks")
         self.button(260, "decission_tree_mikszu", "decission-tree")
         self.button(340, "placing__genetic_grzegorz", "placing-genetic")
         self.button(420, "standard", "standard")
-=======
+
         self.button(105, "(basic+genetic_mikbal)", "basic-genetic")
         self.button(190, "neural_network_stagol", "neural-networks")
         self.button(275, "QUIT", "quit")
->>>>>>> parent of f5c80c9... decissionTreeMerge
         pg.display.flip()
 
     def events(self):
