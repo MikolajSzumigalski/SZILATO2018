@@ -92,6 +92,9 @@ class Map:
                     size = line.replace("\n","").split(";")
                     GRIDWIDTH = int(size[0])
                     GRIDHEIGHT = int(size[1])
+                    self.width = GRIDWIDTH
+                    self.height = GRIDHEIGHT
+                    self.tiles_data = [[0 for j in range(GRIDWIDTH)] for i in range(GRIDHEIGHT)]
                     state = 1
                     continue
                 if state == 1:
