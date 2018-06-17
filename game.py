@@ -32,8 +32,7 @@ class Game:
         self.mixtures = []
         self.map = Map(self)
         self.map.load_from_file(MAP, RANDOM_SPAWN)
-        if self.mode == "decission-tree":
-            self.tree = Tree()
+        self.tree = Tree()
 
         if mode == "placing-genetic" :
             geneticImp = GeneticAlgorithmImplementation()

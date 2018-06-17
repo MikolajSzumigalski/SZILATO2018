@@ -17,7 +17,6 @@ import numpy as np
 class LogicEngine:
     def __init__(self, game):
         self.game = game
-        self.mode = self.game.mode
         self.player = game.player
         self.monsters = game.monsters
         self.mixtures = game.mixtures
@@ -50,7 +49,7 @@ class LogicEngine:
                     for snd in ['geralt1.wav', 'geralt2.wav']:
                         geralt_sounds.append(pg.mixer.Sound(path.join(music_folder, snd)))
                     random.choice(geralt_sounds).play()
-                if self.mode == "decission-tree":
+                if self.game.mode == "decission-tree":
                     self.decissionTreeFight(self.player, m)
                 else:
                     self.fight(self.player, m)
