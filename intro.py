@@ -104,7 +104,8 @@ class Intro:
         self.button(100, "(basic+genetic_mikbal)", "basic-genetic")
         self.button(180, "neural_network_stagol", "neural-networks")
         self.button(260, "decission_tree_mikszu", "decission-tree")
-        self.button(350, "QUIT", "quit")
+        self.button(340, "placing__genetic_grzegorz", "placing-genetic")
+        self.button(420, "standard", "standard")
         pg.display.flip()
 
     def events(self):

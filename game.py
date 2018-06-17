@@ -7,12 +7,12 @@ from neural_network import NeuralNetwork
 from game_logic import *
 from os import path
 from interface import *
-
+from genetic import *
 import copy
 import knowledge_frames
 import GeneticAlgorithm.genetic
 
-available_modes = ["basic-genetic", "neural-networks", "decission-tree"]
+available_modes = ["basic-genetic", "neural-networks", "decission-tree", "placing-genetic", "standard"]
 
 class Game:
     def __init__(self, screen, mode="normal-genetic"):
@@ -35,6 +35,10 @@ class Game:
         if self.mode == "decission-tree":
             self.tree = Tree()
 
+        if mode == "placing-genetic" :
+            geneticImp = GeneticAlgorithmImplementation()
+            geneticImp.run(self.map.map_data) 
+            
         self.player = Player(self, 1, 1)
         self.map_of_all = copy.deepcopy(self.map.legendReturn())
         self.dynamic_map = copy.deepcopy(self.map_of_all[:])
@@ -51,7 +55,6 @@ class Game:
             network = NeuralNetwork(1,1,1)
             network.load_from(DEFAULT_NN)
             self.neural_network = network
-
 
         self.logic_attribute_name_list = ['monsters', 'mixtures', 'map', 'player', 'logic_engine', 'logic_attribute_name_list']
     def run(self):
