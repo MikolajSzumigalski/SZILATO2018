@@ -171,51 +171,7 @@ class Game:
                                 print("[game] #info if you want to use genetic mikbal, switch game mode")
                             else:
                                 self.logic_engine.play_from_list([2, 0, 1, 7, 6, 8, 3, 0, 0, 8, 4, 9, 9, 4, 8, 1, 5, 2, 4, 1, 4, 8, 2, 5, 3, 7, 1, 5, 5, 0])
-
-                    if event.key == pg.K_LEFT:
-                    #sprawdź co się stanie jeśli player się przesunie
-                        self.logic_engine.check_player_collisions(dx=-1)
-                    if event.key == pg.K_RIGHT:
-                        self.logic_engine.check_player_collisions(dx=1)
-                    if event.key == pg.K_UP:
-                        self.logic_engine.check_player_collisions(dy=-1)
-                    if event.key == pg.K_DOWN:
-                        self.logic_engine.check_player_collisions(dy=1)
-                    if event.key == pg.K_w:
-                        self.logic_engine.player_start_auto_move()
-
-                    if event.key == pg.K_p:
-                    # prints to file current map status in JSON form
-                        knowledge_frames.save_data(self.logic_engine)
-
-                    if event.key == pg.K_q:
-                        #simulate going down 1
-                        self.logic_engine.simulate_move(True, 0, 1)
-
-                    if event.key == pg.K_g:
-                        #simulate going down 1
-                        self.logic_engine.simulate_move_absolute_coordinate(False, 1, 2);
-
-                    if event.key == pg.K_a:
-                         self.player.get_new_plan()
-
-                    if event.key == pg.K_n:
-                        if not self.mode == "neural-networks":
-                            print("[game] #info if you want to use neural network, switch game mode")
-                        else: self.logic_engine.nn_move()
-
-                    if event.key == pg.K_0:
-                        if not self.mode == "basic-genetic":
-                                print("[game] #info if you want to use genetic mikbal, switch game mode")
-                        else:
-                            GeneticAlgorithm.genetic.prepare_genetic(self.logic_engine)
-
-                    if event.key == pg.K_9:
-                        if not self.mode == "basic-genetic":
-                            print("[game] #info if you want to use genetic mikbal, switch game mode")
-                        else:
-                            self.logic_engine.play_from_list([2, 0, 1, 7, 6, 8, 3, 0, 0, 8, 4, 9, 9, 4, 8, 1, 5, 2, 4, 1, 4, 8, 2, 5, 3, 7, 1, 5, 5, 0])
-
+                                
             if event.type == pg.VIDEORESIZE:
                 self.__resize_window__(event)
             if event.type == MOVEEVENT:
