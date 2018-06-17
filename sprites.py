@@ -173,12 +173,13 @@ class Player(Character):
         self.current_target = []
         self.pausemove = True # pausemove potrzebny do drzew decyzyjnych
         self.decissionhp = 10 # życie dla decission mode
+        self.mode = game.mode
+        self.logic_attribute_name_list = ['logic_attribute_name_list', 'mode' , 'name', 'id','hp', 'x', 'y', 'at', 'deff', 'lev', 'total_exp', 'max_hp', 'alive']
 
     def die(self, simulated = False):
         #TODO PROPER GAME ENDING
         # print("GAMEOVER")
-        print(self.game.mode)
-        if self.game.mode != "decission-tree":
+        if self.mode != "decission-tree":
             self.hp = 0
             self.at = 0
             self.max_hp = 0
