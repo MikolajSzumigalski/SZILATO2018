@@ -1,7 +1,7 @@
 import numpy as np
 from math import exp
 import random
-
+from game import Game
 
 def sigmoid(x):
     return 1/(1 + exp(-x))
@@ -226,5 +226,9 @@ class NeuralNetwork:
 
 def train_network():
     print("------START NETWORK TRAINING-------")
+
+
+
+
     print("------FIN-------")
     pass

@@ -12,7 +12,7 @@ import copy
 import knowledge_frames
 import GeneticAlgorithm.genetic
 
-available_modes = ["basic-genetic", "neural-networks", "decission-tree", "placing-genetic", "standard"]
+available_modes = ["basic-genetic", "neural-networks", "neural-networks-training", "decission-tree", "placing-genetic", "standard"]
 
 class Game:
     def __init__(self, screen, mode="normal-genetic"):
@@ -22,6 +22,8 @@ class Game:
         else:
             self.mode = mode
             print("\n[game init] #log game mode set to '" + mode + "'")
+        if self.mode == "neural-networks-training": self.draw_sprites = False
+        else: self.draw_sprites = True
         self.screen = screen
         pg.display.set_caption(TITLE)
         self.clock = pg.time.Clock()
@@ -64,8 +66,27 @@ class Game:
         while self.playing:
             self.dt = self.clock.tick(FPS) / 1000
             self.events()
-            self.update()
-            self.draw()
+            if self.draw_sprites:
+                 self.draw()
+                 self.update()
+            else: self.draw_nothing()
+            if self.mode ==  "neural-networks-training":
+                if self.rounds > 0:
+                    self.rounds -= 1
+                    # self.logic_engine.cośtam
+                else:
+                    self.playing = False
+
+        return self.player.score
+
+    def set_network(self, network):
+        if not self.mode in ["neural-networks", "neural-networks-training"]:
+            print("[game] #info nie można ustawić sieci neuronowej w danym trybie")
+        else:
+            self.neural_network = network
+
+    def set_max_rounds(self, rounds):
+        self.round = rounds
 
     def quit(self):
         pg.quit()
@@ -98,6 +119,11 @@ class Game:
         self.inteface.draw_interface(self.screen)
         self.inteface.draw_legend(self.dynamic_map)
         pg.display.flip()
+
+    def draw_nothing(self):
+        self.screen.fill(BGCOLOR)
+        pg.display.flip()
+
 
     def events(self):
         # catch all events here
