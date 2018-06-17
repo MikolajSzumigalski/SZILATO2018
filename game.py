@@ -21,7 +21,7 @@ class Game:
             raise Exception("[game init] dany tryb (mode) nie jest znany, może zapomniałeś go dodać do 'available_modes'?")
         else:
             self.mode = mode
-            print("\n[game init] #log game mode set to '" + mode + "'")  
+            print("\n[game init] #log game mode set to '" + mode + "'")
         self.screen = screen
         pg.display.set_caption(TITLE)
         self.clock = pg.time.Clock()
@@ -37,8 +37,8 @@ class Game:
 
         if mode == "placing-genetic" :
             geneticImp = GeneticAlgorithmImplementation()
-            geneticImp.run(self.map.map_data) 
-            
+            geneticImp.run(self.map.map_data)
+
         self.player = Player(self, 1, 1)
         self.map_of_all = copy.deepcopy(self.map.legendReturn())
         self.dynamic_map = copy.deepcopy(self.map_of_all[:])
@@ -154,7 +154,9 @@ class Game:
                             self.logic_engine.simulate_move_absolute_coordinate(False, 1, 2);
 
                         if event.key == pg.K_a:
-                             self.player.get_new_plan()
+                            if not self.mode == "standard":
+                                print("[game] #info if you want to use A*, switch game mode")
+                            else: self.player.get_new_plan()
 
                         if event.key == pg.K_n:
                             if not self.mode == "neural-networks":
