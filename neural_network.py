@@ -200,8 +200,6 @@ class NeuralNetwork:
         if self.logs: print("[evaluate] #log: network output: ", output)
         return output
 
-
-
 # test
 # nn = NeuralNetwork(8,10,3)
 # nn.save_to('data/networks/1.npy')
