@@ -201,6 +201,8 @@ class LogicEngine:
             self.gameover = True;
             if(self.simulation == True):
                 pass
+            elif self.game.mode == "neural-networks-training":
+                self.game.playing = False
             else:
                 program_logic.gameover()
 
@@ -278,14 +280,14 @@ class LogicEngine:
                 pass
 
     def nn_move(self):
-        print(self.game.get_tiles_around_player_simplified(n=2))
+        #print(self.game.get_tiles_around_player_simplified(n=2))
         UP = 0
         DOWN = 1
         RIGHT = 2
         LEFT = 3
         moves_probs = self.game.neural_network.evaluate_no_hidden_layer(self.game.get_tiles_around_player_simplified(2))
         _max = moves_probs.tolist().index(max(moves_probs.tolist()))
-        print(_max, moves_probs)
+        #print(_max, moves_probs)
         if(_max == UP):
             self.check_player_collisions(dy=-1)
         elif(_max == DOWN):

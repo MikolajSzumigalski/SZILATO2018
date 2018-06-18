@@ -21,7 +21,7 @@ class Game:
             raise Exception("[game init] dany tryb (mode) nie jest znany, może zapomniałeś go dodać do 'available_modes'?")
         else:
             self.mode = mode
-            print("\n[game init] #log game mode set to '" + mode + "'")
+            if mode != "neural-networks-training": print("\n[game init] #log game mode set to '" + mode + "'")
         if self.mode == "neural-networks-training": self.draw_sprites = False
         else: self.draw_sprites = True
         self.screen = screen
@@ -57,6 +57,8 @@ class Game:
             network = NeuralNetwork(1,1,1)
             network.load_from(DEFAULT_NN)
             self.neural_network = network
+        if mode == "neural-networks-training":
+            self.rounds = 10;
 
         self.logic_attribute_name_list = ['monsters', 'mixtures', 'map', 'player', 'logic_engine', 'logic_attribute_name_list']
     def run(self):
