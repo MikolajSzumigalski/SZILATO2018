@@ -6,7 +6,10 @@ from settings import *
 from game import *
 from intro import *
 <<<<<<< HEAD
+<<<<<<< HEAD
 from train_nn import *
+=======
+>>>>>>> parent of 85e25b3... add nn trainig stage function
 =======
 >>>>>>> parent of 85e25b3... add nn trainig stage function
 #tworzymy okno
@@ -19,11 +22,14 @@ def startup():
     intro = Intro(screen)
     mode = intro.run()
 <<<<<<< HEAD
+<<<<<<< HEAD
     temp_mode = mode
     if mode == 'neural-networks-training':
          network = train_network(screen)
          mode = 'neural-networks'
 
+=======
+>>>>>>> parent of 85e25b3... add nn trainig stage function
 =======
 >>>>>>> parent of 85e25b3... add nn trainig stage function
     print("-----START GAME------")
