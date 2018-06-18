@@ -70,7 +70,7 @@ class LogicEngine:
             collidables = [ROCK_1,ROCK_2,ROCK_3,WATER]
             if self.map.map_data[new_y][new_x] in collidables:
                 #print("collison with rock or water!")
-                self.game.playing = False
+                if self.game.mode in "neural-networks-training": self.game.playing = False
             else:
                 # print("move")
                 self.map.getTileData(self.player.x, self.player.y).setOccupiedBy(None);
@@ -285,8 +285,8 @@ class LogicEngine:
         DOWN = 1
         RIGHT = 2
         LEFT = 3
-        #moves_probs = self.game.neural_network.evaluate_no_hidden_layer(self.game.get_tiles_around_player_simplified(2))
-        moves_probs = self.game.neural_network.evaluate(self.game.get_tiles_around_player_simplified(2))
+        moves_probs = self.game.neural_network.evaluate_no_hidden_layer(self.game.get_tiles_around_player_simplified(2))
+        # moves_probs = self.game.neural_network.evaluate(self.game.get_tiles_around_player_simplified(2))
         _max = moves_probs.tolist().index(max(moves_probs.tolist()))
         #print(_max, moves_probs)
         if(_max == UP):

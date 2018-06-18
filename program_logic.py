@@ -24,6 +24,7 @@ def startup():
     game = Game(screen, mode)
     if temp_mode == 'neural-networks-training': game.set_network(network)
     game.run()
+    gameover()
 
 def gameover():
     """ this handles gameover """
