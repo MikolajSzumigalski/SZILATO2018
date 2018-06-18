@@ -228,7 +228,5 @@ def train_network():
     print("------START NETWORK TRAINING-------")
 
 
-
-
     print("------FIN-------")
     pass

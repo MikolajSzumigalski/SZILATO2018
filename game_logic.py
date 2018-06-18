@@ -63,17 +63,24 @@ class LogicEngine:
                 self.map.getTileData(m.x, m.y).setOccupiedBy(None);
 
                 m.die()
+        if mixture_collision or monster_collision:
+            self.player.score += 200
+
         if not monster_collision and not mixture_collision:
             collidables = [ROCK_1,ROCK_2,ROCK_3,WATER]
             if self.map.map_data[new_y][new_x] in collidables:
-                print("collison with rock or water!")
+                #print("collison with rock or water!")
+                self.game.playing = False
             else:
                 # print("move")
                 self.map.getTileData(self.player.x, self.player.y).setOccupiedBy(None);
                 self.map.getTileData(self.player.x + dx, self.player.y + dy).setOccupiedBy(self.player);
 
                 self.player.move(dx, dy)
-                self.map.tiles_data[new_y][new_x].visited = True
+                if self.map.tiles_data[new_y][new_x].visited: self.player.score += 1
+                else:
+                    self.map.tiles_data[new_y][new_x].visited = True
+                    self.player.score += 100
                 # print(self.map.map_data[new_y][new_x])
         # if (simulation):
         #     # print("/SIMULATION>")

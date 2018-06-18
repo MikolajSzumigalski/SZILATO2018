@@ -174,7 +174,8 @@ class Player(Character):
         self.pausemove = True # pausemove potrzebny do drzew decyzyjnych
         self.decissionhp = 10 # życie dla decission mode
         self.mode = game.mode
-        self.logic_attribute_name_list = ['logic_attribute_name_list', 'mode' , 'name', 'id','hp', 'x', 'y', 'at', 'deff', 'lev', 'total_exp', 'max_hp', 'alive']
+        self.score = 0
+        self.logic_attribute_name_list = ['logic_attribute_name_list', 'mode', 'score' , 'name', 'id','hp', 'x', 'y', 'at', 'deff', 'lev', 'total_exp', 'max_hp', 'alive']
 
     def die(self, simulated = False):
         #TODO PROPER GAME ENDING
