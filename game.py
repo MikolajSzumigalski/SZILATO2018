@@ -49,8 +49,9 @@ class Game:
         self.inteface.draw_legend(self.dynamic_map)
         self.camera = Camera(self.map.camerawidth, self.map.cameraheight)
         #init music
-        pg.mixer.init()
-        bg_music = pg.mixer.music.load(path.join(music_folder, 'gamebackground.mp3'))
+        if not self.mode == "neural-networks-training":
+            pg.mixer.init()
+            bg_music = pg.mixer.music.load(path.join(music_folder, 'gamebackground.mp3'))
         self.logic_engine = LogicEngine(self)
         # pg.time.set_timer(self.MOVEEVENT, PLAYER_MOVE_FREQUENCY)
         if mode == "neural-networks" :
@@ -64,7 +65,7 @@ class Game:
     def run(self):
         # game loop - set self.playing = False to end the game
         self.playing = True
-        pg.mixer.music.play()
+        if not self.mode == "neural-networks-training": pg.mixer.music.play()
         while self.playing:
             self.dt = self.clock.tick(FPS) / 1000
             self.events()

@@ -60,7 +60,7 @@ class Intro:
     def run(self):
         self.playing = True
         # game loop - set self.playing = False to end the game
-        pg.mixer.music.play(loops = -1)
+        #pg.mixer.music.play(loops = -1)
         while self.playing:
             if self.submenu: self.draw_submenu_nn()
             else: self.draw()

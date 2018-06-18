@@ -45,7 +45,7 @@ class LogicEngine:
             if new_x  == m.x and new_y == m.y and m.alive:
                 monster_collision = True
                 # print("colision with monster!")
-                if not (simulation):
+                if not (simulation) and not self.game.mode == "neural-networks-training":
                     geralt_sounds = []
                     for snd in ['geralt1.wav', 'geralt2.wav']:
                         geralt_sounds.append(pg.mixer.Sound(path.join(music_folder, snd)))
@@ -285,7 +285,8 @@ class LogicEngine:
         DOWN = 1
         RIGHT = 2
         LEFT = 3
-        moves_probs = self.game.neural_network.evaluate_no_hidden_layer(self.game.get_tiles_around_player_simplified(2))
+        #moves_probs = self.game.neural_network.evaluate_no_hidden_layer(self.game.get_tiles_around_player_simplified(2))
+        moves_probs = self.game.neural_network.evaluate(self.game.get_tiles_around_player_simplified(2))
         _max = moves_probs.tolist().index(max(moves_probs.tolist()))
         #print(_max, moves_probs)
         if(_max == UP):

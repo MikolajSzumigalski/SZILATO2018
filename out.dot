@@ -15,7 +15,7 @@ digraph ID3_Tree {
 ", weight=4]
 3 -> 4 [ label = "<=44.50"];
 "5" [shape=box, style=filled, label="1
-(17)
+(18)
 ", weight=5]
 4 -> 5 [ label = "<=0.50"];
 "6" [shape=box, style=filled, label="tarcza
